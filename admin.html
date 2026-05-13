@@ -467,12 +467,18 @@
   .combo-preview {
     background: var(--brand-deep);
     color: var(--cream);
-    padding: 14px 18px;
+    padding: 16px 20px;
     border-radius: 8px;
     margin-top: 8px;
     text-align: center;
     font-size: .92rem;
   }
+  .combo-preview .btn-primary {
+    background: var(--accent);
+    color: var(--brand-darker);
+    font-weight: 700;
+  }
+  .combo-preview .btn-primary:hover { background: var(--accent-warm); }
 
   /* ====== 課程花絮卡片 ====== */
   .highlight-form-card {
@@ -860,7 +866,8 @@
     </div>
 
     <div class="combo-preview" id="combo-preview">
-      <strong>目前選擇:</strong> <span id="combo-text">A 版型 + 翠玉綠</span>
+      <div><strong>目前選擇:</strong> <span id="combo-text">A 版型 + 翠玉綠</span></div>
+      <button class="btn btn-primary" onclick="saveAll()" style="margin-top:10px">✨ 套用此風格(立即儲存)</button>
     </div>
   </section>
 

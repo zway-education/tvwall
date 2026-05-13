@@ -12,6 +12,7 @@
 <script src="defaults.js"></script>
 <style>
   :root {
+    /* === 預設配色 ・ 🌿 翠玉綠 === */
     --brand: #1f8a5c;
     --brand-deep: #0e6340;
     --brand-darker: #073920;
@@ -24,8 +25,64 @@
     --spec-orange: #E8600A;
     --spec-green: #2E8B5A;
     --spec-blue: #3A70B0;
+    --accent-deep: #8a6f2e;
     --serif: "Noto Serif TC", "Source Han Serif TC", "PMingLiU", serif;
     --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  }
+  /* === ☕ 暖咖琥珀 === */
+  body[data-theme="amber"] {
+    --brand: #6b4423;
+    --brand-deep: #4a2f17;
+    --brand-darker: #2e1a0c;
+    --accent: #d97757;
+    --accent-warm: #e89178;
+    --accent-deep: #a8553b;
+    --cream: #faf3e9;
+    --cream-deep: #ede0c8;
+  }
+  /* === 🌸 米白薄荷 === */
+  body[data-theme="mint"] {
+    --brand: #6b9080;
+    --brand-deep: #4a6b5d;
+    --brand-darker: #2e4439;
+    --accent: #d4a373;
+    --accent-warm: #e6b889;
+    --accent-deep: #a87d4a;
+    --cream: #f5f0e8;
+    --cream-deep: #e8e0d0;
+  }
+  /* === ⚫ 深焦碳金 === */
+  body[data-theme="gold"] {
+    --brand: #1a1a1a;
+    --brand-deep: #0a0a0a;
+    --brand-darker: #000000;
+    --accent: #d4af37;
+    --accent-warm: #e8c659;
+    --accent-deep: #a98a2c;
+    --cream: #ebeae8;
+    --cream-deep: #d4d2cf;
+  }
+  /* === 📚 復古書房 === */
+  body[data-theme="leather"] {
+    --brand: #4e342e;
+    --brand-deep: #2e1a14;
+    --brand-darker: #1a0d0a;
+    --accent: #c0392b;
+    --accent-warm: #d65548;
+    --accent-deep: #8e2419;
+    --cream: #f3e5cd;
+    --cream-deep: #e0cca8;
+  }
+  /* === 🌊 海洋蔚藍 === */
+  body[data-theme="navy"] {
+    --brand: #1e4d6b;
+    --brand-deep: #163a52;
+    --brand-darker: #0d2638;
+    --accent: #e0a96d;
+    --accent-warm: #f0bf85;
+    --accent-deep: #b8854a;
+    --cream: #f0f6f8;
+    --cream-deep: #d4e0e4;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -137,7 +194,7 @@
 
   /* ============== Slide 1 - 主畫面 ============== */
   .s1 {
-    background: linear-gradient(135deg, #1f8a5c 0%, #157a4f 70%, #0e6340 100%);
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
     color: var(--cream);
   }
   .s1::before {
@@ -416,8 +473,8 @@
 
   /* ============== Slide 6 - 加 LINE (金杏暖底) ============== */
   .s6 {
-    background: linear-gradient(135deg, #d8b878 0%, #c9a96e 50%, #a78546 100%);
-    color: #1a1a1a;
+    background: linear-gradient(135deg, var(--accent-warm) 0%, var(--accent) 50%, var(--accent-deep) 100%);
+    color: var(--brand-darker);
   }
   .s6 .eyebrow { color: var(--brand-deep); opacity: 0.85; }
   .s6 .headline {
@@ -472,6 +529,300 @@
     from { opacity: 0; transform: translateX(40px); }
     to { opacity: 1; transform: translateX(0); }
   }
+
+  /* ============== Slide 7 ・ 課程花絮 ============== */
+  .s7 {
+    background: linear-gradient(135deg, var(--brand-darker) 0%, var(--brand-deep) 100%);
+    color: var(--cream);
+  }
+  .s7 .eyebrow { color: var(--accent); }
+  .highlight-wrap {
+    position: absolute;
+    inset: 12vh 6vw 14vh 6vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .highlight {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 60% 40%;
+    gap: clamp(20px, 3vw, 50px);
+    opacity: 0;
+    transition: opacity .8s ease;
+  }
+  .highlight.show { opacity: 1; }
+  .highlight .img-area {
+    background: var(--brand-darker);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(201,169,110,.3);
+    box-shadow: 0 12px 40px rgba(0,0,0,.4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .highlight .img-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .highlight .placeholder {
+    color: var(--accent);
+    font-size: 1rem;
+    text-align: center;
+    padding: 20px;
+  }
+  .highlight .caption {
+    align-self: center;
+    padding: 20px 0;
+  }
+  .highlight .h-date {
+    font-family: var(--sans);
+    color: var(--accent);
+    font-size: clamp(14px, 1.1vw, 22px);
+    letter-spacing: .25em;
+    margin-bottom: 12px;
+  }
+  .highlight .h-title {
+    font-family: var(--serif);
+    font-weight: 800;
+    font-size: clamp(34px, 3.4vw, 72px);
+    line-height: 1.25;
+    margin-bottom: 16px;
+  }
+  .highlight .h-desc {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: clamp(16px, 1.3vw, 28px);
+    line-height: 1.7;
+    opacity: .9;
+  }
+
+  /* ╔══════════════════════════════════════════════════════════╗
+     ║   📐 版型公版庫(A 是預設 ・ B/C/E 是替代版型)              ║
+     ╚══════════════════════════════════════════════════════════╝ */
+
+  /* ====== 版型 B ・ 極簡留白派(全置中、大字、留白)====== */
+  body[data-layout="B"] .slide .inner { align-items: center; text-align: center; }
+  body[data-layout="B"] .slide .eyebrow {
+    position: static;
+    text-align: center;
+    margin-bottom: clamp(16px, 2vh, 36px);
+    width: 100%;
+    left: auto; top: auto;
+  }
+  body[data-layout="B"] .slide .headline {
+    text-align: center;
+    font-size: clamp(80px, 7.5vw, 180px);
+    letter-spacing: .04em;
+  }
+  body[data-layout="B"] .slide .gold-line {
+    margin-left: auto;
+    margin-right: auto;
+    width: 36px;
+  }
+  body[data-layout="B"] .slide .subhead {
+    text-align: center;
+    max-width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  body[data-layout="B"] .slide .foot {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+  body[data-layout="B"] .slide .qr-corner-wrap {
+    align-items: center;
+  }
+  body[data-layout="B"] .stages {
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  body[data-layout="B"] .s3 .text-col {
+    width: 100%;
+    text-align: center;
+  }
+  body[data-layout="B"] .s3 .story {
+    text-align: center;
+  }
+  body[data-layout="B"] .s3 .portrait {
+    right: 50%;
+    transform: translate(50%, -50%);
+    width: 18vw;
+  }
+  body[data-layout="B"] .s5 .text-col,
+  body[data-layout="B"] .s6 .text-col {
+    width: 100%;
+    text-align: center;
+  }
+  body[data-layout="B"] .s5 .spectrum-dots {
+    justify-content: center;
+  }
+  body[data-layout="B"] .s5 .qr-big,
+  body[data-layout="B"] .s6 .qr-big {
+    right: 50%;
+    transform: translate(50%, calc(50% - clamp(120px, 11vw, 220px)));
+    top: auto;
+    bottom: clamp(80px, 8vh, 140px);
+  }
+  body[data-layout="B"] .s5 .qr-big-label,
+  body[data-layout="B"] .s6 .qr-big-label {
+    right: 50%;
+    transform: translateX(50%);
+    text-align: center;
+    width: clamp(180px, 16vw, 340px);
+    top: auto;
+    bottom: clamp(50px, 5vh, 90px);
+  }
+  body[data-layout="B"] .testimony { max-width: 90%; margin: 0 auto; }
+  body[data-layout="B"] .testimony .text,
+  body[data-layout="B"] .testimony .who { text-align: center; }
+
+  /* ====== 版型 C ・ 雜誌封面派(左大塊標題 + 右側欄)====== */
+  body[data-layout="C"] .slide {
+    display: grid;
+    grid-template-columns: 60% 40%;
+    grid-template-rows: 1fr;
+    padding: 0;
+  }
+  body[data-layout="C"] .slide .inner,
+  body[data-layout="C"] .slide .text-col {
+    grid-column: 1;
+    background: var(--brand-darker);
+    padding: 6% 6%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  }
+  body[data-layout="C"] .slide .headline {
+    font-size: clamp(80px, 7vw, 180px);
+    line-height: 1.05;
+    letter-spacing: .02em;
+    font-weight: 900;
+  }
+  body[data-layout="C"] .slide .eyebrow {
+    position: absolute;
+    top: 5%;
+    left: 6%;
+    color: var(--accent);
+  }
+  body[data-layout="C"] .slide .gold-line { margin: 24px 0; }
+  body[data-layout="C"] .slide .subhead {
+    font-size: clamp(18px, 1.3vw, 28px);
+    max-width: 100%;
+  }
+  body[data-layout="C"] .slide .foot {
+    position: absolute;
+    bottom: 5%;
+    left: 6%;
+    right: auto;
+    width: 54%;
+    font-size: clamp(12px, .85vw, 18px);
+  }
+  body[data-layout="C"] .slide .qr-corner-wrap {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    z-index: 5;
+  }
+  body[data-layout="C"] .stages {
+    grid-column: 2;
+    grid-template-columns: 1fr;
+    background: var(--cream);
+    padding: 6% 5%;
+    margin: 0;
+    gap: clamp(8px, 1vh, 20px);
+  }
+  body[data-layout="C"] .s2 .stage {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(31,138,92,.2);
+    border-radius: 0;
+    box-shadow: none;
+    padding: clamp(10px, 1.4vh, 22px) 0;
+    text-align: left;
+  }
+  body[data-layout="C"] .s3 .portrait {
+    position: relative;
+    grid-column: 2;
+    top: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+    border: none;
+  }
+  body[data-layout="C"] .s4 .quote-mark { font-size: clamp(160px, 14vw, 320px); }
+  body[data-layout="C"] .s4 .testimony-wrap { grid-column: 2; padding: 8% 5%; background: var(--cream-deep); }
+  body[data-layout="C"] .s5 .qr-big,
+  body[data-layout="C"] .s6 .qr-big {
+    grid-column: 2;
+    position: relative;
+    right: 0; top: 0;
+    transform: none;
+    margin: 50% auto 0;
+    width: clamp(160px, 14vw, 280px);
+    height: clamp(160px, 14vw, 280px);
+  }
+  body[data-layout="C"] .s5 .qr-big-label,
+  body[data-layout="C"] .s6 .qr-big-label {
+    position: absolute;
+    top: auto;
+    bottom: 8%;
+    right: 5%;
+    transform: none;
+    text-align: center;
+    width: auto;
+  }
+
+  /* ====== 版型 E ・ 對話氣泡派(標題像 chat 訊息)====== */
+  body[data-layout="E"] .slide .headline {
+    display: inline-block;
+    background: var(--brand);
+    color: var(--cream);
+    padding: clamp(18px, 2.5vh, 40px) clamp(24px, 3vw, 60px);
+    border-radius: 28px 28px 28px 6px;
+    font-size: clamp(60px, 5.5vw, 130px);
+    box-shadow: 0 8px 30px rgba(0,0,0,.15);
+    max-width: 90%;
+  }
+  body[data-layout="E"] .slide .headline .gold { color: var(--accent-warm); }
+  body[data-layout="E"] .slide .eyebrow {
+    position: relative;
+    top: 0; left: 0;
+    margin-bottom: clamp(14px, 1.6vh, 28px);
+    display: inline-block;
+  }
+  body[data-layout="E"] .slide .gold-line { display: none; }
+  body[data-layout="E"] .slide .subhead {
+    margin-top: clamp(20px, 2.4vh, 40px);
+    padding-left: clamp(24px, 3vw, 60px);
+    border-left: 3px solid var(--accent);
+    max-width: 70%;
+  }
+  body[data-layout="E"] .s4 {
+    background: var(--brand-darker);
+    color: var(--cream);
+  }
+  body[data-layout="E"] .s4 .eyebrow { color: var(--accent); }
+  body[data-layout="E"] .s4 .quote-mark { color: var(--accent-warm); }
+  body[data-layout="E"] .testimony .text {
+    background: var(--brand);
+    color: var(--cream);
+    padding: 24px 32px;
+    border-radius: 24px 24px 24px 6px;
+    display: inline-block;
+    max-width: 80%;
+  }
+  body[data-layout="E"] .testimony .text b { background: linear-gradient(180deg, transparent 65%, rgba(255,255,255,.25) 65%); color: var(--cream); }
+  body[data-layout="E"] .testimony .who { color: var(--accent); margin-left: 14px; }
 
   /* 進度條 — 底部一條極細,顯示當前 slide 進度 */
   .progress {
@@ -641,6 +992,21 @@
     </div>
   </section>
 
+  <!-- ============== Slide 7 ・ 課程花絮 ============== -->
+  <section class="slide s7" data-id="7">
+    <div class="eyebrow">課程花絮 ・ 學苑日常</div>
+    <div class="highlight-wrap" id="highlight-wrap">
+      <!-- 由 CONFIG.highlights 動態渲染;沒有照片時整張 slide 自動跳過 -->
+    </div>
+    <div class="foot">
+      <div class="dots" id="highlight-dots"></div>
+      <div class="qr-corner-wrap">
+        <div class="qr-corner-label">@LINE</div>
+        <div class="qr-corner" data-qr="line-small"></div>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <div class="progress" id="progress"></div>
@@ -670,7 +1036,7 @@
   let SLIDES = buildSlides(CONFIG);
 
   function buildSlides(cfg) {
-    return [
+    const slides = [
       { id: 1, duration: cfg.durations.s1 },
       { id: 2, duration: cfg.durations.s2 },
       { id: 3, duration: cfg.durations.s3 },
@@ -678,6 +1044,11 @@
       { id: 5, duration: cfg.durations.s5 },
       { id: 6, duration: cfg.durations.s6 },
     ];
+    // 只有當有花絮照片才把 Slide 7 加入輪播
+    if (Array.isArray(cfg.highlights) && cfg.highlights.length > 0) {
+      slides.push({ id: 7, duration: cfg.durations.s7 || 12000 });
+    }
+    return slides;
   }
 
   // ========== QR 連結 → 內部使用(會隨 CONFIG 更新)==========
@@ -696,10 +1067,28 @@
     CONFIG = newConfig;
     SLIDES = buildSlides(CONFIG);
     QR_URLS = buildQrUrls(CONFIG);
+    applyTheme(CONFIG.theme);
+    applyLayout(CONFIG.layout);
     renderTestimonies();
+    renderHighlights();
     renderQRs();
     renderPortrait();
     console.log('[tvwall] 已套用新設定 ・ 更新時間:', lastUpdatedAt);
+  }
+
+  // ========== 套用配色(6 套主題)==========
+  function applyTheme(themeName) {
+    const valid = ['green','amber','mint','gold','leather','navy'];
+    const t = valid.includes(themeName) ? themeName : 'green';
+    if (t === 'green') document.body.removeAttribute('data-theme');
+    else document.body.setAttribute('data-theme', t);
+  }
+
+  // ========== 套用版型(4 種版型)==========
+  function applyLayout(layoutName) {
+    const valid = ['A','B','C','E'];
+    const l = valid.includes(layoutName) ? layoutName : 'A';
+    document.body.setAttribute('data-layout', l);
   }
 
   // ========== 雲端輪詢(切 slide 時順便檢查)==========
@@ -793,17 +1182,22 @@
   const progressEl = document.getElementById('progress');
 
   function showSlide(idx) {
-    slideEls().forEach(el => el.classList.remove('active'));
-    const target = slideEls()[idx];
+    // 把所有 slide 都 deactivate(用 querySelector 不是 NodeList[idx])
+    document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
+    // 找到對應 id 的 slide
+    const slideId = SLIDES[idx].id;
+    const target = document.querySelector(`.slide.s${slideId}`);
     if (!target) return;
-    // 重啟 CSS 動畫 — clone node 太粗暴,改用 reflow
     target.classList.add('active');
     current = idx;
     startProgressBar(SLIDES[idx].duration);
 
     // Slide 4 內部見證輪換
-    if (SLIDES[idx].id === 4) startTestimonyRotation();
+    if (slideId === 4) startTestimonyRotation();
     else stopTestimonyRotation();
+    // Slide 7 內部花絮輪換
+    if (slideId === 7) startHighlightRotation();
+    else stopHighlightRotation();
   }
 
   function nextSlide() {
@@ -886,6 +1280,58 @@
     });
   }
 
+  // ========== Slide 7 課程花絮輪換 ==========
+  let highlightTimer = null;
+  let highlightIdx = 0;
+  function renderHighlights() {
+    const wrap = document.getElementById('highlight-wrap');
+    const dotsBox = document.getElementById('highlight-dots');
+    if (!wrap || !dotsBox) return;
+    const items = (CONFIG.highlights || []);
+    if (items.length === 0) {
+      wrap.innerHTML = '';
+      dotsBox.innerHTML = '';
+      return;
+    }
+    wrap.innerHTML = items.map((h, i) => `
+      <div class="highlight${i === 0 ? ' show' : ''}" data-i="${i}">
+        <div class="img-area">
+          ${h.image ? `<img src="${h.image}" alt="${(h.title || '').replace(/"/g, '&quot;')}">` : '<div class="placeholder">(尚未上傳照片)</div>'}
+        </div>
+        <div class="caption">
+          ${h.date ? `<div class="h-date">${h.date}</div>` : ''}
+          <div class="h-title">${h.title || ''}</div>
+          ${h.desc ? `<div class="h-desc">${h.desc}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+    dotsBox.innerHTML = items.map((_, i) =>
+      `<div class="dot${i === 0 ? ' active' : ''}"></div>`
+    ).join('');
+  }
+  function startHighlightRotation() {
+    const items = CONFIG.highlights || [];
+    if (items.length === 0) return;
+    highlightIdx = 0;
+    showHighlight(0);
+    if (items.length === 1) return;
+    highlightTimer = setInterval(() => {
+      highlightIdx = (highlightIdx + 1) % items.length;
+      showHighlight(highlightIdx);
+    }, 4500);
+  }
+  function stopHighlightRotation() {
+    clearInterval(highlightTimer);
+  }
+  function showHighlight(i) {
+    document.querySelectorAll('.highlight').forEach((el, j) => {
+      el.classList.toggle('show', j === i);
+    });
+    document.querySelectorAll('#highlight-dots .dot').forEach((el, j) => {
+      el.classList.toggle('active', j === i);
+    });
+  }
+
   // ========== 鍵盤快捷鍵 ==========
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft') prevSlide();
@@ -896,8 +1342,11 @@
 
   // ========== 啟動 ==========
   window.addEventListener('load', async () => {
-    // 1. 立即用 cached 渲染(避免白屏)
+    // 1. 立即套用配色 & 版型 + cached 渲染(避免白屏)
+    applyTheme(CONFIG.theme);
+    applyLayout(CONFIG.layout);
     renderTestimonies();
+    renderHighlights();
     renderQRs();
     renderPortrait();
     startProgressBar(SLIDES[0].duration);

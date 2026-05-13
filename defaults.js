@@ -36,6 +36,7 @@ window.TVWALL_DEFAULTS = {
     s4: 12000,
     s5: 15000,
     s6: 12000,
+    s7: 14000,  // 課程花絮(內部每 4.5 秒換一張,所以這張要長一點)
   },
 
   testimonyInterval: 4000,
@@ -47,6 +48,16 @@ window.TVWALL_DEFAULTS = {
   portrait: "",
   qrImageLine: "",
   qrImageMindspectrum: "",
+
+  // 版型(A 標題置左 / B 極簡留白 / C 雜誌封面 / E 對話氣泡)
+  layout: "A",
+
+  // 配色(green / amber / mint / gold / leather / navy)
+  theme: "green",
+
+  // Slide 7 課程花絮(陣列,每張一個 object)
+  // 結構:[{ image: "data:image/jpeg;base64,...", title: "活動名稱", date: "2026/04/15", desc: "簡述" }]
+  highlights: [],
 };
 
 // ============ 工具 ============
@@ -66,6 +77,9 @@ function _merge(parsed) {
     portrait: parsed.portrait || '',
     qrImageLine: parsed.qrImageLine || '',
     qrImageMindspectrum: parsed.qrImageMindspectrum || '',
+    layout: parsed.layout || 'A',
+    theme: parsed.theme || 'green',
+    highlights: Array.isArray(parsed.highlights) ? parsed.highlights : [],
   };
 }
 

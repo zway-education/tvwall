@@ -361,6 +361,160 @@
   }
   footer .btn-danger:hover { background: var(--danger); color: #fff; }
 
+  /* ====== 版型 + 配色 picker ====== */
+  .picker-step { margin-bottom: 24px; }
+  .step-label {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px;
+    font-weight: 500;
+    color: var(--brand-deep);
+  }
+  .step-num {
+    background: var(--accent);
+    color: var(--brand-darker);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: .95rem;
+  }
+  .layout-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .layout-tile, .theme-tile {
+    background: #fdfaf3;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .layout-tile:hover, .theme-tile:hover { border-color: var(--brand); }
+  .layout-tile.selected, .theme-tile.selected {
+    border-color: var(--accent);
+    background: #fef9e6;
+    box-shadow: 0 4px 16px rgba(201,169,110,.25);
+  }
+  .lt-mini {
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+    border-radius: 6px;
+    padding: 8% 9%;
+    color: #faf7f2;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 8px;
+    font-family: "Noto Serif TC", serif;
+  }
+  .lt-A .lt-eb { font-size: 6px; opacity: .7; margin-bottom: 6px; }
+  .lt-A .lt-title { font-size: 14px; font-weight: 800; line-height: 1.2; }
+  .lt-A .lt-line { width: 16px; height: 1.5px; background: var(--accent); margin: 4px 0; }
+  .lt-A .lt-sub { font-size: 6px; opacity: .8; height: 3px; background: rgba(255,255,255,.3); width: 60%; margin-top: 4px; }
+  .lt-B { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .lt-B .lt-eb { font-size: 5px; opacity: .7; margin-bottom: 6px; }
+  .lt-B .lt-title { font-size: 18px; font-weight: 900; line-height: 1.1; }
+  .lt-B .lt-line { width: 12px; height: 1.5px; background: var(--accent); margin: 6px auto; }
+  .lt-C { display: grid; grid-template-columns: 60% 40%; padding: 0; }
+  .lt-C .lt-mega { background: var(--brand-darker); padding: 8% 6%; font-size: 16px; font-weight: 900; line-height: 1; align-self: center; }
+  .lt-C .lt-side { padding: 8% 6%; }
+  .lt-C .lt-eb { font-size: 5px; opacity: .7; height: 3px; background: rgba(255,255,255,.3); width: 70%; }
+  .lt-C .lt-sub { margin-top: 6px; height: 3px; background: rgba(255,255,255,.3); width: 80%; }
+  .lt-E .lt-eb { font-size: 5px; opacity: .7; margin-bottom: 6px; height: 3px; background: rgba(255,255,255,.3); width: 30%; }
+  .lt-E .lt-bubble {
+    display: inline-block;
+    background: var(--brand-darker);
+    color: var(--accent-warm);
+    padding: 6px 10px;
+    border-radius: 8px 8px 8px 2px;
+    font-size: 11px;
+    font-weight: 800;
+  }
+  .lt-E .lt-sub { margin-top: 8px; height: 3px; background: rgba(255,255,255,.3); width: 50%; }
+  .lt-name {
+    text-align: center;
+    font-size: .85rem;
+    color: var(--brand-deep);
+    font-weight: 500;
+  }
+  .lt-name small { font-weight: 400; color: var(--accent); }
+
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .tt-swatch {
+    aspect-ratio: 16/9;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+  .tt-green { background: linear-gradient(135deg, #1f8a5c, #0e6340 60%, #c9a96e); }
+  .tt-amber { background: linear-gradient(135deg, #6b4423, #4a2f17 60%, #d97757); }
+  .tt-mint  { background: linear-gradient(135deg, #6b9080, #4a6b5d 60%, #d4a373); }
+  .tt-gold  { background: linear-gradient(135deg, #1a1a1a, #0a0a0a 60%, #d4af37); }
+  .tt-leather { background: linear-gradient(135deg, #4e342e, #2e1a14 60%, #c0392b); }
+  .tt-navy  { background: linear-gradient(135deg, #1e4d6b, #163a52 60%, #e0a96d); }
+  .tt-name {
+    text-align: center;
+    font-size: .82rem;
+    color: var(--brand-deep);
+    font-weight: 500;
+  }
+  .tt-name small { font-weight: 400; color: var(--accent); }
+
+  .combo-preview {
+    background: var(--brand-deep);
+    color: var(--cream);
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-top: 8px;
+    text-align: center;
+    font-size: .92rem;
+  }
+
+  /* ====== 課程花絮卡片 ====== */
+  .highlight-form-card {
+    background: #fdfaf3;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .highlight-form-card .index-tag {
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: var(--accent);
+    color: var(--brand-darker);
+    font-size: .7rem;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    letter-spacing: .1em;
+  }
+  .highlight-form-card .card-actions {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 6px;
+  }
+  .highlight-form-card .h-preview {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #fff;
+    border: 1.5px dashed var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    margin: 18px 0 10px;
+  }
+  .highlight-form-card .h-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .highlight-form-card .img-row { display: flex; gap: 6px; margin-bottom: 10px; }
+
   /* ====== 圖片上傳卡 ====== */
   .image-grid {
     display: grid;
@@ -632,6 +786,93 @@
     </div>
   </section>
 
+  <!-- ============== ❻ 版型 + 配色 ============== -->
+  <section>
+    <h2>❻ 版型 + 配色 ・ 兩步驟挑風格</h2>
+    <p class="desc">先挑版型(slide 內怎麼排),再挑配色(底色與重點色)</p>
+
+    <div class="picker-step">
+      <div class="step-label"><span class="step-num">1</span> 挑版型</div>
+      <div class="layout-grid" id="layout-grid">
+        <div class="layout-tile" data-layout="A" onclick="selectLayout('A')">
+          <div class="lt-mini lt-A">
+            <div class="lt-eb"></div>
+            <div class="lt-title">先懂心,<br>再懂教。</div>
+            <div class="lt-line"></div>
+            <div class="lt-sub"></div>
+          </div>
+          <div class="lt-name">A ・ 標題置左卡片式 <small>★ 經典</small></div>
+        </div>
+        <div class="layout-tile" data-layout="B" onclick="selectLayout('B')">
+          <div class="lt-mini lt-B">
+            <div class="lt-eb"></div>
+            <div class="lt-title">先懂心,<br>再懂教。</div>
+            <div class="lt-line"></div>
+          </div>
+          <div class="lt-name">B ・ 極簡留白派</div>
+        </div>
+        <div class="layout-tile" data-layout="C" onclick="selectLayout('C')">
+          <div class="lt-mini lt-C">
+            <div class="lt-mega">先懂心,<br>再懂教。</div>
+            <div class="lt-side"><div class="lt-eb"></div><div class="lt-sub"></div></div>
+          </div>
+          <div class="lt-name">C ・ 雜誌封面派</div>
+        </div>
+        <div class="layout-tile" data-layout="E" onclick="selectLayout('E')">
+          <div class="lt-mini lt-E">
+            <div class="lt-eb"></div>
+            <div class="lt-bubble">先懂心,再懂教。</div>
+            <div class="lt-sub"></div>
+          </div>
+          <div class="lt-name">E ・ 對話氣泡派</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="picker-step">
+      <div class="step-label"><span class="step-num">2</span> 挑配色</div>
+      <div class="theme-grid" id="theme-grid">
+        <div class="theme-tile" data-theme="green" onclick="selectTheme('green')">
+          <div class="tt-swatch tt-green"></div>
+          <div class="tt-name">🌿 翠玉綠 <small>★ 預設</small></div>
+        </div>
+        <div class="theme-tile" data-theme="amber" onclick="selectTheme('amber')">
+          <div class="tt-swatch tt-amber"></div>
+          <div class="tt-name">☕ 暖咖琥珀</div>
+        </div>
+        <div class="theme-tile" data-theme="mint" onclick="selectTheme('mint')">
+          <div class="tt-swatch tt-mint"></div>
+          <div class="tt-name">🌸 米白薄荷</div>
+        </div>
+        <div class="theme-tile" data-theme="gold" onclick="selectTheme('gold')">
+          <div class="tt-swatch tt-gold"></div>
+          <div class="tt-name">⚫ 深焦碳金</div>
+        </div>
+        <div class="theme-tile" data-theme="leather" onclick="selectTheme('leather')">
+          <div class="tt-swatch tt-leather"></div>
+          <div class="tt-name">📚 復古書房</div>
+        </div>
+        <div class="theme-tile" data-theme="navy" onclick="selectTheme('navy')">
+          <div class="tt-swatch tt-navy"></div>
+          <div class="tt-name">🌊 海洋蔚藍</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="combo-preview" id="combo-preview">
+      <strong>目前選擇:</strong> <span id="combo-text">A 版型 + 翠玉綠</span>
+    </div>
+  </section>
+
+  <!-- ============== ❼ 課程花絮 (Slide 7) ============== -->
+  <section>
+    <h2>❼ 課程花絮 (Slide 7)</h2>
+    <p class="desc">學苑日常照片輪播 ・ 沒有照片時 Slide 7 整張自動跳過 ・ 建議 3-5 張 ・ 每張自動壓縮至 ~30KB</p>
+
+    <div id="highlight-list"></div>
+    <button class="add-btn" onclick="addHighlight()">+ 新增一張花絮</button>
+  </section>
+
 </main>
 
 <footer>
@@ -676,6 +917,116 @@
     renderImagePreview('portrait', state.portrait);
     renderImagePreview('qrLine', state.qrImageLine);
     renderImagePreview('qrMind', state.qrImageMindspectrum);
+    // 版型 + 配色
+    selectLayout(state.layout || 'A', false);
+    selectTheme(state.theme || 'green', false);
+    // 課程花絮
+    if (!Array.isArray(state.highlights)) state.highlights = [];
+    renderHighlightList();
+  }
+
+  // ====== 版型 + 配色 picker ======
+  function selectLayout(layout, save = true) {
+    state.layout = layout;
+    document.querySelectorAll('.layout-tile').forEach(el => {
+      el.classList.toggle('selected', el.dataset.layout === layout);
+    });
+    updateComboText();
+    if (save) showToast('🎨 已選 ' + layout + ' 版型 ・ 別忘了按儲存');
+  }
+  function selectTheme(theme, save = true) {
+    state.theme = theme;
+    document.querySelectorAll('.theme-tile').forEach(el => {
+      el.classList.toggle('selected', el.dataset.theme === theme);
+    });
+    updateComboText();
+    if (save) showToast('🎨 已選 ' + theme + ' 配色 ・ 別忘了按儲存');
+  }
+  function updateComboText() {
+    const layouts = { A: 'A 標題置左', B: 'B 極簡留白', C: 'C 雜誌封面', E: 'E 對話氣泡' };
+    const themes = { green: '翠玉綠', amber: '暖咖琥珀', mint: '米白薄荷', gold: '深焦碳金', leather: '復古書房', navy: '海洋蔚藍' };
+    const t = document.getElementById('combo-text');
+    if (t) t.textContent = `${layouts[state.layout] || 'A'} + ${themes[state.theme] || '翠玉綠'}`;
+  }
+
+  // ====== 課程花絮 ======
+  function renderHighlightList() {
+    const list = document.getElementById('highlight-list');
+    if (!list) return;
+    list.innerHTML = state.highlights.map((h, i) => `
+      <div class="highlight-form-card" data-i="${i}">
+        <div class="index-tag">花絮 ${i + 1}</div>
+        <div class="card-actions">
+          ${i > 0 ? `<button class="icon-btn" onclick="moveHighlight(${i}, -1)" title="往上">↑</button>` : ''}
+          ${i < state.highlights.length - 1 ? `<button class="icon-btn" onclick="moveHighlight(${i}, 1)" title="往下">↓</button>` : ''}
+          <button class="icon-btn danger" onclick="removeHighlight(${i})" title="刪除">✕</button>
+        </div>
+        <div class="h-preview" id="h-prev-${i}">
+          ${h.image ? `<img src="${h.image}">` : '<span style="color:#5a5048;font-size:.85rem">尚未上傳照片</span>'}
+        </div>
+        <div class="img-row">
+          <button class="btn-small" onclick="document.getElementById('h-up-${i}').click()">📷 選照片</button>
+          <input type="file" id="h-up-${i}" accept="image/*" style="display:none" onchange="handleHighlightImage(event, ${i})">
+        </div>
+        <div class="field">
+          <label>標題 <small>例:春季戶外活動</small></label>
+          <input type="text" data-key="title" data-idx="${i}" oninput="updateHighlight(this)">
+        </div>
+        <div class="field">
+          <label>日期 <small>例:2026.04.15</small></label>
+          <input type="text" data-key="date" data-idx="${i}" oninput="updateHighlight(this)">
+        </div>
+        <div class="field">
+          <label>說明 <small>1-2 句,可空白</small></label>
+          <textarea data-key="desc" data-idx="${i}" rows="2" oninput="updateHighlight(this)"></textarea>
+        </div>
+      </div>
+    `).join('');
+    state.highlights.forEach((h, i) => {
+      const card = list.querySelector(`[data-i="${i}"]`);
+      if (!card) return;
+      card.querySelector('[data-key="title"]').value = h.title || '';
+      card.querySelector('[data-key="date"]').value = h.date || '';
+      card.querySelector('[data-key="desc"]').value = h.desc || '';
+    });
+  }
+  function updateHighlight(input) {
+    const i = parseInt(input.dataset.idx, 10);
+    const key = input.dataset.key;
+    state.highlights[i][key] = input.value;
+  }
+  function addHighlight() {
+    state.highlights.push({ image: '', title: '活動標題', date: '', desc: '' });
+    renderHighlightList();
+    setTimeout(() => {
+      const cards = document.querySelectorAll('.highlight-form-card');
+      if (cards.length) cards[cards.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 50);
+  }
+  function removeHighlight(i) {
+    if (!confirm(`確定刪除花絮 ${i + 1}?`)) return;
+    state.highlights.splice(i, 1);
+    renderHighlightList();
+  }
+  function moveHighlight(i, dir) {
+    const target = i + dir;
+    if (target < 0 || target >= state.highlights.length) return;
+    [state.highlights[i], state.highlights[target]] = [state.highlights[target], state.highlights[i]];
+    renderHighlightList();
+  }
+  async function handleHighlightImage(event, idx) {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      const dataUrl = await compressImage(file, 500, 0.82);
+      state.highlights[idx].image = dataUrl;
+      renderHighlightList();
+      const bytes = Math.round(dataUrl.length * 0.75);
+      showToast(`📷 已上傳 ${(bytes/1024).toFixed(1)} KB ・ 別忘了按儲存`);
+    } catch(err) {
+      showToast('❌ 處理失敗:' + err.message, 'error');
+    }
+    event.target.value = '';
   }
 
   // ====== 圖片上傳/壓縮 ======
@@ -848,11 +1199,15 @@
         s4: parseInt(document.getElementById('d-s4').value, 10) * 1000,
         s5: parseInt(document.getElementById('d-s5').value, 10) * 1000,
         s6: parseInt(document.getElementById('d-s6').value, 10) * 1000,
+        s7: state.durations.s7 || 14000,
       },
       testimonyInterval: parseInt(document.getElementById('ti').value, 10) * 1000,
       portrait: state.portrait || '',
       qrImageLine: state.qrImageLine || '',
       qrImageMindspectrum: state.qrImageMindspectrum || '',
+      layout: state.layout || 'A',
+      theme: state.theme || 'green',
+      highlights: state.highlights || [],
     };
   }
 

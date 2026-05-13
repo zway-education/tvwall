@@ -361,6 +361,20 @@
   }
   footer .btn-danger:hover { background: var(--danger); color: #fff; }
 
+  .subhead-h3 {
+    color: var(--brand-deep);
+    font-size: 1rem;
+    margin: 0 0 8px;
+    padding-left: 14px;
+    border-left: 3px solid var(--brand);
+  }
+  .desc-sm {
+    color: var(--ink-soft);
+    font-size: .85rem;
+    margin: 0 0 16px;
+    padding-left: 17px;
+  }
+
   /* ====== 版型 + 配色 picker ====== */
   .picker-step { margin-bottom: 24px; }
   .step-label {
@@ -733,62 +747,187 @@
     </div>
   </section>
 
-  <!-- ============== ❺ 圖片上傳 ============== -->
+  <!-- ============== ❺ 圖片上傳(主要 + 4 班別 + 背景圖)============== -->
   <section>
     <h2>❺ 圖片上傳</h2>
-    <p class="desc">肖像、自訂 QR ・ 上傳後自動壓縮至 ~30KB 才會同步到雲端</p>
+    <p class="desc">所有圖片自動壓縮至 ~30KB ・ 每張圖獨立存,不會撞到雲端容量上限</p>
 
+    <h3 class="subhead-h3">🎯 主要圖片</h3>
     <div class="image-grid">
 
       <div class="image-card">
-        <h3>👤 創辦人肖像</h3>
-        <p class="img-desc">Slide 3 右側顯示 ・ 建議直幅 3:4 比例</p>
-        <div class="img-preview" id="preview-portrait">
-          <span class="img-placeholder">尚未上傳</span>
+        <h3>🏷 學苑 Logo</h3>
+        <p class="img-desc">顯示在每張 slide 角落 ・ 建議透明底 PNG</p>
+        <div class="img-preview" id="preview-logoImage"><span class="img-placeholder">尚未上傳</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-logoImage').click()">📷 選圖片</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('logoImage')">✕ 移除</button>
+          <input type="file" id="upload-logoImage" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'logoImage', 300)">
         </div>
+        <div class="img-info" id="info-logoImage"></div>
+      </div>
+
+      <div class="image-card">
+        <h3>👩‍🏫 守蕾老師現場照</h3>
+        <p class="img-desc">Slide 3 右側 ・ 上課/演講照,不是大頭照</p>
+        <div class="img-preview" id="preview-portrait"><span class="img-placeholder">尚未上傳</span></div>
         <div class="img-actions">
           <button class="btn-small" onclick="document.getElementById('upload-portrait').click()">📷 選圖片</button>
           <button class="btn-small btn-danger-sm" onclick="clearImage('portrait')">✕ 移除</button>
-          <input type="file" id="upload-portrait" accept="image/*" style="display:none"
-                 onchange="handleImageUpload(event, 'portrait', 400)">
+          <input type="file" id="upload-portrait" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'portrait', 400)">
         </div>
         <div class="img-info" id="info-portrait"></div>
       </div>
 
       <div class="image-card">
-        <h3>📱 自訂 QR ・ LINE 加好友</h3>
-        <p class="img-desc">不上傳 = 用內建 QR(指向 lin.ee 網址)</p>
-        <div class="img-preview" id="preview-qrLine">
-          <span class="img-placeholder">使用內建生成</span>
-        </div>
+        <h3>📱 自訂 QR ・ LINE</h3>
+        <p class="img-desc">不上傳 = 用內建 QR</p>
+        <div class="img-preview" id="preview-qrImageLine"><span class="img-placeholder">使用內建生成</span></div>
         <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-qrLine').click()">📷 選圖片</button>
+          <button class="btn-small" onclick="document.getElementById('upload-qrImageLine').click()">📷 選圖片</button>
           <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageLine')">✕ 回復內建</button>
-          <input type="file" id="upload-qrLine" accept="image/*" style="display:none"
-                 onchange="handleImageUpload(event, 'qrImageLine', 400)">
+          <input type="file" id="upload-qrImageLine" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'qrImageLine', 400)">
         </div>
         <div class="img-info" id="info-qrImageLine"></div>
       </div>
 
       <div class="image-card">
         <h3>🌈 自訂 QR ・ 心智光譜</h3>
-        <p class="img-desc">不上傳 = 用內建 QR(指向心智光譜網址)</p>
-        <div class="img-preview" id="preview-qrMind">
-          <span class="img-placeholder">使用內建生成</span>
-        </div>
+        <p class="img-desc">不上傳 = 用內建 QR</p>
+        <div class="img-preview" id="preview-qrImageMindspectrum"><span class="img-placeholder">使用內建生成</span></div>
         <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-qrMind').click()">📷 選圖片</button>
+          <button class="btn-small" onclick="document.getElementById('upload-qrImageMindspectrum').click()">📷 選圖片</button>
           <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageMindspectrum')">✕ 回復內建</button>
-          <input type="file" id="upload-qrMind" accept="image/*" style="display:none"
-                 onchange="handleImageUpload(event, 'qrImageMindspectrum', 400)">
+          <input type="file" id="upload-qrImageMindspectrum" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'qrImageMindspectrum', 400)">
         </div>
         <div class="img-info" id="info-qrImageMindspectrum"></div>
       </div>
 
     </div>
 
+    <h3 class="subhead-h3" style="margin-top:32px">🎓 4 班別配圖(Slide 2)</h3>
+    <p class="desc-sm">每個班放一張代表照片 ・ Slide 2 卡片會用該圖當背景</p>
+    <div class="image-grid">
+
+      <div class="image-card">
+        <h3>啟蒙(4-6 歲)</h3>
+        <div class="img-preview" id="preview-stage1Image"><span class="img-placeholder">尚未上傳</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-stage1Image').click()">📷</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('stage1Image')">✕</button>
+          <input type="file" id="upload-stage1Image" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'stage1Image', 400)">
+        </div>
+        <div class="img-info" id="info-stage1Image"></div>
+      </div>
+
+      <div class="image-card">
+        <h3>開智(7-12 歲)</h3>
+        <div class="img-preview" id="preview-stage2Image"><span class="img-placeholder">尚未上傳</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-stage2Image').click()">📷</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('stage2Image')">✕</button>
+          <input type="file" id="upload-stage2Image" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'stage2Image', 400)">
+        </div>
+        <div class="img-info" id="info-stage2Image"></div>
+      </div>
+
+      <div class="image-card">
+        <h3>智優(13-15 歲)</h3>
+        <div class="img-preview" id="preview-stage3Image"><span class="img-placeholder">尚未上傳</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-stage3Image').click()">📷</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('stage3Image')">✕</button>
+          <input type="file" id="upload-stage3Image" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'stage3Image', 400)">
+        </div>
+        <div class="img-info" id="info-stage3Image"></div>
+      </div>
+
+      <div class="image-card">
+        <h3>恆毅力(16-18 歲)</h3>
+        <div class="img-preview" id="preview-stage4Image"><span class="img-placeholder">尚未上傳</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-stage4Image').click()">📷</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('stage4Image')">✕</button>
+          <input type="file" id="upload-stage4Image" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'stage4Image', 400)">
+        </div>
+        <div class="img-info" id="info-stage4Image"></div>
+      </div>
+
+    </div>
+
+    <h3 class="subhead-h3" style="margin-top:32px">🖼 Slide 背景圖(各 slide 可選)</h3>
+    <p class="desc-sm">每張 slide 可上傳一張背景圖 ・ 不上傳 = 用現有色塊 ・ 上傳會自動加深色覆蓋讓字看得到</p>
+    <div class="image-grid">
+
+      <div class="image-card">
+        <h3>S1 主畫面</h3>
+        <div class="img-preview" id="preview-bgImageS1"><span class="img-placeholder">用色塊</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-bgImageS1').click()">📷</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS1')">✕</button>
+          <input type="file" id="upload-bgImageS1" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS1', 600)">
+        </div>
+      </div>
+      <div class="image-card">
+        <h3>S2 4 班別</h3>
+        <div class="img-preview" id="preview-bgImageS2"><span class="img-placeholder">用色塊</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-bgImageS2').click()">📷</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS2')">✕</button>
+          <input type="file" id="upload-bgImageS2" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS2', 600)">
+        </div>
+      </div>
+      <div class="image-card">
+        <h3>S3 創辦人</h3>
+        <div class="img-preview" id="preview-bgImageS3"><span class="img-placeholder">用色塊</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-bgImageS3').click()">📷</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS3')">✕</button>
+          <input type="file" id="upload-bgImageS3" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS3', 600)">
+        </div>
+      </div>
+      <div class="image-card">
+        <h3>S4 見證</h3>
+        <div class="img-preview" id="preview-bgImageS4"><span class="img-placeholder">用色塊</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-bgImageS4').click()">📷</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS4')">✕</button>
+          <input type="file" id="upload-bgImageS4" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS4', 600)">
+        </div>
+      </div>
+      <div class="image-card">
+        <h3>S5 心智光譜</h3>
+        <div class="img-preview" id="preview-bgImageS5"><span class="img-placeholder">用色塊</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-bgImageS5').click()">📷</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS5')">✕</button>
+          <input type="file" id="upload-bgImageS5" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS5', 600)">
+        </div>
+      </div>
+      <div class="image-card">
+        <h3>S6 加 LINE</h3>
+        <div class="img-preview" id="preview-bgImageS6"><span class="img-placeholder">用色塊</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-bgImageS6').click()">📷</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS6')">✕</button>
+          <input type="file" id="upload-bgImageS6" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS6', 600)">
+        </div>
+      </div>
+      <div class="image-card">
+        <h3>S7 課程花絮</h3>
+        <div class="img-preview" id="preview-bgImageS7"><span class="img-placeholder">用色塊</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-bgImageS7').click()">📷</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS7')">✕</button>
+          <input type="file" id="upload-bgImageS7" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS7', 600)">
+        </div>
+      </div>
+
+    </div>
+
     <div class="note" style="background:#fef9e6;border-left:4px solid #c9a96e;padding:12px 16px;border-radius:0 6px 6px 0;margin-top:16px;color:#5a5048;font-size:.85rem">
-      <strong>💡 自訂 QR 提醒</strong>:上傳的圖必須是<u>真正可掃的 QR Code</u>,內含正確 URL。可加 logo、變色,但 QR 編碼結構不能破壞。設計時用 QR generator 工具(例如 qrcode-monkey.com)。
+      <strong>💡 自訂 QR 提醒</strong>:上傳的 QR 必須是<u>真正可掃的 QR Code</u>。可加 logo、變色,但編碼結構不能破壞。<br>
+      <strong>💡 背景圖建議</strong>:橫式 1920×1080 以上 ・ 文字會浮在上面,選不會搶過文字的素淨照片。
     </div>
   </section>
 
@@ -920,10 +1059,8 @@
     document.getElementById('ti-val').textContent = ti;
     // Testimonies
     renderTestimonies();
-    // Images
-    renderImagePreview('portrait', state.portrait);
-    renderImagePreview('qrLine', state.qrImageLine);
-    renderImagePreview('qrMind', state.qrImageMindspectrum);
+    // Images (通用迴圈)
+    IMAGE_FIELDS.forEach(f => renderImagePreview(f, state[f] || ''));
     // 版型 + 配色
     selectLayout(state.layout || 'A', false);
     selectTheme(state.theme || 'green', false);
@@ -1036,24 +1173,28 @@
     event.target.value = '';
   }
 
-  // ====== 圖片上傳/壓縮 ======
-  function renderImagePreview(elId, dataUrl) {
-    const box = document.getElementById(`preview-${elId}`);
+  // ====== 圖片上傳/壓縮(通用版 ・ stateKey 直接當 element ID)======
+  const IMAGE_FIELDS = [
+    'portrait', 'qrImageLine', 'qrImageMindspectrum',
+    'logoImage',
+    'stage1Image', 'stage2Image', 'stage3Image', 'stage4Image',
+    'bgImageS1', 'bgImageS2', 'bgImageS3', 'bgImageS4', 'bgImageS5', 'bgImageS6', 'bgImageS7'
+  ];
+  function renderImagePreview(stateKey, dataUrl) {
+    const box = document.getElementById(`preview-${stateKey}`);
     if (!box) return;
     if (dataUrl) {
       box.innerHTML = `<img src="${dataUrl}" alt="preview">`;
     } else {
-      const placeholder = elId === 'portrait' ? '尚未上傳' : '使用內建生成';
+      const placeholder = (stateKey.startsWith('qr')) ? '使用內建生成'
+                       : (stateKey.startsWith('bg')) ? '用色塊' : '尚未上傳';
       box.innerHTML = `<span class="img-placeholder">${placeholder}</span>`;
     }
-    // 顯示大小
-    const stateKey = elId === 'portrait' ? 'portrait' : (elId === 'qrLine' ? 'qrImageLine' : 'qrImageMindspectrum');
     const info = document.getElementById(`info-${stateKey}`);
     if (info) {
       if (dataUrl) {
-        const bytes = Math.round(dataUrl.length * 0.75);  // base64 to bytes (approx)
-        const kb = (bytes / 1024).toFixed(1);
-        info.textContent = `已壓縮 ${kb} KB`;
+        const bytes = Math.round(dataUrl.length * 0.75);
+        info.textContent = `已壓縮 ${(bytes/1024).toFixed(1)} KB`;
         info.classList.toggle('warn', bytes > 35000);
       } else {
         info.textContent = '';
@@ -1102,8 +1243,7 @@
     try {
       const dataUrl = await compressImage(file, maxDim || 400, 0.85);
       state[stateKey] = dataUrl;
-      const elId = stateKey === 'portrait' ? 'portrait' : (stateKey === 'qrImageLine' ? 'qrLine' : 'qrMind');
-      renderImagePreview(elId, dataUrl);
+      renderImagePreview(stateKey, dataUrl);
       const bytes = Math.round(dataUrl.length * 0.75);
       showToast(`📷 已上傳 ${(bytes/1024).toFixed(1)} KB ・ 別忘了按儲存`);
     } catch(err) {
@@ -1114,8 +1254,7 @@
 
   function clearImage(stateKey) {
     state[stateKey] = '';
-    const elId = stateKey === 'portrait' ? 'portrait' : (stateKey === 'qrImageLine' ? 'qrLine' : 'qrMind');
-    renderImagePreview(elId, '');
+    renderImagePreview(stateKey, '');
     showToast('🗑 已移除 ・ 別忘了按儲存');
   }
 
@@ -1212,6 +1351,18 @@
       portrait: state.portrait || '',
       qrImageLine: state.qrImageLine || '',
       qrImageMindspectrum: state.qrImageMindspectrum || '',
+      logoImage: state.logoImage || '',
+      stage1Image: state.stage1Image || '',
+      stage2Image: state.stage2Image || '',
+      stage3Image: state.stage3Image || '',
+      stage4Image: state.stage4Image || '',
+      bgImageS1: state.bgImageS1 || '',
+      bgImageS2: state.bgImageS2 || '',
+      bgImageS3: state.bgImageS3 || '',
+      bgImageS4: state.bgImageS4 || '',
+      bgImageS5: state.bgImageS5 || '',
+      bgImageS6: state.bgImageS6 || '',
+      bgImageS7: state.bgImageS7 || '',
       layout: state.layout || 'A',
       theme: state.theme || 'green',
       highlights: state.highlights || [],

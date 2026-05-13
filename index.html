@@ -824,6 +824,45 @@
   body[data-layout="E"] .testimony .text b { background: linear-gradient(180deg, transparent 65%, rgba(255,255,255,.25) 65%); color: var(--cream); }
   body[data-layout="E"] .testimony .who { color: var(--accent); margin-left: 14px; }
 
+  /* ====== 學苑 Logo(右上角浮動)====== */
+  .slide-logo {
+    position: fixed;
+    top: clamp(20px, 2vh, 40px);
+    right: clamp(20px, 2vw, 40px);
+    width: clamp(50px, 5vw, 100px);
+    height: clamp(50px, 5vw, 100px);
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .6s;
+  }
+  .slide-logo.show { opacity: 1; }
+  .slide-logo img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+  }
+
+  /* ====== Stage 卡片有照片時 ====== */
+  .s2 .stage.has-image {
+    color: #fff;
+    border-color: rgba(255,255,255,.4);
+  }
+  .s2 .stage.has-image .age { color: var(--accent-warm); }
+  .s2 .stage.has-image .name { color: #fff; }
+  .s2 .stage.has-image .tag { color: rgba(255,255,255,.9); }
+
+  /* ====== Slide 背景圖 ====== */
+  .slide.has-bg-image {
+    background-size: cover !important;
+    background-position: center !important;
+    color: var(--cream);
+  }
+  .slide.has-bg-image .eyebrow,
+  .slide.has-bg-image .foot,
+  .slide.has-bg-image .subhead { text-shadow: 0 2px 8px rgba(0,0,0,.5); }
+  .slide.has-bg-image .headline { text-shadow: 0 3px 12px rgba(0,0,0,.5); }
+
   /* 進度條 — 底部一條極細,顯示當前 slide 進度 */
   .progress {
     position: fixed;
@@ -859,6 +898,8 @@
 </style>
 </head>
 <body>
+
+<div class="slide-logo" id="slide-logo"></div>
 
 <div class="tvwall">
 
@@ -1073,6 +1114,9 @@
     renderHighlights();
     renderQRs();
     renderPortrait();
+    renderLogo();
+    renderStageImages();
+    renderSlideBackgrounds();
     console.log('[tvwall] 已套用新設定 ・ 更新時間:', lastUpdatedAt);
   }
 
@@ -1158,6 +1202,48 @@
         el.appendChild(canvas);
       });
     });
+  }
+
+  // ========== Logo / Stage 圖 / 背景圖 渲染 ==========
+  function renderLogo() {
+    const el = document.getElementById('slide-logo');
+    if (!el) return;
+    if (CONFIG.logoImage) {
+      el.innerHTML = `<img src="${CONFIG.logoImage}" alt="logo">`;
+      el.classList.add('show');
+    } else {
+      el.innerHTML = '';
+      el.classList.remove('show');
+    }
+  }
+
+  function renderStageImages() {
+    const stages = document.querySelectorAll('.s2 .stage');
+    stages.forEach((card, i) => {
+      const img = CONFIG[`stage${i+1}Image`];
+      if (img) {
+        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.65)), url(${img})`;
+        card.classList.add('has-image');
+      } else {
+        card.style.backgroundImage = '';
+        card.classList.remove('has-image');
+      }
+    });
+  }
+
+  function renderSlideBackgrounds() {
+    for (let i = 1; i <= 7; i++) {
+      const slide = document.querySelector(`.s${i}`);
+      if (!slide) continue;
+      const img = CONFIG[`bgImageS${i}`];
+      if (img) {
+        slide.style.backgroundImage = `linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.65)), url(${img})`;
+        slide.classList.add('has-bg-image');
+      } else {
+        slide.style.backgroundImage = '';
+        slide.classList.remove('has-bg-image');
+      }
+    }
   }
 
   // ========== 肖像渲染(支援自訂上傳)==========
@@ -1349,6 +1435,9 @@
     renderHighlights();
     renderQRs();
     renderPortrait();
+    renderLogo();
+    renderStageImages();
+    renderSlideBackgrounds();
     startProgressBar(SLIDES[0].duration);
     scheduleNext();
 

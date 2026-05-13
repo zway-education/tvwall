@@ -49,6 +49,24 @@ window.TVWALL_DEFAULTS = {
   qrImageLine: "",
   qrImageMindspectrum: "",
 
+  // 學苑 logo(顯示在 slide 角落)
+  logoImage: "",
+
+  // 4 個成長階段配圖(Slide 2 卡片背景)
+  stage1Image: "",  // 啟蒙
+  stage2Image: "",  // 開智
+  stage3Image: "",  // 智優
+  stage4Image: "",  // 恆毅力
+
+  // 每張 slide 的背景圖(可選,有就用,沒有就用色塊)
+  bgImageS1: "",
+  bgImageS2: "",
+  bgImageS3: "",
+  bgImageS4: "",
+  bgImageS5: "",
+  bgImageS6: "",
+  bgImageS7: "",
+
   // 版型(A 標題置左 / B 極簡留白 / C 雜誌封面 / E 對話氣泡)
   layout: "A",
 
@@ -77,6 +95,18 @@ function _merge(parsed) {
     portrait: parsed.portrait || '',
     qrImageLine: parsed.qrImageLine || '',
     qrImageMindspectrum: parsed.qrImageMindspectrum || '',
+    logoImage: parsed.logoImage || '',
+    stage1Image: parsed.stage1Image || '',
+    stage2Image: parsed.stage2Image || '',
+    stage3Image: parsed.stage3Image || '',
+    stage4Image: parsed.stage4Image || '',
+    bgImageS1: parsed.bgImageS1 || '',
+    bgImageS2: parsed.bgImageS2 || '',
+    bgImageS3: parsed.bgImageS3 || '',
+    bgImageS4: parsed.bgImageS4 || '',
+    bgImageS5: parsed.bgImageS5 || '',
+    bgImageS6: parsed.bgImageS6 || '',
+    bgImageS7: parsed.bgImageS7 || '',
     layout: parsed.layout || 'A',
     theme: parsed.theme || 'green',
     highlights: Array.isArray(parsed.highlights) ? parsed.highlights : [],

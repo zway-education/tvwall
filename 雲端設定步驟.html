@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>雲端設定步驟 ・ 給 KWJ 一步步照做</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #1f8a5c;
+    --brand-deep: #0e6340;
+    --accent: #c9a96e;
+    --cream: #faf7f2;
+    --ink: #2a2620;
+    --ink-soft: #5a5048;
+    --bg: #fbf7f1;
+    --card: #fff;
+    --border: #e8ddc8;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.85;
+  }
+  .container { max-width:920px; margin:0 auto; padding:40px 24px 120px; }
+  .hero {
+    background:linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+    color:var(--cream);
+    padding:48px 40px;
+    border-radius:16px;
+    margin-bottom:32px;
+    box-shadow:0 10px 40px rgba(14,99,64,.15);
+  }
+  .hero .label { font-size:.85rem; letter-spacing:.3em; opacity:.8; margin-bottom:8px; }
+  .hero h1 { font-family:"Noto Serif TC",serif; font-weight:700; font-size:2.4rem; margin:0 0 16px; }
+  .hero p { margin:0; opacity:.95; font-size:1.05rem; }
+
+  .step {
+    background:var(--card);
+    border-radius:14px;
+    padding:32px 36px;
+    margin-bottom:24px;
+    box-shadow:0 4px 16px rgba(14,99,64,.08);
+    border:1px solid var(--border);
+    position:relative;
+  }
+  .step-number {
+    position:absolute; top:-16px; left:32px;
+    background:var(--accent);
+    color:var(--brand-deep);
+    width:48px; height:48px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:1.4rem;
+    box-shadow:0 4px 12px rgba(201,169,110,.4);
+  }
+  .step h2 {
+    font-family:"Noto Serif TC",serif;
+    color:var(--brand-deep);
+    font-size:1.5rem;
+    margin:8px 0 16px 32px;
+  }
+  .step h2 small {
+    display:block;
+    font-size:.85rem;
+    font-weight:400;
+    color:var(--ink-soft);
+    margin-top:4px;
+    letter-spacing:.05em;
+  }
+  .step .body { padding-left:32px; }
+  ol, ul { padding-left:24px; }
+  li { margin:8px 0; }
+  code {
+    background:#f3ede1;
+    color:var(--brand-deep);
+    padding:2px 8px;
+    border-radius:4px;
+    font-size:.9em;
+    font-family:"Consolas","Source Code Pro",monospace;
+    word-break:break-all;
+  }
+  pre {
+    background:#1f2620;
+    color:#faf7f2;
+    padding:18px 22px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:.85rem;
+    line-height:1.7;
+    font-family:"Consolas","Source Code Pro",monospace;
+  }
+  pre code { background:none; color:inherit; padding:0; }
+  .keyboard {
+    display:inline-block;
+    background:#fff;
+    border:1px solid #d8cba9;
+    border-bottom:2px solid #b8a677;
+    padding:2px 8px;
+    border-radius:4px;
+    font-family:monospace;
+    font-size:.85em;
+    color:var(--ink);
+    margin:0 2px;
+  }
+  .warn {
+    background:#fdecec; border-left:4px solid #d63030;
+    padding:14px 18px; border-radius:0 6px 6px 0;
+    margin:16px 0; color:#7d1f1f;
+  }
+  .note {
+    background:#fef9e6; border-left:4px solid var(--accent);
+    padding:14px 18px; border-radius:0 6px 6px 0;
+    margin:16px 0; color:var(--ink-soft);
+  }
+  .note strong, .warn strong { color:var(--brand-deep); }
+  .check {
+    background:#e8f5e9; border-left:4px solid var(--brand);
+    padding:14px 18px; border-radius:0 6px 6px 0;
+    margin:16px 0;
+  }
+  .check strong { color:var(--brand-deep); }
+  .progress-bar {
+    display:flex;
+    justify-content:space-between;
+    margin:24px 0 40px;
+    background:#fff;
+    border-radius:30px;
+    padding:6px;
+    border:1px solid var(--border);
+  }
+  .progress-bar a {
+    flex:1; text-align:center;
+    padding:10px;
+    text-decoration:none;
+    color:var(--ink-soft);
+    border-radius:24px;
+    font-size:.85rem;
+    transition:all .15s;
+  }
+  .progress-bar a:hover { background:var(--brand); color:#fff; }
+  .open-link {
+    display:inline-block;
+    background:var(--brand);
+    color:#fff;
+    padding:8px 16px;
+    border-radius:6px;
+    text-decoration:none;
+    font-weight:500;
+    margin:4px 0;
+    transition:background .15s;
+  }
+  .open-link:hover { background:var(--brand-deep); }
+  table {
+    width:100%;
+    border-collapse:collapse;
+    margin:16px 0;
+    background:#fdfaf3;
+    border-radius:8px;
+    overflow:hidden;
+    border:1px solid var(--border);
+  }
+  th, td { padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); }
+  th { background:var(--brand); color:#fff; }
+  tr:last-child td { border:none; }
+
+  .checklist {
+    background:#fff;
+    border:2px dashed var(--accent);
+    border-radius:14px;
+    padding:24px 28px;
+    margin-top:32px;
+  }
+  .checklist h3 { color:var(--brand-deep); margin-top:0; }
+  .checklist label {
+    display:block;
+    padding:10px 0;
+    cursor:pointer;
+    border-bottom:1px dashed var(--border);
+  }
+  .checklist label:last-child { border:none; }
+  .checklist input[type=checkbox] { margin-right:10px; transform:scale(1.3); }
+  .checklist label:has(input:checked) { color:var(--ink-soft); text-decoration:line-through; }
+
+  .file-pill {
+    display:inline-block;
+    background:var(--brand-deep);
+    color:#fff;
+    padding:3px 12px;
+    border-radius:14px;
+    font-size:.85rem;
+    font-family:monospace;
+    margin:0 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="hero">
+    <div class="label">櫃 檯 電 視 牆 ・ 雲 端 升 級</div>
+    <h1>9 步,讓你的手機變後台</h1>
+    <p>跟著做,每一步約 2-5 分鐘 ・ 總時間約 30-45 分鐘 ・ 完全免費</p>
+  </div>
+
+  <div class="progress-bar">
+    <a href="#step1">①Sheet</a>
+    <a href="#step2">②Script</a>
+    <a href="#step3">③部署</a>
+    <a href="#step4">④URL</a>
+    <a href="#step5">⑤icon</a>
+    <a href="#step6">⑥測試</a>
+    <a href="#step7">⑦GitHub</a>
+    <a href="#step8">⑧手機</a>
+    <a href="#step9">⑨櫃檯</a>
+  </div>
+
+  <!-- ============== STEP 1 ============== -->
+  <section class="step" id="step1">
+    <div class="step-number">1</div>
+    <h2>建 Google Sheet「tvwall_config」<small>用你的 oscar19960613@gmail.com 帳號 ・ 約 1 分鐘</small></h2>
+    <div class="body">
+      <ol>
+        <li>用 oscar19960613@gmail.com 登入 <a href="https://drive.google.com" target="_blank" class="open-link">Google Drive</a></li>
+        <li>右鍵 → 新增 → Google 試算表</li>
+        <li>左上角檔名改成 <code>tvwall_config</code></li>
+        <li>**先不要建任何工作表或填欄位**,等下 Apps Script 會自動建</li>
+      </ol>
+      <div class="note">
+        <strong>💡 提醒</strong>:這張 Sheet 只給 Apps Script 跟你看,**別分享給任何人**。
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== STEP 2 ============== -->
+  <section class="step" id="step2">
+    <div class="step-number">2</div>
+    <h2>貼 Apps Script 程式碼<small>從這個 .gs 檔複製 ・ 約 3 分鐘</small></h2>
+    <div class="body">
+      <ol>
+        <li>剛開好的 Sheet → 上方功能表 → <strong>擴充功能</strong> → <strong>Apps Script</strong></li>
+        <li>會打開 Apps Script 編輯器,左邊有個 <code>Code.gs</code> 預設檔</li>
+        <li>把預設內容**全部刪除**(<span class="keyboard">Ctrl+A</span> → <span class="keyboard">Delete</span>)</li>
+        <li>打開這個檔案,把整份內容複製貼上:
+          <br><code>C:\Users\ASUS\Desktop\Claude\覺知SEL櫃檯介紹本及傳單\電視牆\cloud_setup\tvwall_api.gs</code>
+        </li>
+        <li><span class="keyboard">Ctrl+S</span> 存檔,專案命名 <code>tvwall API</code></li>
+        <li>上方下拉選 <strong>initialize</strong> → 按 <strong>▶ 執行</strong></li>
+        <li>第一次會跳出授權:
+          <ul>
+            <li>選 <code>oscar19960613@gmail.com</code></li>
+            <li>看到「Google 未驗證這個應用程式」→ 點 <strong>進階</strong> → <strong>前往 tvwall API(不安全)</strong>(這是 Google 對自己寫的程式的標準警告,沒事)</li>
+            <li>授權 → 完成</li>
+          </ul>
+        </li>
+        <li>底部執行記錄會顯示 <code>✅ 初始化完成 ・ 已寫入預設設定</code></li>
+        <li>回到 Sheet 看一下,應該自動多了 <code>config</code> 和 <code>log</code> 兩張工作表,裡面有資料</li>
+      </ol>
+      <div class="check">
+        <strong>✅ 驗證</strong>:Sheet 內的 <code>config</code> 工作表 B2 格應該有一長串 JSON 文字。看到就成功。
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== STEP 3 ============== -->
+  <section class="step" id="step3">
+    <div class="step-number">3</div>
+    <h2>部署成 Web App<small>關鍵步驟 ・ 約 3 分鐘</small></h2>
+    <div class="body">
+      <ol>
+        <li>Apps Script 編輯器右上 → <strong>部署</strong> → <strong>新增部署</strong></li>
+        <li>左側齒輪 → 選 <strong>網頁應用程式</strong></li>
+        <li>填欄位:
+          <ul>
+            <li>說明:<code>tvwall API v1</code></li>
+            <li>執行身分:<strong>我 (oscar19960613@gmail.com)</strong></li>
+            <li>誰可以存取:<strong>任何人</strong>(雖然寫任何人,但 API_KEY 會擋掉沒拿到的人)</li>
+          </ul>
+        </li>
+        <li>按 <strong>部署</strong></li>
+        <li>跳出「網路應用程式網址」,**複製整段 URL**,例如:
+          <pre><code>https://script.google.com/macros/s/AKfycbxXXXXXXXXX.../exec</code></pre>
+        </li>
+        <li>**先存到記事本或別處,等下要貼**</li>
+      </ol>
+      <div class="warn">
+        <strong>⚠ 重要</strong>:這條 URL 是雲端 API 入口,失去就要重新部署。<strong>請存到記事本/Drive,別關掉視窗</strong>。
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== STEP 4 ============== -->
+  <section class="step" id="step4">
+    <div class="step-number">4</div>
+    <h2>把 URL 貼進 cloud_config.js<small>讓電視牆找得到雲端 ・ 約 1 分鐘</small></h2>
+    <div class="body">
+      <ol>
+        <li>檔案總管打開 <code>C:\Users\ASUS\Desktop\Claude\覺知SEL櫃檯介紹本及傳單\電視牆\</code></li>
+        <li>右鍵 <span class="file-pill">cloud_config.js</span> → 開啟方式 → 記事本(或 VS Code)</li>
+        <li>找到這一行:
+          <pre><code>url: "PASTE_APPS_SCRIPT_WEB_APP_URL_HERE",</code></pre>
+        </li>
+        <li>把 <code>PASTE_APPS_SCRIPT_WEB_APP_URL_HERE</code> 換成剛才複製的 URL,變成:
+          <pre><code>url: "https://script.google.com/macros/s/AKfyc.../exec",</code></pre>
+        </li>
+        <li><span class="keyboard">Ctrl+S</span> 存檔</li>
+      </ol>
+      <div class="check">
+        <strong>✅ 驗證</strong>:存檔後重開 <span class="file-pill">admin.html</span>,右上角的狀態應該變成 <strong>☁ 雲端模式</strong>(綠燈)。
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== STEP 5 ============== -->
+  <section class="step" id="step5">
+    <div class="step-number">5</div>
+    <h2>產生 PWA Icon<small>讓手機加到主畫面 ・ 約 1 分鐘</small></h2>
+    <div class="body">
+      <ol>
+        <li>雙擊打開 <span class="file-pill">icon-gen.html</span></li>
+        <li>看到 3 個圖示預覽(綠底 K12 覺知)</li>
+        <li>按 <strong>📥 下載 3 個 PNG 檔</strong> 按鈕</li>
+        <li>瀏覽器會下載 <code>icon-192.png</code>、<code>icon-512.png</code>、<code>icon-180.png</code> 到下載資料夾</li>
+        <li>剪下這 3 個檔案 → 貼到 <code>電視牆/</code> 資料夾</li>
+      </ol>
+      <div class="note">
+        <strong>💡 萬一想換 icon 設計</strong>:改 <span class="file-pill">icon-gen.html</span> 內的 <code>drawIcon</code> 函式,或叫我換成你給的 logo 圖檔。
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== STEP 6 ============== -->
+  <section class="step" id="step6">
+    <div class="step-number">6</div>
+    <h2>本機測試<small>確認雲端有通 ・ 約 3 分鐘</small></h2>
+    <div class="body">
+      <ol>
+        <li>雙擊打開 <span class="file-pill">admin.html</span></li>
+        <li>右上角應該顯示 <strong>☁ 雲端模式</strong> 綠燈</li>
+        <li>標題下方應該顯示「最後更新:[日期時間]」</li>
+        <li>隨便改一條見證 → 按 <strong>💾 儲存所有變更</strong></li>
+        <li>應該跳出 <strong>☁️ 已儲存到雲端 ・ 電視牆 30 秒內自動更新</strong></li>
+        <li>再開 <span class="file-pill">index.html</span> 一個分頁,等 30 秒,看是否自動套用</li>
+      </ol>
+      <div class="check">
+        <strong>✅ 驗證</strong>:同時打開 admin 跟 index 兩個視窗,admin 改完按儲存後,index 在下一張 slide 切換時應該自動換成新內容。
+      </div>
+      <div class="warn">
+        <strong>⚠ 萬一卡住</strong>:
+        <ul>
+          <li>右上角顯示「⚠ 雲端離線」→ cloud_config.js 的 URL 拼錯</li>
+          <li>儲存時跳「Invalid API key」→ key 拼錯</li>
+          <li>網頁完全空白 → F12 開 Console 看錯誤,或跟我說</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== STEP 7 ============== -->
+  <section class="step" id="step7">
+    <div class="step-number">7</div>
+    <h2>推到 GitHub Pages<small>讓任何裝置都能訪問 ・ 約 5-10 分鐘</small></h2>
+    <div class="body">
+      <p>選一種做法,A 最簡單。</p>
+
+      <h3 style="color:var(--brand-deep)">A 方案 ・ 用既有的 zway-education 組織開新 repo</h3>
+      <ol>
+        <li>到 <a href="https://github.com/zway-education" target="_blank" class="open-link">github.com/zway-education</a></li>
+        <li>右上 New → <strong>New repository</strong></li>
+        <li>名稱:<code>tvwall</code>,Visibility 選 <strong>Public</strong>(GitHub Pages 免費版必須 Public)</li>
+        <li>建立完後在 repo 上方 <strong>Add file</strong> → <strong>Upload files</strong></li>
+        <li>把整個 <code>電視牆/</code> 資料夾**內容**拖進去(注意是「裡面的檔案」不是資料夾)</li>
+        <li>排除這幾個檔(不要上傳):
+          <ul>
+            <li><code>cloud_setup/</code> 資料夾(內含 .gs 範本,已用過)</li>
+            <li><code>mockup_announcement.html</code>(舊提案)</li>
+            <li><code>icon-gen.html</code>(一次性工具,留本機)</li>
+          </ul>
+        </li>
+        <li>底部填 commit message:<code>初次部署 ・ 櫃檯電視牆</code> → 按 <strong>Commit changes</strong></li>
+        <li>到 Settings → Pages → Source 選 <strong>Deploy from a branch ・ main ・ /(root)</strong> → 儲存</li>
+        <li>1-2 分鐘後,網址列會顯示:
+          <pre><code>https://zway-education.github.io/tvwall/</code></pre>
+        </li>
+      </ol>
+
+      <div class="note">
+        <strong>💡 不想自己用 GitHub</strong>:跟我說「幫我推 tvwall 到 GitHub」,我幫你執行 git 指令。
+      </div>
+
+      <h3 style="color:var(--brand-deep)">B 方案 ・ 完全不用 GitHub Pages(只在櫃檯電腦跑)</h3>
+      <p>跳過這步,直接到 STEP 9。後台只能在櫃檯電腦或同一台 Mini PC 開。手機沒辦法遠端改。</p>
+    </div>
+  </section>
+
+  <!-- ============== STEP 8 ============== -->
+  <section class="step" id="step8">
+    <div class="step-number">8</div>
+    <h2>手機加到主畫面<small>變成「手機 APP」・ 約 2 分鐘</small></h2>
+    <div class="body">
+      <h3 style="color:var(--brand-deep)">📱 iPhone (Safari)</h3>
+      <ol>
+        <li>Safari 開 <code>https://zway-education.github.io/tvwall/admin.html</code></li>
+        <li>底部「分享」icon → 滑到「加入主畫面」</li>
+        <li>名稱已預設「電視牆後台」,直接按右上「新增」</li>
+        <li>桌面多出一個 K12 綠色 icon ・ 點下去全螢幕開啟,跟 APP 一樣</li>
+      </ol>
+
+      <h3 style="color:var(--brand-deep)">📱 Android (Chrome)</h3>
+      <ol>
+        <li>Chrome 開 <code>https://zway-education.github.io/tvwall/admin.html</code></li>
+        <li>右上角三點 → <strong>加到主畫面</strong>(或自動跳「安裝這個 App」的提示)</li>
+        <li>桌面多出 icon ・ 點下去全螢幕開啟</li>
+      </ol>
+
+      <div class="check">
+        <strong>✅ 驗證</strong>:手機桌面 icon 點開,看到完整後台,改一條東西按儲存,30 秒後櫃檯電視會跟著變。
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== STEP 9 ============== -->
+  <section class="step" id="step9">
+    <div class="step-number">9</div>
+    <h2>櫃檯電視主機設定<small>讓它開機自動全螢幕 ・ 約 5 分鐘</small></h2>
+    <div class="body">
+      <ol>
+        <li>櫃檯 Mini PC 上開 Chrome,訪問 <code>https://zway-education.github.io/tvwall/index.html</code></li>
+        <li>確認沒問題、會自動播</li>
+        <li>建立桌面捷徑(右鍵桌面 → 新增 → 捷徑),內容貼:
+          <pre><code>"C:\Program Files\Google\Chrome\Application\chrome.exe" --kiosk --noerrdialogs --disable-infobars --disable-translate --no-first-run --autoplay-policy=no-user-gesture-required "https://zway-education.github.io/tvwall/index.html"</code></pre>
+        </li>
+        <li>捷徑命名 <code>tvwall</code></li>
+        <li>把這個捷徑剪下,貼到啟動資料夾:
+          <ol>
+            <li><span class="keyboard">Win+R</span> → 輸入 <code>shell:startup</code> → Enter</li>
+            <li>捷徑貼到打開的資料夾內</li>
+          </ol>
+        </li>
+        <li>重開機測試 ・ 應該自動全螢幕跑電視牆</li>
+      </ol>
+      <div class="note">
+        <strong>💡 退出 kiosk 模式</strong>:鍵盤按 <span class="keyboard">Alt</span>+<span class="keyboard">F4</span>。
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 完成檢查清單 ============== -->
+  <div class="checklist">
+    <h3>📝 完成檢查清單(全勾就 OK)</h3>
+    <label><input type="checkbox"> Google Sheet「tvwall_config」已建立,內含 config + log 工作表</label>
+    <label><input type="checkbox"> Apps Script 已部署,Web App URL 已記下</label>
+    <label><input type="checkbox"> cloud_config.js 內的 URL 已替換</label>
+    <label><input type="checkbox"> admin.html 右上角顯示「☁ 雲端模式」綠燈</label>
+    <label><input type="checkbox"> icon-192.png / icon-512.png / icon-180.png 已放進 電視牆/</label>
+    <label><input type="checkbox"> 本機測試:改見證 → 儲存 → 在 index.html 看到自動更新</label>
+    <label><input type="checkbox"> GitHub repo「zway-education/tvwall」已建立並上傳</label>
+    <label><input type="checkbox"> GitHub Pages URL 已可訪問(https://zway-education.github.io/tvwall/)</label>
+    <label><input type="checkbox"> 手機已加到主畫面,可從手機改內容</label>
+    <label><input type="checkbox"> 櫃檯 Mini PC 開機自動全螢幕跑電視牆</label>
+  </div>
+
+  <!-- ============== 雲端資產清單 ============== -->
+  <section class="step" style="margin-top:48px">
+    <div class="step-number" style="background:var(--brand)">★</div>
+    <h2>雲端資產清單<small>記下來,以後找回用</small></h2>
+    <div class="body">
+      <table>
+        <tr><th>資產</th><th>位置</th><th>怎麼找回</th></tr>
+        <tr><td>Google Sheet</td><td>Drive / tvwall_config</td><td>oscar19960613@gmail.com Drive</td></tr>
+        <tr><td>Apps Script 專案</td><td>tvwall_config Sheet → 擴充功能 → Apps Script</td><td>從 Sheet 進入</td></tr>
+        <tr><td>Web App URL</td><td>(部署完後填這裡)</td><td><br>______________________________</td></tr>
+        <tr><td>API Key</td><td>cloud_config.js 內</td><td>tvw_K12_AwarenessSEL_2026_secure_key_v1</td></tr>
+        <tr><td>GitHub repo</td><td>zway-education/tvwall</td><td>github.com/zway-education</td></tr>
+        <tr><td>Pages URL</td><td>zway-education.github.io/tvwall/</td><td>同上</td></tr>
+      </table>
+      <div class="note">
+        <strong>💡 印出來貼牆上</strong>:這份表的填好版本印出來貼櫃檯抽屜內,以後任何人接手都找得到。
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== FAQ ============== -->
+  <section class="step">
+    <div class="step-number" style="background:var(--ink-soft)">?</div>
+    <h2>常見問題</h2>
+    <div class="body">
+      <h3>Q. 守蕾老師也想能改怎麼辦?</h3>
+      <p>她在手機 Safari/Chrome 開同一個 URL,加到主畫面就好。<strong>API Key 是共用的,所有有 URL + Key 的裝置都能改</strong>。</p>
+
+      <h3>Q. 怕被亂改怎麼辦?</h3>
+      <ol>
+        <li>Sheet 編輯歷史會留所有變更(右上角:檔案 → 版本記錄)</li>
+        <li>誰改的會記在 log 工作表(看 updated_by 欄位)</li>
+        <li>想加密碼?跟我說,我可以加一個簡單密碼鎖</li>
+      </ol>
+
+      <h3>Q. Web App URL 不小心外流怎麼辦?</h3>
+      <p>到 Apps Script 編輯器 → 部署 → 管理現有部署作業 → 編輯 → <strong>建立新版本</strong> → 部署。會給新 URL,把舊的失效。同時改 cloud_config.js 內 API_KEY 換成新字串(同步改 Apps Script 內 <code>API_KEY</code> 常數)。</p>
+
+      <h3>Q. 雲端壞了怎辦?</h3>
+      <p>本機 cache 還在,電視牆會繼續播最後一次抓到的內容。修好後自動恢復。</p>
+
+      <h3>Q. 想加新功能</h3>
+      <p>跟 Claude 說「我要在電視牆加 X」,我會看 CLAUDE.md 直接幫你建。</p>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>櫃檯電視牆 ・ 資產總清單(可印 A4)</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #1f8a5c;
+    --brand-deep: #0e6340;
+    --accent: #c9a96e;
+    --ink: #2a2620;
+    --ink-soft: #5a5048;
+    --border: #e8ddc8;
+  }
+  * { box-sizing:border-box; }
+  body {
+    font-family:"Noto Sans TC","PingFang TC",sans-serif;
+    background:#f0e8d6; color:var(--ink);
+    margin:0; padding:24px;
+  }
+  .page {
+    max-width:794px;  /* A4 寬 */
+    margin:0 auto;
+    background:#fff;
+    padding:32px 40px;
+    box-shadow:0 8px 30px rgba(14,99,64,.15);
+    border:1px solid var(--border);
+  }
+  header {
+    border-bottom:3px solid var(--brand);
+    padding-bottom:18px;
+    margin-bottom:24px;
+  }
+  header h1 {
+    font-family:"Noto Serif TC",serif;
+    font-weight:900;
+    color:var(--brand-deep);
+    font-size:1.8rem;
+    margin:0;
+  }
+  header .sub {
+    color:var(--ink-soft);
+    font-size:.9rem;
+    margin-top:4px;
+    letter-spacing:.05em;
+  }
+  .meta {
+    display:flex; justify-content:space-between;
+    font-size:.8rem; color:var(--ink-soft);
+    margin-top:12px;
+  }
+  section {
+    margin-bottom:24px;
+  }
+  h2 {
+    font-family:"Noto Serif TC",serif;
+    color:var(--brand-deep);
+    font-size:1.1rem;
+    padding-left:10px;
+    border-left:4px solid var(--accent);
+    margin:0 0 10px;
+  }
+  table {
+    width:100%;
+    border-collapse:collapse;
+    font-size:.88rem;
+  }
+  td, th {
+    padding:8px 10px;
+    border-bottom:1px solid #f0e8d6;
+    text-align:left;
+    vertical-align:top;
+  }
+  th {
+    background:#fdfaf3;
+    color:var(--brand-deep);
+    font-weight:500;
+    width:32%;
+  }
+  td code {
+    font-family:"Consolas",monospace;
+    background:#f3ede1;
+    padding:1px 6px;
+    border-radius:3px;
+    font-size:.85em;
+    color:var(--brand-deep);
+    word-break:break-all;
+  }
+  .fill {
+    display:inline-block;
+    min-width:280px;
+    border-bottom:1px solid #888;
+    padding:2px 8px;
+    font-style:italic;
+    color:#aaa;
+  }
+  .grid-2 {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  .box {
+    background:#fdfaf3;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 16px;
+    font-size:.85rem;
+  }
+  .box h3 {
+    font-size:.95rem;
+    color:var(--brand-deep);
+    margin:0 0 6px;
+  }
+  .box ul { padding-left:18px; margin:6px 0; line-height:1.7; }
+  footer {
+    margin-top:24px;
+    padding-top:14px;
+    border-top:1px solid var(--border);
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:.78rem;
+  }
+  .qr-claude {
+    background:var(--brand-deep);
+    color:#fff;
+    padding:14px 18px;
+    border-radius:8px;
+    margin-top:16px;
+    text-align:center;
+    font-size:.9rem;
+  }
+  .qr-claude code { background:rgba(255,255,255,.15); color:#fff; }
+
+  @media print {
+    body { background:#fff; padding:0; }
+    .page { box-shadow:none; border:none; padding:24px 28px; }
+    .no-print { display:none !important; }
+  }
+  .print-btn {
+    position:fixed; top:16px; right:16px;
+    background:var(--brand); color:#fff;
+    border:none; padding:10px 20px;
+    border-radius:6px; cursor:pointer;
+    font-family:inherit; font-weight:500;
+    box-shadow:0 4px 12px rgba(14,99,64,.3);
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">🖨 列印 / 存 PDF</button>
+
+<div class="page">
+
+<header>
+  <h1>K12覺知素養教育學苑 ・ 櫃檯電視牆 ・ 資產總清單</h1>
+  <div class="sub">建立日期 2026-05-13 ・ 列印後折一折放抽屜 ・ 換電腦時最重要的就這張</div>
+  <div class="meta">
+    <span>負責人:KWJ(oscar19960613@gmail.com)</span>
+    <span>專案位置:C:\Users\ASUS\Desktop\Claude\覺知SEL櫃檯介紹本及傳單\電視牆\</span>
+  </div>
+</header>
+
+<section>
+  <h2>☁️ 雲端資產</h2>
+  <table>
+    <tr><th>項目</th><th>位置 / 內容</th></tr>
+    <tr>
+      <td>雲端帳號</td>
+      <td><code>oscar19960613@gmail.com</code></td>
+    </tr>
+    <tr>
+      <td>Google Sheet 名稱</td>
+      <td><code>tvwall_config</code></td>
+    </tr>
+    <tr>
+      <td>Sheet URL</td>
+      <td><span class="fill">https://docs.google.com/spreadsheets/d/_______________/edit</span></td>
+    </tr>
+    <tr>
+      <td>Apps Script 專案名</td>
+      <td><code>tvwall API</code></td>
+    </tr>
+    <tr>
+      <td>Web App URL ⭐</td>
+      <td><code style="font-size:.75em">https://script.google.com/macros/s/AKfycbzKH0FkfTGPWY7Bh0EDuVB05aw-4yZwEQEWh-KoyPSU7PQshK4j4tNyJYI9i4Kt8ZwgPQ/exec</code></td>
+    </tr>
+    <tr>
+      <td>API Key</td>
+      <td><code>tvw_K12_AwarenessSEL_2026_secure_key_v1</code></td>
+    </tr>
+    <tr>
+      <td>GitHub Repo</td>
+      <td><code>zway-education/tvwall</code>(若用 GitHub Pages)</td>
+    </tr>
+    <tr>
+      <td>Pages URL</td>
+      <td><code>https://zway-education.github.io/tvwall/</code></td>
+    </tr>
+  </table>
+</section>
+
+<section>
+  <h2>📁 本機檔案位置</h2>
+  <table>
+    <tr><th>項目</th><th>路徑</th></tr>
+    <tr>
+      <td>主資料夾</td>
+      <td><code>C:\Users\ASUS\Desktop\Claude\覺知SEL櫃檯介紹本及傳單\電視牆\</code></td>
+    </tr>
+    <tr>
+      <td>電視牆</td>
+      <td><code>電視牆\index.html</code></td>
+    </tr>
+    <tr>
+      <td>後台管理</td>
+      <td><code>電視牆\admin.html</code></td>
+    </tr>
+    <tr>
+      <td>雲端設定步驟</td>
+      <td><code>電視牆\雲端設定步驟.html</code></td>
+    </tr>
+    <tr>
+      <td>給 Claude 看的</td>
+      <td><code>電視牆\CLAUDE.md</code>(別碰)</td>
+    </tr>
+    <tr>
+      <td>設計文件 spec</td>
+      <td><code>docs\superpowers\specs\2026-05-13-counter-tvwall-design.md</code></td>
+    </tr>
+  </table>
+</section>
+
+<section>
+  <h2>🔗 系統用到的外部連結</h2>
+  <table>
+    <tr><th>項目</th><th>URL</th></tr>
+    <tr><td>LINE 加好友</td><td><code>https://lin.ee/nnDYAZE</code></td></tr>
+    <tr><td>心智光譜進階版</td><td><code>https://zway-education.github.io/mindspectrum-advanced/</code></td></tr>
+    <tr><td>QR Code 函式庫</td><td><code>cdn.jsdelivr.net/npm/qrcode@1.5.3</code></td></tr>
+    <tr><td>Google Fonts</td><td><code>fonts.googleapis.com (Noto Serif TC + Noto Sans TC)</code></td></tr>
+  </table>
+</section>
+
+<section class="grid-2">
+
+  <div class="box">
+    <h3>🆘 出問題了找哪</h3>
+    <ul>
+      <li><b>電視牆空白</b> → 重整 (F5)</li>
+      <li><b>還是空白</b> → admin.html 按「重置為預設」</li>
+      <li><b>雲端離線</b> → 看 Apps Script Executions</li>
+      <li><b>修不好</b> → 跟 Claude 說</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>📞 下次找 Claude 的咒語</h3>
+    <ul>
+      <li>「TV 牆我要改 X」</li>
+      <li>「打開 電視牆/CLAUDE.md,我要 X」</li>
+      <li>「電視牆壞了,顯示 ___」</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>🎛 常用操作</h3>
+    <ul>
+      <li><b>改見證</b> → admin.html</li>
+      <li><b>換 QR</b> → admin.html</li>
+      <li><b>加新類型 slide</b> → 找 Claude</li>
+      <li><b>多人協作</b> → Sheet 加 email</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>🔐 安全提醒</h3>
+    <ul>
+      <li><b>Sheet 不要分享</b>給網域外</li>
+      <li><b>Web App URL</b> 不要貼公開頁面</li>
+      <li><b>API Key</b> 外流就換新字串</li>
+      <li><b>每月匯出</b>備份到 Drive</li>
+    </ul>
+  </div>
+
+</section>
+
+<section>
+  <h2>📋 部署檢查 ・ 完成幾項打勾</h2>
+  <table>
+    <tr>
+      <td>☐ Sheet 已建</td>
+      <td>☐ Apps Script 已貼</td>
+      <td>☐ Web App 已部署</td>
+      <td>☐ URL 已填入 cloud_config.js</td>
+    </tr>
+    <tr>
+      <td>☐ icon PNG 已產</td>
+      <td>☐ 本機測試通過</td>
+      <td>☐ GitHub Pages 已上線</td>
+      <td>☐ 手機已加主畫面</td>
+    </tr>
+    <tr>
+      <td>☐ 櫃檯 PC 開機自動啟動</td>
+      <td>☐ 跑滿一輪 78 秒驗證</td>
+      <td>☐ 手機改一個東西 → 電視牆 30 秒內變</td>
+      <td>☐ 印出本表貼櫃檯抽屜</td>
+    </tr>
+  </table>
+</section>
+
+<footer>
+  K12覺知素養教育學苑 ・ 高雄市鼓山區美術東三路 86 號 ・ 07-2693525 ・ admin@z-way-edu.com<br>
+  本清單由 KWJ 與 Claude 於 2026-05-13 共同建立 ・ 隨時可叫 Claude 重新產出更新版
+</footer>
+
+</div>
+
+</body>
+</html>

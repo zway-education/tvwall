@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>櫃檯電視牆 ・ 維護說明</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #1f8a5c;
+    --brand-deep: #0e6340;
+    --accent: #c9a96e;
+    --cream: #faf7f2;
+    --ink: #2a2620;
+    --ink-soft: #5a5048;
+    --bg: #fbf7f1;
+    --card: #ffffff;
+    --border: #e8ddc8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.85;
+  }
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 48px 24px 120px;
+  }
+  .hero {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+    color: var(--cream);
+    padding: 48px 40px;
+    border-radius: 16px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 40px rgba(14,99,64,.15);
+  }
+  .hero .label {
+    font-size: .85rem;
+    letter-spacing: .3em;
+    opacity: .8;
+    margin-bottom: 8px;
+  }
+  .hero h1 {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 700;
+    font-size: 2.4rem;
+    margin: 0 0 16px;
+    line-height: 1.3;
+  }
+  .hero p {
+    margin: 0;
+    opacity: .9;
+    font-size: 1.05rem;
+  }
+  .gold-line {
+    width: 48px; height: 3px;
+    background: var(--accent);
+    margin: 16px 0;
+  }
+  h2 {
+    font-family: "Noto Serif TC", serif;
+    color: var(--brand-deep);
+    font-size: 1.7rem;
+    margin-top: 56px;
+    margin-bottom: 16px;
+    padding-left: 16px;
+    border-left: 4px solid var(--accent);
+  }
+  h3 {
+    color: var(--brand-deep);
+    font-size: 1.2rem;
+    margin-top: 32px;
+    margin-bottom: 12px;
+  }
+  p { margin: 12px 0; }
+  ul, ol { padding-left: 24px; margin: 12px 0; }
+  li { margin: 8px 0; }
+  strong, b { color: var(--brand-deep); }
+  blockquote {
+    background: var(--card);
+    border-left: 4px solid var(--accent);
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  code {
+    background: #f3ede1;
+    color: var(--brand-deep);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: .9em;
+    font-family: "Consolas","Source Code Pro",monospace;
+  }
+  pre {
+    background: #1f2620;
+    color: #faf7f2;
+    padding: 18px 22px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: .88rem;
+    line-height: 1.7;
+    font-family: "Consolas","Source Code Pro",monospace;
+  }
+  pre code { background: none; color: inherit; padding: 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    background: var(--card);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(14,99,64,.06);
+  }
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: var(--brand);
+    color: var(--cream);
+    font-weight: 500;
+    letter-spacing: .05em;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fdfaf3; }
+  .toc {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin-bottom: 40px;
+  }
+  .toc h3 {
+    margin-top: 0;
+    color: var(--brand-deep);
+  }
+  .toc ol {
+    padding-left: 20px;
+    margin: 0;
+  }
+  .toc a {
+    color: var(--brand-deep);
+    text-decoration: none;
+  }
+  .toc a:hover { text-decoration: underline; color: var(--brand); }
+  .note {
+    background: #fef9e6;
+    border-left: 4px solid var(--accent);
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin: 16px 0;
+    color: var(--ink-soft);
+  }
+  .warn {
+    background: #fdecec;
+    border-left: 4px solid #d63030;
+    padding: 14px 18px;
+    border-radius: 0 6px 6px 0;
+    margin: 16px 0;
+    color: #7d1f1f;
+  }
+  .keyboard {
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #d8cba9;
+    border-bottom: 2px solid #b8a677;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: .85em;
+    color: var(--ink);
+    margin: 0 2px;
+  }
+  hr {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 32px 0;
+  }
+  .nav {
+    position: fixed;
+    top: 16px; right: 16px;
+    background: rgba(31,138,92,.95);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 24px;
+    font-size: .9rem;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(14,99,64,.3);
+    transition: all .2s;
+  }
+  .nav:hover { background: var(--brand-deep); transform: translateY(-1px); }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="nav">↩ 回電視牆</a>
+
+<div class="container">
+
+  <div class="hero">
+    <div class="label">櫃檯電視牆 ・ K12覺知素養教育學苑</div>
+    <h1>內容維護說明</h1>
+    <div class="gold-line"></div>
+    <p>這份文件給「不是工程師」的你看。看完你能自己改文字、加見證、換 QR、調秒數,不需要呼叫工程師。</p>
+  </div>
+
+  <div class="toc">
+    <h3>📋 目錄</h3>
+    <ol>
+      <li><a href="#sec0">兩個檔案 ・ 一個工具</a></li>
+      <li><a href="#sec1">「編輯區」在哪裡?</a></li>
+      <li><a href="#sec2">改完後怎麼看到結果?</a></li>
+      <li><a href="#sec3">最常改的 4 件事</a></li>
+      <li><a href="#sec4">偶爾才改的 3 件事</a></li>
+      <li><a href="#sec5">萬一搞砸了</a></li>
+      <li><a href="#sec6">進階:多台部署</a></li>
+      <li><a href="#sec7">內容更新節奏建議</a></li>
+    </ol>
+  </div>
+
+  <h2 id="sec0">0. 兩個檔案 ・ 一個工具</h2>
+  <table>
+    <tr><th>檔案</th><th>是什麼</th><th>何時開</th></tr>
+    <tr><td><code>index.html</code></td><td>電視牆本體(畫面+程式都在這)</td><td>想改內容時</td></tr>
+    <tr><td><code>assets/portrait.jpg</code>(可選)</td><td>創辦人肖像</td><td>想換照片時</td></tr>
+  </table>
+  <p><strong>改內容的工具</strong>:用 <strong>記事本 Notepad</strong> 就夠了(右鍵 <code>index.html</code> → 開啟方式 → 記事本)。<br>
+  推薦 <strong>VS Code</strong> 或 <strong>Notepad++</strong>,中文比較好看。</p>
+
+  <h2 id="sec1">1. 「編輯區」在哪裡?</h2>
+  <p>打開 <code>index.html</code>,<strong>按 <span class="keyboard">Ctrl + F</span> 搜尋「編輯區」</strong>,游標會跳到一個被框框包起來的區段:</p>
+  <pre>╔════════════════════════════════════════════════════════════════╗
+║      👇  編 輯 區  ・  改 內 容 只 動 這 一 段 就 好  👇         ║
+╚════════════════════════════════════════════════════════════════╝</pre>
+  <div class="warn">
+    <strong>⚠ 只要在這個框框內改,框框外面的程式都不要動。</strong> 改完按 <span class="keyboard">Ctrl + S</span> 存檔。
+  </div>
+
+  <h2 id="sec2">2. 改完後怎麼看到結果?</h2>
+  <ol>
+    <li>把電視牆瀏覽器調出來</li>
+    <li>按 <span class="keyboard">F5</span> 重新整理</li>
+    <li>看見新內容 ✅</li>
+  </ol>
+  <p>如果是電視主機在櫃檯背後,可以用滑鼠/遙控器移到網頁區按 F5,或重啟瀏覽器。</p>
+
+  <h2 id="sec3">3. 最常改的 4 件事</h2>
+
+  <h3>3.1 換 LINE 加好友連結</h3>
+  <p><strong>位置</strong>:編輯區 → <code>❶ QR 連結</code></p>
+  <pre>qr: {
+  line: "https://lin.ee/nnDYAZE",      // ← 改這個引號內的網址
+  ...
+}</pre>
+  <div class="note">LINE 加好友連結請從 LINE 官方帳號管理後台複製,確認是 <code>https://lin.ee/xxxxx</code> 格式。</div>
+
+  <h3>3.2 換心智光譜連結</h3>
+  <p>同一個位置:</p>
+  <pre>qr: {
+  ...
+  mindspectrum: "https://zway-education.github.io/mindspectrum-advanced/",
+}</pre>
+
+  <h3>3.3 換 / 加 / 減 真實見證</h3>
+  <p><strong>位置</strong>:編輯區 → <code>❷ Slide 4 真實見證</code></p>
+  <p>每條見證長這樣(注意每條最後有逗號 <code>,</code>):</p>
+  <pre>{
+  text: '我兒子以前回家就摔門。&lt;br&gt;現在他會說&lt;b&gt;「媽媽,我今天心情有點亂。」&lt;/b&gt;',
+  who:  '— 國中智優 ・ 陳媽媽(高雄)'
+},</pre>
+  <p><strong>寫作小技巧</strong>:</p>
+  <ul>
+    <li>用 <code>&lt;br&gt;</code> 換行</li>
+    <li>用 <code>&lt;b&gt;...&lt;/b&gt;</code> 框出要強調的關鍵字(會自動加金色底線)</li>
+    <li>引號用單引號 <code>'...'</code>,見證內若要用引號請用中文引號 「」 或 “”</li>
+    <li>不要用程式語法的雙引號 <code>"</code> 在見證內容裡(會把字串斷掉)</li>
+    <li>化名規則:「陳媽媽 / 林爸爸 / 楊老師」+ 班別 + 城市,不寫真實姓名</li>
+  </ul>
+  <p>
+    <strong>加新見證</strong>:複製整個 <code>{ ... }</code> 區塊,貼在後面,逗號別漏。<br>
+    <strong>刪見證</strong>:整個 <code>{ ... },</code> 連逗號一起刪。<br>
+    <strong>最少 1 條,最多沒上限</strong>(但 5 條以上輪播太久,觀眾看不完)。
+  </p>
+
+  <h3>3.4 改 slide 停留秒數</h3>
+  <p><strong>位置</strong>:編輯區 → <code>❸ 每張 slide 停留秒數</code></p>
+  <pre>durations: {
+  s1: 15000,  // ← 15000 毫秒 = 15 秒
+  s2: 12000,
+  ...
+}</pre>
+  <p><strong>參考值</strong>:</p>
+  <ul>
+    <li>太快(&lt; 8 秒):觀眾來不及讀完</li>
+    <li>剛好(10-15 秒):大多數人能讀完並開始思考</li>
+    <li>太慢(&gt; 20 秒):走過的家長等不及切下一張就走了</li>
+  </ul>
+
+  <h2 id="sec4">4. 偶爾才改的 3 件事</h2>
+
+  <h3>4.1 改創辦人肖像</h3>
+  <ol>
+    <li>找一張守蕾老師正式照(直幅 3:4 比例,建議 1200×1600 以上)</li>
+    <li>命名為 <code>portrait.jpg</code></li>
+    <li>放進 <code>assets/</code> 資料夾(沒有就自己建一個)</li>
+    <li>改 <code>index.html</code> 內 Slide 3 區塊:
+      <ul>
+        <li>搜尋「守蕾老師&lt;br&gt;肖像區」</li>
+        <li>把整個 <code>&lt;div class="ph-text"&gt;...&lt;/div&gt;</code> 換成<br>
+          <code>&lt;img src="assets/portrait.jpg" style="width:100%;height:100%;object-fit:cover"&gt;</code></li>
+      </ul>
+    </li>
+  </ol>
+
+  <h3>4.2 改 Slide 主視覺文字</h3>
+  <div class="warn">不建議改,「先懂心,再懂教」是品牌核心句。</div>
+  <p>真的要改:搜尋「先懂心」,找到 <code>&lt;h1 class="headline"&gt;...&lt;/h1&gt;</code>,改引號之間的字。字太多會跑版,試播一輪看一下。</p>
+
+  <h3>4.3 改 4 個班別名稱</h3>
+  <div class="warn">不建議改。班別名稱是品牌資產。</div>
+  <p>真的要改:搜尋「啟蒙」或「開智」,找到 Slide 2 的 4 個 <code>&lt;div class="stage"&gt;...&lt;/div&gt;</code>,改裡面的 <code>age</code> / <code>name</code> / <code>tag</code> 文字。</p>
+
+  <h2 id="sec5">5. 萬一搞砸了</h2>
+
+  <h3>救命方法 1 ・ 復原</h3>
+  <p>記事本 / VS Code 按 <span class="keyboard">Ctrl + Z</span> 一直按到回到原狀。還沒存檔就還救得回來。</p>
+
+  <h3>救命方法 2 ・ 從備份還原</h3>
+  <div class="note">
+    <strong>建議改之前先複製一份備份</strong>:右鍵 <code>index.html</code> → 複製 → 貼上,系統會自動命名 <code>index - 複製.html</code>。改壞了就把備份改名回 <code>index.html</code>。
+  </div>
+
+  <h3>救命方法 3 ・ 找 Claude</h3>
+  <p>跟我說「電視牆壞了,顯示空白 / 切不過去 / XX 不見了」,我會幫你看。</p>
+
+  <h3>常見壞掉症狀對照表</h3>
+  <table>
+    <tr><th>症狀</th><th>原因</th><th>怎麼修</th></tr>
+    <tr><td>電視牆完全空白</td><td>編輯區有引號 <code>'</code> 沒成對</td><td>用備份還原,或檢查每對引號</td></tr>
+    <tr><td>QR 碼掃不到</td><td>URL 拼錯、缺 <code>https://</code></td><td>補上 <code>https://</code> 並確認 URL 正確</td></tr>
+    <tr><td>見證跳得太快/慢</td><td><code>testimonyInterval</code> 數字改錯</td><td>改回 <code>4000</code>(4 秒)</td></tr>
+    <tr><td>字跑出畫面</td><td>改的文字太長</td><td>縮短,或加 <code>&lt;br&gt;</code> 換行</td></tr>
+    <tr><td>中文變亂碼</td><td>存檔編碼不對(Notepad 預設 ANSI)</td><td>另存新檔 → 編碼選 <strong>UTF-8</strong></td></tr>
+  </table>
+
+  <h2 id="sec6">6. 進階:多台部署</h2>
+
+  <h3>換到另一台電腦</h3>
+  <ol>
+    <li>整個 <code>電視牆/</code> 資料夾複製到新電腦任意位置</li>
+    <li>Chrome 開 <code>index.html</code>,<span class="keyboard">F11</span> 全螢幕,結束。</li>
+  </ol>
+
+  <h3>多個分校用同一套</h3>
+  <p>把整個資料夾複製過去,在每台分校的 <code>index.html</code> 編輯區改成在地化內容(例如見證換成該分校的)。</p>
+
+  <h3>想自動開機跑全螢幕</h3>
+  <p>詳細的 Chrome kiosk 模式設定見 <code>docs/superpowers/specs/2026-05-13-counter-tvwall-design.md</code> 的 §5.3 章節。</p>
+
+  <h2 id="sec7">7. 內容更新節奏建議</h2>
+  <table>
+    <tr><th>內容</th><th>建議更新頻率</th></tr>
+    <tr><td>真實見證</td><td><strong>每月換 1 條</strong>,維持新鮮感</td></tr>
+    <tr><td>QR 連結</td><td>LINE 帳號或心智光譜網址換才改</td></tr>
+    <tr><td>創辦人肖像</td><td>一年換一次,或有新版形象照時</td></tr>
+    <tr><td>4 班別名稱</td><td>不換(品牌穩定)</td></tr>
+    <tr><td>主視覺文字</td><td>不換(品牌核心)</td></tr>
+    <tr><td>停留秒數</td><td>試播時調到最舒服,之後不動</td></tr>
+  </table>
+
+  <hr>
+
+  <div class="note" style="text-align:center;font-size:1rem">
+    🌱 還有問題?跟 Claude 說「我想改電視牆的 X」,大部分情況可以直接幫你改完。
+  </div>
+
+</div>
+
+</body>
+</html>

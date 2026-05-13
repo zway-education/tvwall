@@ -575,8 +575,8 @@
         <span>然後創辦了一所學校。</span>
       </div>
     </div>
-    <div class="portrait">
-      <div class="ph-text">守蕾老師<br>肖像區<br><br><small style="opacity:.7;font-size:.8em">替換 portrait.jpg</small></div>
+    <div class="portrait" id="portrait-box">
+      <div class="ph-text">守蕾老師<br>肖像區<br><br><small style="opacity:.7;font-size:.8em">後台上傳肖像照片</small></div>
     </div>
     <div class="foot">
       <span><strong>李守蕾</strong> ・ 覺知教育創辦人 ・ 自 2008 起</span>
@@ -698,6 +698,7 @@
     QR_URLS = buildQrUrls(CONFIG);
     renderTestimonies();
     renderQRs();
+    renderPortrait();
     console.log('[tvwall] 已套用新設定 ・ 更新時間:', lastUpdatedAt);
   }
 
@@ -735,14 +736,26 @@
     ).join('');
   }
 
-  // ========== QR 渲染 ==========
+  // ========== QR 渲染(支援自訂上傳圖)==========
   function renderQRs() {
     document.querySelectorAll('[data-qr]').forEach(el => {
       const key = el.dataset.qr;
       const url = QR_URLS[key];
-      if (!url || !window.QRCode) return;
-      // 清空,以防重複
       el.innerHTML = '';
+      // 檢查有沒有自訂 QR 圖片(只大 QR 才能自訂,小角落 QR 還是用內建生成)
+      let customImg = '';
+      if (key === 'line-big' && CONFIG.qrImageLine) customImg = CONFIG.qrImageLine;
+      else if (key === 'mindspectrum' && CONFIG.qrImageMindspectrum) customImg = CONFIG.qrImageMindspectrum;
+      if (customImg) {
+        const img = document.createElement('img');
+        img.src = customImg;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
+        el.appendChild(img);
+        return;
+      }
+      if (!url || !window.QRCode) return;
       QRCode.toCanvas(url, {
         errorCorrectionLevel: 'H',
         margin: 0,
@@ -756,6 +769,19 @@
         el.appendChild(canvas);
       });
     });
+  }
+
+  // ========== 肖像渲染(支援自訂上傳)==========
+  function renderPortrait() {
+    const box = document.getElementById('portrait-box');
+    if (!box) return;
+    if (CONFIG.portrait) {
+      box.innerHTML = `<img src="${CONFIG.portrait}" style="width:100%;height:100%;object-fit:cover;display:block">`;
+      box.style.background = '#0a0a0a';
+    } else {
+      box.innerHTML = '<div class="ph-text">守蕾老師<br>肖像區<br><br><small style="opacity:.7;font-size:.8em">後台上傳肖像照片</small></div>';
+      box.style.background = '';
+    }
   }
 
   // ========== 輪播控制 ==========
@@ -873,6 +899,7 @@
     // 1. 立即用 cached 渲染(避免白屏)
     renderTestimonies();
     renderQRs();
+    renderPortrait();
     startProgressBar(SLIDES[0].duration);
     scheduleNext();
 

@@ -39,6 +39,14 @@ window.TVWALL_DEFAULTS = {
   },
 
   testimonyInterval: 4000,
+
+  // 圖片(base64 data URL),預設為空字串 → fallback 行為:
+  // - portrait 空 → Slide 3 顯示金色佔位卡
+  // - qrImageLine 空 → Slide 6 大 QR 由 qrcode.js 動態生成
+  // - qrImageMindspectrum 空 → Slide 5 大 QR 由 qrcode.js 動態生成
+  portrait: "",
+  qrImageLine: "",
+  qrImageMindspectrum: "",
 };
 
 // ============ 工具 ============
@@ -55,6 +63,9 @@ function _merge(parsed) {
       : D.testimonies,
     durations: { ...D.durations, ...(parsed.durations || {}) },
     testimonyInterval: parsed.testimonyInterval || D.testimonyInterval,
+    portrait: parsed.portrait || '',
+    qrImageLine: parsed.qrImageLine || '',
+    qrImageMindspectrum: parsed.qrImageMindspectrum || '',
   };
 }
 

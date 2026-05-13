@@ -121,9 +121,23 @@
 
   /* ====== 主容器 ====== */
   main {
-    max-width: 920px;
+    max-width: 760px;
     margin: 0 auto;
-    padding: 40px 24px 120px;
+    padding: 32px 20px 120px;
+  }
+  @media (max-width: 640px) {
+    main { padding: 20px 12px 140px; }
+    header { padding: 12px 16px; }
+    header h1 { font-size: 1.15rem; }
+    header h1 small { font-size: .65rem; }
+    .actions { width: 100%; }
+    .actions .btn { flex: 1; padding: 8px 10px; font-size: .85rem; }
+    section { padding: 20px 18px; }
+    section h2 { font-size: 1.15rem; padding-left: 10px; }
+    section .desc { padding-left: 14px; font-size: .85rem; }
+    .duration-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    footer { padding: 10px 14px; }
+    footer .btn { padding: 8px 12px; font-size: .85rem; }
   }
 
   /* ====== 區塊 ====== */
@@ -347,6 +361,85 @@
   }
   footer .btn-danger:hover { background: var(--danger); color: #fff; }
 
+  /* ====== 圖片上傳卡 ====== */
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .image-card {
+    background: #fdfaf3;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .image-card h3 {
+    color: var(--brand-deep);
+    margin: 0 0 4px;
+    font-size: .98rem;
+  }
+  .image-card .img-desc {
+    color: var(--ink-soft);
+    font-size: .8rem;
+    margin: 0 0 12px;
+  }
+  .img-preview {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #fff;
+    border: 1.5px dashed var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .img-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .img-placeholder {
+    color: var(--ink-soft);
+    font-size: .85rem;
+  }
+  .img-actions {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .btn-small {
+    flex: 1;
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: .82rem;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-small:hover { background: var(--brand-deep); }
+  .btn-danger-sm {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--border);
+  }
+  .btn-danger-sm:hover {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+  }
+  .img-info {
+    font-size: .72rem;
+    color: var(--ink-soft);
+    text-align: center;
+    margin-top: 4px;
+  }
+  .img-info.warn { color: #d63030; }
+
   /* ====== Toast ====== */
   .toast {
     position: fixed;
@@ -480,6 +573,65 @@
     </div>
   </section>
 
+  <!-- ============== ❺ 圖片上傳 ============== -->
+  <section>
+    <h2>❺ 圖片上傳</h2>
+    <p class="desc">肖像、自訂 QR ・ 上傳後自動壓縮至 ~30KB 才會同步到雲端</p>
+
+    <div class="image-grid">
+
+      <div class="image-card">
+        <h3>👤 創辦人肖像</h3>
+        <p class="img-desc">Slide 3 右側顯示 ・ 建議直幅 3:4 比例</p>
+        <div class="img-preview" id="preview-portrait">
+          <span class="img-placeholder">尚未上傳</span>
+        </div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-portrait').click()">📷 選圖片</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('portrait')">✕ 移除</button>
+          <input type="file" id="upload-portrait" accept="image/*" style="display:none"
+                 onchange="handleImageUpload(event, 'portrait', 400)">
+        </div>
+        <div class="img-info" id="info-portrait"></div>
+      </div>
+
+      <div class="image-card">
+        <h3>📱 自訂 QR ・ LINE 加好友</h3>
+        <p class="img-desc">不上傳 = 用內建 QR(指向 lin.ee 網址)</p>
+        <div class="img-preview" id="preview-qrLine">
+          <span class="img-placeholder">使用內建生成</span>
+        </div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-qrLine').click()">📷 選圖片</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageLine')">✕ 回復內建</button>
+          <input type="file" id="upload-qrLine" accept="image/*" style="display:none"
+                 onchange="handleImageUpload(event, 'qrImageLine', 400)">
+        </div>
+        <div class="img-info" id="info-qrImageLine"></div>
+      </div>
+
+      <div class="image-card">
+        <h3>🌈 自訂 QR ・ 心智光譜</h3>
+        <p class="img-desc">不上傳 = 用內建 QR(指向心智光譜網址)</p>
+        <div class="img-preview" id="preview-qrMind">
+          <span class="img-placeholder">使用內建生成</span>
+        </div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-qrMind').click()">📷 選圖片</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageMindspectrum')">✕ 回復內建</button>
+          <input type="file" id="upload-qrMind" accept="image/*" style="display:none"
+                 onchange="handleImageUpload(event, 'qrImageMindspectrum', 400)">
+        </div>
+        <div class="img-info" id="info-qrImageMindspectrum"></div>
+      </div>
+
+    </div>
+
+    <div class="note" style="background:#fef9e6;border-left:4px solid #c9a96e;padding:12px 16px;border-radius:0 6px 6px 0;margin-top:16px;color:#5a5048;font-size:.85rem">
+      <strong>💡 自訂 QR 提醒</strong>:上傳的圖必須是<u>真正可掃的 QR Code</u>,內含正確 URL。可加 logo、變色,但 QR 編碼結構不能破壞。設計時用 QR generator 工具(例如 qrcode-monkey.com)。
+    </div>
+  </section>
+
 </main>
 
 <footer>
@@ -520,6 +672,93 @@
     document.getElementById('ti-val').textContent = ti;
     // Testimonies
     renderTestimonies();
+    // Images
+    renderImagePreview('portrait', state.portrait);
+    renderImagePreview('qrLine', state.qrImageLine);
+    renderImagePreview('qrMind', state.qrImageMindspectrum);
+  }
+
+  // ====== 圖片上傳/壓縮 ======
+  function renderImagePreview(elId, dataUrl) {
+    const box = document.getElementById(`preview-${elId}`);
+    if (!box) return;
+    if (dataUrl) {
+      box.innerHTML = `<img src="${dataUrl}" alt="preview">`;
+    } else {
+      const placeholder = elId === 'portrait' ? '尚未上傳' : '使用內建生成';
+      box.innerHTML = `<span class="img-placeholder">${placeholder}</span>`;
+    }
+    // 顯示大小
+    const stateKey = elId === 'portrait' ? 'portrait' : (elId === 'qrLine' ? 'qrImageLine' : 'qrImageMindspectrum');
+    const info = document.getElementById(`info-${stateKey}`);
+    if (info) {
+      if (dataUrl) {
+        const bytes = Math.round(dataUrl.length * 0.75);  // base64 to bytes (approx)
+        const kb = (bytes / 1024).toFixed(1);
+        info.textContent = `已壓縮 ${kb} KB`;
+        info.classList.toggle('warn', bytes > 35000);
+      } else {
+        info.textContent = '';
+      }
+    }
+  }
+
+  async function compressImage(file, maxDim, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('讀取失敗'));
+      reader.onload = e => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('圖片格式不對'));
+        img.onload = () => {
+          const ratio = Math.min(maxDim / img.width, maxDim / img.height, 1);
+          const w = Math.round(img.width * ratio);
+          const h = Math.round(img.height * ratio);
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, w, h);
+          // 試 JPEG quality 從高到低,目標 <30KB base64 = 22.5KB binary
+          let q = quality;
+          let result = canvas.toDataURL('image/jpeg', q);
+          while (result.length > 40000 && q > 0.3) {
+            q -= 0.1;
+            result = canvas.toDataURL('image/jpeg', q);
+          }
+          resolve(result);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleImageUpload(event, stateKey, maxDim) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('❌ 圖片太大(超過 10MB)', 'error');
+      return;
+    }
+    try {
+      const dataUrl = await compressImage(file, maxDim || 400, 0.85);
+      state[stateKey] = dataUrl;
+      const elId = stateKey === 'portrait' ? 'portrait' : (stateKey === 'qrImageLine' ? 'qrLine' : 'qrMind');
+      renderImagePreview(elId, dataUrl);
+      const bytes = Math.round(dataUrl.length * 0.75);
+      showToast(`📷 已上傳 ${(bytes/1024).toFixed(1)} KB ・ 別忘了按儲存`);
+    } catch(err) {
+      showToast('❌ 處理失敗:' + err.message, 'error');
+    }
+    event.target.value = '';
+  }
+
+  function clearImage(stateKey) {
+    state[stateKey] = '';
+    const elId = stateKey === 'portrait' ? 'portrait' : (stateKey === 'qrImageLine' ? 'qrLine' : 'qrMind');
+    renderImagePreview(elId, '');
+    showToast('🗑 已移除 ・ 別忘了按儲存');
   }
 
   function renderTestimonies() {
@@ -611,6 +850,9 @@
         s6: parseInt(document.getElementById('d-s6').value, 10) * 1000,
       },
       testimonyInterval: parseInt(document.getElementById('ti').value, 10) * 1000,
+      portrait: state.portrait || '',
+      qrImageLine: state.qrImageLine || '',
+      qrImageMindspectrum: state.qrImageMindspectrum || '',
     };
   }
 

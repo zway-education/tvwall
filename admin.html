@@ -1113,6 +1113,16 @@
   }
 
   // ====== 方向 + 版型 + 配色 picker ======
+  // 被 index.html 以 iframe 嵌入時,把當前風格即時廣播給父層 → 左側預覽即時套用
+  function broadcastStylePreview() {
+    if (window.parent === window) return; // 非嵌入,略過
+    window.parent.postMessage({
+      type: 'tvwall-preview-style',
+      layout: state.layout,
+      theme: state.theme,
+      orientation: state.orientation,
+    }, '*');
+  }
   function selectOrient(orient, save = true) {
     state.orientation = orient;
     document.querySelectorAll('.orient-tile').forEach(el => {
@@ -1121,6 +1131,7 @@
     if (save) {
       const label = { auto: '自動偵測', horizontal: '強制橫式', vertical: '強制直式' }[orient] || orient;
       showToast('🖥 已選「' + label + '」・ 別忘了按儲存');
+      broadcastStylePreview();
     }
   }
   function selectLayout(layout, save = true) {
@@ -1129,7 +1140,10 @@
       el.classList.toggle('selected', el.dataset.layout === layout);
     });
     updateComboText();
-    if (save) showToast('🎨 已選 ' + layout + ' 版型 ・ 別忘了按儲存');
+    if (save) {
+      showToast('🎨 已選 ' + layout + ' 版型 ・ 別忘了按儲存');
+      broadcastStylePreview();
+    }
   }
   function selectTheme(theme, save = true) {
     state.theme = theme;
@@ -1137,7 +1151,10 @@
       el.classList.toggle('selected', el.dataset.theme === theme);
     });
     updateComboText();
-    if (save) showToast('🎨 已選 ' + theme + ' 配色 ・ 別忘了按儲存');
+    if (save) {
+      showToast('🎨 已選 ' + theme + ' 配色 ・ 別忘了按儲存');
+      broadcastStylePreview();
+    }
   }
   function updateComboText() {
     const layouts = { A: 'A 標題置左', B: 'B 極簡留白', C: 'C 雜誌封面', E: 'E 對話氣泡' };

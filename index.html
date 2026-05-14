@@ -1647,9 +1647,25 @@
   ['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel'].forEach(ev => {
     document.getElementById('edit-mode').addEventListener(ev, resetIdleTimer, { passive: true });
   });
-  // 右側 admin iframe 內的互動 → 透過 postMessage 通知
+  // postMessage 路由 ・ 主控端(EDIT)與預覽 iframe 各司其職
   window.addEventListener('message', (e) => {
-    if (e.data && e.data.type === 'tvwall-edit-activity') resetIdleTimer();
+    if (!e.data) return;
+    if (IS_EMBEDDED) {
+      // 我是預覽 iframe → 收到風格預覽訊息就即時套用(不用等儲存 + 雲端來回)
+      if (e.data.type === 'tvwall-preview-style') {
+        if (e.data.layout)      { CONFIG.layout = e.data.layout; applyLayout(CONFIG.layout); }
+        if (e.data.theme)       { CONFIG.theme = e.data.theme; applyTheme(CONFIG.theme); }
+        if (e.data.orientation) { CONFIG.orientation = e.data.orientation; applyOrientation(); }
+      }
+    } else {
+      // 我是 EDIT 主控 → admin iframe 來的訊息
+      if (e.data.type === 'tvwall-edit-activity') resetIdleTimer();
+      if (e.data.type === 'tvwall-preview-style') {
+        resetIdleTimer();
+        const pf = document.getElementById('edit-preview-frame');
+        if (pf && pf.contentWindow) pf.contentWindow.postMessage(e.data, '*');
+      }
+    }
   });
   // ========== 工程師入口 ・ 長按左上角 3 秒 → 數字鍵盤 ==========
   const ENGINEER_PASSCODE = '63811';

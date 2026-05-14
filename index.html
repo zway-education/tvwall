@@ -1204,6 +1204,102 @@
     font-size: 12px;
     font-family: var(--sans);
   }
+
+  /* ====== 工程師熱區(左上角看不見的 64×64)====== */
+  .engineer-hotspot {
+    position: fixed; top: 0; left: 0;
+    width: 64px; height: 64px;
+    z-index: 200;
+    cursor: default;
+  }
+  body.embedded .engineer-hotspot { display: none; }
+
+  /* ====== 數字密碼鍵盤 ====== */
+  .keypad-overlay {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(0,0,0,.78);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--sans);
+  }
+  .keypad-overlay[hidden] { display: none; }
+  .keypad {
+    background: #fff; border-radius: 20px;
+    padding: 32px 28px; width: min(360px, 86vw);
+    box-shadow: 0 30px 80px rgba(0,0,0,.5);
+  }
+  .keypad.shake { animation: keypadShake .4s; }
+  @keyframes keypadShake {
+    0%,100% { transform: translateX(0); }
+    20%,60% { transform: translateX(-10px); }
+    40%,80% { transform: translateX(10px); }
+  }
+  .keypad-title {
+    text-align: center; font-size: 1rem; font-weight: 700;
+    color: var(--brand-deep); letter-spacing: .15em; margin-bottom: 16px;
+  }
+  .keypad-display {
+    height: 44px; border: 2px solid var(--border, #e8ddc8); border-radius: 10px;
+    margin-bottom: 18px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; letter-spacing: .4em; color: var(--brand-deep);
+  }
+  .keypad-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  }
+  .keypad-grid button {
+    padding: 18px 0; font-size: 1.3rem; font-family: inherit;
+    border: none; border-radius: 12px; cursor: pointer;
+    background: #f0e8d6; color: var(--ink, #2a2620);
+    transition: background .12s;
+  }
+  .keypad-grid button:active { background: #e0d4b8; }
+  .keypad-grid .keypad-clear { background: #f3ddd6; color: #9d4127; }
+  .keypad-grid .keypad-cancel { background: #e8e3d8; color: #5a5048; font-size: .95rem; }
+
+  /* ====== EDIT 模式 ・ 分割畫面 ====== */
+  .edit-mode {
+    position: fixed; inset: 0; z-index: 250;
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: #1a1a1a;
+  }
+  .edit-mode[hidden] { display: none; }
+  .edit-preview {
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    background: #000;
+  }
+  .edit-preview-label {
+    position: absolute; top: 8px; left: 12px; z-index: 5;
+    color: rgba(255,255,255,.4); font-size: .7rem; letter-spacing: .2em;
+  }
+  .edit-preview-frame {
+    width: 100%; height: 100%; border: none; background: #000;
+  }
+  .edit-form { background: #fbf7f1; border-left: 1px solid #e8ddc8; }
+  .edit-form-frame { width: 100%; height: 100%; border: none; }
+  .edit-exit {
+    position: fixed; bottom: 16px; right: 16px; z-index: 260;
+    background: var(--brand, #1f8a5c); color: #fff; border: none;
+    padding: 12px 22px; border-radius: 8px; font-family: var(--sans);
+    font-size: .95rem; font-weight: 700; cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,0,0,.3);
+  }
+  .idle-warning {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    z-index: 270; background: #2a2620; color: #faf7f2;
+    padding: 12px 20px; border-radius: 10px; font-family: var(--sans);
+    font-size: .9rem; display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.4);
+  }
+  .idle-warning[hidden] { display: none; }
+  .idle-warning button {
+    background: var(--accent, #c9a96e); color: var(--brand-darker, #073920);
+    border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer;
+    font-family: inherit; font-weight: 700;
+  }
+  @media (max-width: 900px) {
+    .edit-mode { grid-template-columns: 1fr; grid-template-rows: 1fr 1.4fr; }
+    .edit-form { border-left: none; border-top: 1px solid #e8ddc8; }
+  }
 </style>
 </head>
 <body>
@@ -1371,6 +1467,47 @@
   <button onclick="document.documentElement.requestFullscreen()">⛶ 全螢幕</button>
 </div>
 
+<!-- ============== 🔧 工程師入口熱區(看不見的左上角)============== -->
+<div id="engineer-hotspot" class="engineer-hotspot"></div>
+
+<!-- ============== 🔢 數字密碼鍵盤 ============== -->
+<div id="keypad-overlay" class="keypad-overlay" hidden>
+  <div class="keypad" id="keypad">
+    <div class="keypad-title">工程師後台</div>
+    <div class="keypad-display" id="keypad-display"></div>
+    <div class="keypad-grid">
+      <button type="button" onclick="keypadPress('1')">1</button>
+      <button type="button" onclick="keypadPress('2')">2</button>
+      <button type="button" onclick="keypadPress('3')">3</button>
+      <button type="button" onclick="keypadPress('4')">4</button>
+      <button type="button" onclick="keypadPress('5')">5</button>
+      <button type="button" onclick="keypadPress('6')">6</button>
+      <button type="button" onclick="keypadPress('7')">7</button>
+      <button type="button" onclick="keypadPress('8')">8</button>
+      <button type="button" onclick="keypadPress('9')">9</button>
+      <button type="button" class="keypad-clear" onclick="keypadClear()">✕</button>
+      <button type="button" onclick="keypadPress('0')">0</button>
+      <button type="button" class="keypad-cancel" onclick="hideKeypad()">關閉</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============== 🔧 EDIT 模式 ・ 分割畫面 ============== -->
+<div id="edit-mode" class="edit-mode" hidden>
+  <div class="edit-preview">
+    <span class="edit-preview-label">📺 即時預覽</span>
+    <iframe id="edit-preview-frame" class="edit-preview-frame"></iframe>
+  </div>
+  <div class="edit-form">
+    <iframe id="edit-form-frame" class="edit-form-frame" src="admin.html"></iframe>
+  </div>
+  <button type="button" class="edit-exit" onclick="exitEditMode()">✓ 完成離開</button>
+  <div id="idle-warning" class="idle-warning" hidden>
+    <span>還在編輯嗎?3 秒後返回播放</span>
+    <button type="button" onclick="resetIdleTimer()">繼續編輯</button>
+  </div>
+</div>
+
 <script>
   // ╔════════════════════════════════════════════════════════════════╗
   // ║                                                                ║
@@ -1468,6 +1605,31 @@
   // 螢幕旋轉 / 視窗縮放 → 重新判斷(auto 模式才有意義,強制模式重跑也無害)
   window.addEventListener('resize', applyOrientation);
   window.addEventListener('orientationchange', applyOrientation);
+
+  // ========== EDIT 模式切換 ==========
+  const IS_EMBEDDED = new URLSearchParams(location.search).get('embedded') === '1';
+  if (IS_EMBEDDED) document.body.classList.add('embedded');
+
+  function enterEditMode() {
+    if (IS_EMBEDDED) return; // 預覽 iframe 內不可再進 EDIT
+    const pf = document.getElementById('edit-preview-frame');
+    pf.src = 'index.html?embedded=1';
+    document.getElementById('edit-mode').hidden = false;
+  }
+  function exitEditMode() {
+    document.getElementById('edit-mode').hidden = true;
+    // 釋放預覽 iframe,下次進來再重載最新內容
+    document.getElementById('edit-preview-frame').src = 'about:blank';
+    document.getElementById('idle-warning').hidden = true;
+  }
+  // 臨時測試鈕:Task 3 會移除,改用工程師手勢
+  if (!IS_EMBEDDED) {
+    const tmpBtn = document.createElement('button');
+    tmpBtn.textContent = 'DEV: 進 EDIT';
+    tmpBtn.style.cssText = 'position:fixed;bottom:8px;left:8px;z-index:210;padding:6px 10px;font-size:11px;';
+    tmpBtn.onclick = enterEditMode;
+    document.body.appendChild(tmpBtn);
+  }
 
   // ========== 雲端輪詢(切 slide 時順便檢查)==========
   async function maybePullCloud() {

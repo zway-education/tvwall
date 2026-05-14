@@ -87,7 +87,9 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: var(--sans); }
-  body { cursor: none; }
+  /* 滑鼠 3 秒沒動就隱藏(kiosk 友善,瀏覽時動一下就出現)*/
+  body { cursor: default; }
+  body.idle { cursor: none; }
 
   .tvwall {
     position: fixed; inset: 0;
@@ -1691,6 +1693,20 @@
     if (e.key === ' ') { e.preventDefault(); togglePause(); }
     if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen();
   });
+
+  // ========== 滑鼠 idle 自動隱藏(瀏覽友善 + kiosk 美觀)==========
+  (function setupCursorIdle() {
+    let idleTimer;
+    function reset() {
+      document.body.classList.remove('idle');
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => document.body.classList.add('idle'), 3000);
+    }
+    document.addEventListener('mousemove', reset);
+    document.addEventListener('mousedown', reset);
+    document.addEventListener('touchstart', reset);
+    reset();
+  })();
 
   // ========== 啟動 ==========
   window.addEventListener('load', async () => {

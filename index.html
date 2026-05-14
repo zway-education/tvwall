@@ -101,10 +101,12 @@
     width: 100%; height: 100%;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.8s ease, visibility 0.8s;
+    transition: opacity 1.1s cubic-bezier(.4,0,.2,1), visibility 1.1s;
     padding: 5vh 6vw;
     display: flex; flex-direction: column; justify-content: center;
     overflow: hidden;
+    /* 建立 stacking context → Ken Burns 的 ::before/::after 能用 z-index:-1 躲到內容後 */
+    isolation: isolate;
   }
   .slide.active {
     opacity: 1;
@@ -905,11 +907,32 @@
   .s2 .stage.has-image .name { color: #fff; }
   .s2 .stage.has-image .tag { color: rgba(255,255,255,.9); }
 
-  /* ====== Slide 背景圖 ====== */
-  .slide.has-bg-image {
-    background-size: cover !important;
-    background-position: center !important;
-    color: var(--cream);
+  /* ====== Slide 背景圖 ・ Ken Burns 緩慢推近 ====== */
+  .slide.has-bg-image { color: var(--cream); }
+  /* ::before = 背景圖層,active 時極慢 scale(Ken Burns) */
+  .slide.has-bg-image::before {
+    content: "";
+    position: absolute; inset: 0; z-index: -1;
+    background-image: var(--slide-bg-image);
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.0);
+  }
+  .slide.has-bg-image.active::before {
+    animation: kenBurns 22s ease-out forwards;
+  }
+  @keyframes kenBurns {
+    from { transform: scale(1.0); }
+    to   { transform: scale(1.09); }
+  }
+  body[data-orient="vertical"] .slide.has-bg-image.active::before {
+    animation-duration: 18s;
+  }
+  /* ::after = 深色遮罩,蓋在背景圖上、內容下 */
+  .slide.has-bg-image::after {
+    content: "";
+    position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.65));
   }
   .slide.has-bg-image .eyebrow,
   .slide.has-bg-image .foot,
@@ -1830,10 +1853,11 @@
       if (!slide) continue;
       const img = CONFIG[`bgImageS${i}`];
       if (img) {
-        slide.style.backgroundImage = `linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.65)), url(${img})`;
+        // 背景圖透過 CSS 變數交給 ::before 層(才能跑 Ken Burns scale 動畫)
+        slide.style.setProperty('--slide-bg-image', `url("${img}")`);
         slide.classList.add('has-bg-image');
       } else {
-        slide.style.backgroundImage = '';
+        slide.style.removeProperty('--slide-bg-image');
         slide.classList.remove('has-bg-image');
       }
     }

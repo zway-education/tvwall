@@ -67,6 +67,9 @@ window.TVWALL_DEFAULTS = {
   bgImageS6: "",
   bgImageS7: "",
 
+  // 螢幕方向(auto = 依螢幕長寬比自動偵測 / horizontal / vertical)
+  orientation: "auto",
+
   // 版型(A 標題置左 / B 極簡留白 / C 雜誌封面 / E 對話氣泡)
   layout: "A",
 
@@ -107,6 +110,7 @@ function _merge(parsed) {
     bgImageS5: parsed.bgImageS5 || '',
     bgImageS6: parsed.bgImageS6 || '',
     bgImageS7: parsed.bgImageS7 || '',
+    orientation: parsed.orientation || 'auto',
     layout: parsed.layout || 'A',
     theme: parsed.theme || 'green',
     highlights: Array.isArray(parsed.highlights) ? parsed.highlights : [],

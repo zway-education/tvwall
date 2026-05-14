@@ -377,6 +377,30 @@
 
   /* ====== 版型 + 配色 picker ====== */
   .picker-step { margin-bottom: 24px; }
+  /* 螢幕方向 picker */
+  .orient-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .orient-tile {
+    background: #fdfaf3;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 10px;
+    cursor: pointer;
+    transition: all .15s;
+    text-align: center;
+  }
+  .orient-tile:hover { border-color: var(--brand); }
+  .orient-tile.selected {
+    border-color: var(--accent);
+    background: #fef9e6;
+    box-shadow: 0 4px 16px rgba(201,169,110,.25);
+  }
+  .ot-icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .ot-name { font-size: .9rem; color: var(--brand-deep); font-weight: 500; }
+  .ot-name small { display: block; font-weight: 400; color: var(--ink-soft); font-size: .72rem; margin-top: 3px; line-height: 1.4; }
   .step-label {
     display: flex; align-items: center; gap: 10px;
     margin-bottom: 12px;
@@ -933,11 +957,29 @@
 
   <!-- ============== ❻ 版型 + 配色 ============== -->
   <section>
-    <h2>❻ 版型 + 配色 ・ 兩步驟挑風格</h2>
-    <p class="desc">先挑版型(slide 內怎麼排),再挑配色(底色與重點色)</p>
+    <h2>❻ 方向 + 版型 + 配色</h2>
+    <p class="desc">先定螢幕方向,再挑版型(slide 內怎麼排),最後挑配色(底色與重點色)</p>
 
     <div class="picker-step">
-      <div class="step-label"><span class="step-num">1</span> 挑版型</div>
+      <div class="step-label"><span class="step-num">1</span> 螢幕方向</div>
+      <div class="orient-grid" id="orient-grid">
+        <div class="orient-tile" data-orient="auto" onclick="selectOrient('auto')">
+          <div class="ot-icon">🔄</div>
+          <div class="ot-name">自動偵測<small>橫螢幕→橫式<br>直螢幕→直式</small></div>
+        </div>
+        <div class="orient-tile" data-orient="horizontal" onclick="selectOrient('horizontal')">
+          <div class="ot-icon">📺</div>
+          <div class="ot-name">強制橫式<small>16:9</small></div>
+        </div>
+        <div class="orient-tile" data-orient="vertical" onclick="selectOrient('vertical')">
+          <div class="ot-icon">📱</div>
+          <div class="ot-name">強制直式<small>9:16</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="picker-step">
+      <div class="step-label"><span class="step-num">2</span> 挑版型</div>
       <div class="layout-grid" id="layout-grid">
         <div class="layout-tile" data-layout="A" onclick="selectLayout('A')">
           <div class="lt-mini lt-A">
@@ -975,7 +1017,7 @@
     </div>
 
     <div class="picker-step">
-      <div class="step-label"><span class="step-num">2</span> 挑配色</div>
+      <div class="step-label"><span class="step-num">3</span> 挑配色</div>
       <div class="theme-grid" id="theme-grid">
         <div class="theme-tile" data-theme="green" onclick="selectTheme('green')">
           <div class="tt-swatch tt-green"></div>
@@ -1061,7 +1103,8 @@
     renderTestimonies();
     // Images (通用迴圈)
     IMAGE_FIELDS.forEach(f => renderImagePreview(f, state[f] || ''));
-    // 版型 + 配色
+    // 方向 + 版型 + 配色
+    selectOrient(state.orientation || 'auto', false);
     selectLayout(state.layout || 'A', false);
     selectTheme(state.theme || 'green', false);
     // 課程花絮
@@ -1069,7 +1112,17 @@
     renderHighlightList();
   }
 
-  // ====== 版型 + 配色 picker ======
+  // ====== 方向 + 版型 + 配色 picker ======
+  function selectOrient(orient, save = true) {
+    state.orientation = orient;
+    document.querySelectorAll('.orient-tile').forEach(el => {
+      el.classList.toggle('selected', el.dataset.orient === orient);
+    });
+    if (save) {
+      const label = { auto: '自動偵測', horizontal: '強制橫式', vertical: '強制直式' }[orient] || orient;
+      showToast('🖥 已選「' + label + '」・ 別忘了按儲存');
+    }
+  }
   function selectLayout(layout, save = true) {
     state.layout = layout;
     document.querySelectorAll('.layout-tile').forEach(el => {
@@ -1406,6 +1459,7 @@
       bgImageS5: state.bgImageS5 || '',
       bgImageS6: state.bgImageS6 || '',
       bgImageS7: state.bgImageS7 || '',
+      orientation: state.orientation || 'auto',
       layout: state.layout || 'A',
       theme: state.theme || 'green',
       highlights: state.highlights || [],

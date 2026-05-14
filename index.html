@@ -1447,16 +1447,27 @@
     document.body.setAttribute('data-layout', l);
   }
 
-  // ========== 套用螢幕方向(從 URL ?orient=vertical 讀)==========
+  // ========== 套用螢幕方向 ・ auto 偵測 + 雲端可覆蓋 ==========
   function applyOrientation() {
-    const params = new URLSearchParams(location.search);
-    const orient = params.get('orient');
+    // URL ?orient=vertical 仍可強制(向後相容舊書籤)
+    const param = new URLSearchParams(location.search).get('orient');
+    const setting = param || (CONFIG && CONFIG.orientation) || 'auto';
+    let orient;
+    if (setting === 'vertical' || setting === 'horizontal') {
+      orient = setting;
+    } else {
+      // auto:依螢幕長寬比
+      orient = window.innerHeight > window.innerWidth ? 'vertical' : 'horizontal';
+    }
     if (orient === 'vertical') {
       document.body.setAttribute('data-orient', 'vertical');
     } else {
       document.body.removeAttribute('data-orient');
     }
   }
+  // 螢幕旋轉 / 視窗縮放 → 重新判斷(auto 模式才有意義,強制模式重跑也無害)
+  window.addEventListener('resize', applyOrientation);
+  window.addEventListener('orientationchange', applyOrientation);
 
   // ========== 雲端輪詢(切 slide 時順便檢查)==========
   async function maybePullCloud() {

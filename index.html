@@ -949,29 +949,30 @@
     margin-top: clamp(10px, 1.5vh, 22px);
   }
 
-  /* === S3 創辦人 ・ 文字置中 + 肖像填底 === */
+  /* === S3 創辦人 ・ 文字置中 + 肖像填底(flow 自然排)=== */
   body[data-orient="vertical"] .s3 { padding-right: 7vw; }
   body[data-orient="vertical"] .s3 .text-col { width: 100%; }
   body[data-orient="vertical"] .s3 .headline {
-    font-size: clamp(72px, 10vw, 200px);
+    font-size: clamp(60px, 8.5vw, 170px);
     line-height: 1.1;
   }
   body[data-orient="vertical"] .s3 .gold-line { width: clamp(40px, 6vw, 80px); }
   body[data-orient="vertical"] .s3 .story {
-    font-size: clamp(22px, 3vw, 50px);
-    line-height: 1.9;
-    margin-top: clamp(24px, 3vh, 50px);
+    font-size: clamp(20px, 2.6vw, 44px);
+    line-height: 1.85;
+    margin-top: clamp(20px, 2.5vh, 40px);
   }
   body[data-orient="vertical"] .s3 .portrait {
-    position: absolute;
-    bottom: 18vh;
-    right: 7vw;
-    left: 7vw;
-    top: auto;
-    transform: none;
-    width: auto;
-    height: 28vh;
+    position: relative !important;
+    right: auto !important;
+    left: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    width: 100%;
+    height: clamp(180px, 24vh, 360px);
     aspect-ratio: auto;
+    margin: clamp(24px, 3vh, 48px) 0 0;
   }
 
   /* === S4 見證 ・ 大字 + 大引號 === */
@@ -994,76 +995,90 @@
     margin-top: clamp(24px, 3vh, 60px);
   }
 
-  /* === S5 心智光譜 ・ 大 QR 置底中、4 色點放大 === */
+  /* === S5 心智光譜 ・ flow 自然排,不用 absolute === */
   body[data-orient="vertical"] .s5 .text-col { width: 100%; }
   body[data-orient="vertical"] .s5 .headline {
-    font-size: clamp(68px, 9vw, 180px);
+    font-size: clamp(56px, 8vw, 160px);
     line-height: 1.1;
   }
   body[data-orient="vertical"] .s5 .gold-line { width: clamp(40px, 6vw, 80px); }
   body[data-orient="vertical"] .s5 .subhead {
-    font-size: clamp(24px, 3.2vw, 50px);
+    font-size: clamp(20px, 2.8vw, 44px);
     max-width: 100%;
     line-height: 1.7;
   }
   body[data-orient="vertical"] .s5 .spectrum-dots {
-    justify-content: flex-start;
-    gap: clamp(24px, 3.6vw, 60px);
-    margin: clamp(36px, 5vh, 70px) 0 clamp(20px, 3vh, 40px);
+    justify-content: center;
+    gap: clamp(20px, 3vw, 50px);
+    margin: clamp(24px, 3.5vh, 50px) 0 clamp(16px, 2vh, 30px);
   }
   body[data-orient="vertical"] .s5 .spec-dot {
-    width: clamp(48px, 6.5vw, 120px);
-    height: clamp(48px, 6.5vw, 120px);
-    box-shadow: 0 0 80px currentColor;
+    width: clamp(42px, 5.5vw, 100px);
+    height: clamp(42px, 5.5vw, 100px);
+    box-shadow: 0 0 60px currentColor;
   }
   body[data-orient="vertical"] .s5 .qr-big {
-    position: absolute;
-    right: 50%;
-    bottom: 16vh;
-    top: auto;
-    transform: translateX(50%);
-    width: clamp(280px, 38vw, 540px);
-    height: clamp(280px, 38vw, 540px);
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    top: auto !important;
+    transform: none !important;
+    width: clamp(220px, 32vw, 460px);
+    height: clamp(220px, 32vw, 460px);
+    margin: clamp(24px, 3vh, 48px) auto 0;
+    animation: none;
+    opacity: 1;
   }
   body[data-orient="vertical"] .s5 .qr-big-label {
-    right: 50%;
-    bottom: 9vh;
-    top: auto;
-    transform: translateX(50%);
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    top: auto !important;
+    transform: none !important;
     text-align: center;
     width: auto;
-    font-size: clamp(20px, 2.5vw, 42px);
+    margin: clamp(10px, 1.5vh, 24px) auto 0;
+    font-size: clamp(18px, 2.2vw, 36px);
+    animation: none;
+    opacity: 1;
   }
 
-  /* === S6 加 LINE ・ 同 S5 大 QR 置底中 === */
+  /* === S6 加 LINE ・ 同 S5 ・ flow 自然 === */
   body[data-orient="vertical"] .s6 .text-col { width: 100%; }
   body[data-orient="vertical"] .s6 .headline {
-    font-size: clamp(68px, 9vw, 180px);
+    font-size: clamp(56px, 8vw, 160px);
     line-height: 1.1;
   }
   body[data-orient="vertical"] .s6 .gold-line { width: clamp(40px, 6vw, 80px); }
   body[data-orient="vertical"] .s6 .subhead {
-    font-size: clamp(24px, 3.2vw, 50px);
+    font-size: clamp(20px, 2.8vw, 44px);
     max-width: 100%;
     line-height: 1.7;
   }
   body[data-orient="vertical"] .s6 .qr-big {
-    position: absolute;
-    right: 50%;
-    bottom: 16vh;
-    top: auto;
-    transform: translateX(50%);
-    width: clamp(280px, 38vw, 540px);
-    height: clamp(280px, 38vw, 540px);
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    top: auto !important;
+    transform: none !important;
+    width: clamp(220px, 32vw, 460px);
+    height: clamp(220px, 32vw, 460px);
+    margin: clamp(24px, 3vh, 48px) auto 0;
+    animation: none;
+    opacity: 1;
   }
   body[data-orient="vertical"] .s6 .qr-big-label {
-    right: 50%;
-    bottom: 9vh;
-    top: auto;
-    transform: translateX(50%);
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    top: auto !important;
+    transform: none !important;
     text-align: center;
     width: auto;
-    font-size: clamp(20px, 2.5vw, 42px);
+    margin: clamp(10px, 1.5vh, 24px) auto 0;
+    font-size: clamp(18px, 2.2vw, 36px);
+    animation: none;
+    opacity: 1;
   }
 
   /* === S7 課程花絮 ・ 上圖下文 === */

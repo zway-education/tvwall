@@ -1622,13 +1622,62 @@
     document.getElementById('edit-preview-frame').src = 'about:blank';
     document.getElementById('idle-warning').hidden = true;
   }
-  // 臨時測試鈕:Task 3 會移除,改用工程師手勢
-  if (!IS_EMBEDDED) {
-    const tmpBtn = document.createElement('button');
-    tmpBtn.textContent = 'DEV: 進 EDIT';
-    tmpBtn.style.cssText = 'position:fixed;bottom:8px;left:8px;z-index:210;padding:6px 10px;font-size:11px;';
-    tmpBtn.onclick = enterEditMode;
-    document.body.appendChild(tmpBtn);
+  // ========== 工程師入口 ・ 長按左上角 3 秒 → 數字鍵盤 ==========
+  const ENGINEER_PASSCODE = '63811';
+  let keypadEntry = '';
+  let pressTimer = null;
+
+  (function setupEngineerEntrance() {
+    if (IS_EMBEDDED) return; // 預覽 iframe 內不啟用
+    const hotspot = document.getElementById('engineer-hotspot');
+    const startPress = () => {
+      clearTimeout(pressTimer);
+      pressTimer = setTimeout(showKeypad, 3000);
+    };
+    const cancelPress = () => clearTimeout(pressTimer);
+    hotspot.addEventListener('mousedown', startPress);
+    hotspot.addEventListener('touchstart', startPress, { passive: true });
+    hotspot.addEventListener('mouseup', cancelPress);
+    hotspot.addEventListener('mouseleave', cancelPress);
+    hotspot.addEventListener('touchend', cancelPress);
+    hotspot.addEventListener('touchcancel', cancelPress);
+  })();
+
+  function showKeypad() {
+    keypadEntry = '';
+    updateKeypadDisplay();
+    document.getElementById('keypad-overlay').hidden = false;
+  }
+  function hideKeypad() {
+    document.getElementById('keypad-overlay').hidden = true;
+    keypadEntry = '';
+  }
+  function updateKeypadDisplay() {
+    document.getElementById('keypad-display').textContent =
+      '•'.repeat(keypadEntry.length) + '○'.repeat(ENGINEER_PASSCODE.length - keypadEntry.length);
+  }
+  function keypadClear() {
+    keypadEntry = '';
+    updateKeypadDisplay();
+  }
+  function keypadPress(digit) {
+    if (keypadEntry.length >= ENGINEER_PASSCODE.length) return;
+    keypadEntry += digit;
+    updateKeypadDisplay();
+    if (keypadEntry.length === ENGINEER_PASSCODE.length) {
+      if (keypadEntry === ENGINEER_PASSCODE) {
+        hideKeypad();
+        enterEditMode();
+      } else {
+        const kp = document.getElementById('keypad');
+        kp.classList.add('shake');
+        setTimeout(() => {
+          kp.classList.remove('shake');
+          keypadEntry = '';
+          updateKeypadDisplay();
+        }, 450);
+      }
+    }
   }
 
   // ========== 雲端輪詢(切 slide 時順便檢查)==========

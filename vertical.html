@@ -863,20 +863,25 @@
   /* ====== 學苑 Logo(右上角浮動)====== */
   .slide-logo {
     position: fixed;
-    top: clamp(14px, 1.8vh, 30px);
-    right: clamp(16px, 1.5vw, 30px);
-    width: clamp(40px, 3.5vw, 64px);
-    height: clamp(40px, 3.5vw, 64px);
+    top: clamp(16px, 2vh, 32px);
+    right: clamp(20px, 2vw, 36px);
+    width: clamp(44px, 3.8vw, 70px);
+    height: clamp(44px, 3.8vw, 70px);
     z-index: 50;
     pointer-events: none;
     opacity: 0;
     transition: opacity .6s;
+    /* 微膠囊背景 ・ 半透明白,在任何背景上都能襯出 LOGO 不會髒 */
+    background: rgba(255,255,255,.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 50%;
+    padding: clamp(6px, 0.6vw, 12px);
   }
-  .slide-logo.show { opacity: .85; }
+  .slide-logo.show { opacity: .9; }
   .slide-logo img {
     width: 100%; height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
   }
 
   /* ====== Stage 卡片有照片時 ====== */
@@ -1155,11 +1160,12 @@
 
   /* === Logo 直式時略大、移到底部置中 === */
   body[data-orient="vertical"] .slide-logo {
-    width: clamp(48px, 5vw, 80px);
-    height: clamp(48px, 5vw, 80px);
-    top: clamp(14px, 1.5vh, 28px);
-    right: clamp(16px, 3vw, 40px);
+    width: clamp(52px, 5.2vw, 90px);
+    height: clamp(52px, 5.2vw, 90px);
+    top: clamp(18px, 2vh, 36px);
+    right: clamp(20px, 3vw, 44px);
     left: auto;
+    padding: clamp(7px, 0.8vw, 14px);
   }
 
   /* 進度條 — 底部一條極細,顯示當前 slide 進度 */

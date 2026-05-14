@@ -206,10 +206,23 @@
     pointer-events: none;
   }
   .s1 .headline {
-    font-size: clamp(72px, 8.5vw, 180px);
+    font-size: clamp(80px, 10vw, 220px);
     font-weight: 900;
+    letter-spacing: .04em;
   }
-  .s1 .subhead { max-width: 60%; }
+  .s1 .subhead {
+    font-size: clamp(24px, 2.2vw, 48px);
+    max-width: 80%;
+    line-height: 1.6;
+  }
+  .s1 .gold-line {
+    width: clamp(64px, 5vw, 120px);
+    height: 4px;
+    margin: clamp(20px, 2.4vh, 44px) 0;
+  }
+  .s1 .eyebrow {
+    font-size: clamp(16px, 1.4vw, 30px);
+  }
 
   /* ============== Slide 2 - 4 個成長階段 (米白) ============== */
   .s2 {

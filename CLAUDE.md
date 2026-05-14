@@ -7,32 +7,46 @@
 ## 一句話:這是什麼
 
 K12覺知素養教育學苑櫃檯電視牆,**Chrome kiosk + 雲端同步**。
-6 張 slide 自動輪播,招生用。**使用者透過 admin.html 後台(可在手機 PWA)改內容**,Apps Script + Google Sheet 當後端,30 秒同步到櫃檯電視。
+7 張 slide 自動輪播,招生用。**單一入口 `index.html`** 內含「播放模式」與「工程師編輯模式」,Apps Script + Google Sheet 當後端,30 秒同步到櫃檯電視。
 
-## v1 → v2 演進
+## v1 → v2 → v3 演進
 
 - **v1 (本機版)**:設定存 localStorage,單裝置可改
-- **v2 (雲端版,本檔描述)**:Apps Script + Sheet 後端,手機/電腦/電視都同步
-- 兩版相容:若 `cloud_config.js` URL 未填,自動降級為本機模式
+- **v2 (雲端版)**:Apps Script + Sheet 後端,手機/電腦/電視都同步
+- **v3 (統一入口版,本檔描述)**:`index.html` 整合成單一入口 — PLAY + EDIT 兩模式、雙方向自動偵測、工程師長按入口。`vertical.html`/`edit.html` 改為轉址
+- 三版相容:若 `cloud_config.js` URL 未填,自動降級為本機模式
+
+## v3 統一入口架構(重點)
+
+- **單一入口**:kiosk、手機 PWA、編輯都開 `index.html`
+- **PLAY 模式**(預設):7 張 slide 輪播,公眾看到的
+- **EDIT 模式**(工程師):**長按畫面左上角 3 秒** → 數字鍵盤 → 輸入密碼 **`63811`** → 進入左預覽右表單的分割編輯畫面
+  - 密碼常數 `ENGINEER_PASSCODE` 在 index.html 的 `<script>` 內
+  - 10 秒無操作自動退回 PLAY(第 7 秒先跳「還在編輯嗎?」警告)
+  - 左預覽嵌 `index.html?embedded=1`、右表單嵌 `admin.html`
+  - `embedded=1` 時停用工程師入口(避免遞迴)
+  - EDIT 模式選版型/配色/方向 → 左預覽**即時套用**(postMessage,不用儲存)
+- **方向自動偵測**:依螢幕長寬比自動選橫/直式;後台 `orientation` 欄位可強制覆蓋(`auto`/`horizontal`/`vertical`)。index.html 內含完整 `body[data-orient="vertical"]` 直式 CSS
+- **設計**:slide 轉場 1.1s cubic-bezier;有背景圖的 slide 跑 Ken Burns 緩慢推近(`::before` scale 動畫)
 
 ## 完整檔案結構
 
 ```
 電視牆/
-├── index.html                    主檔 ・ 電視牆本體 ・ 30 秒輪詢雲端
-├── admin.html                    後台 ・ 表單編輯 + PWA + 雲端讀寫
-├── defaults.js                   預設值 + 智慧載入(雲端 → 本機 fallback)
-├── cloud_config.js               🆕 Apps Script URL + API Key(部署後填入)
-├── manifest.json                 🆕 PWA manifest(讓 admin 變手機 APP)
-├── icon.svg                      🆕 PWA SVG icon 源碼
-├── icon-gen.html                 🆕 一次性工具,產 PNG icons(已用過可刪)
-├── icon-192.png / 512 / 180      🆕 PWA icons(KWJ 跑 icon-gen 後生)
-├── 維護說明.html                   給使用者看的網頁版指南(v1)
-├── 雲端設定步驟.html               🆕 給 KWJ 一步步部署雲端的 9-step 指南
+├── index.html                    🔧 統一入口 ・ PLAY + EDIT 兩模式 ・ 雙方向 ・ 工程師入口
+├── admin.html                    後台表單 ・ EDIT 模式右側 iframe 嵌入 ・ 也可單獨開
+├── defaults.js                   預設值(含 orientation 欄位)+ 智慧載入
+├── cloud_config.js               Apps Script URL + API Key
+├── manifest.json                 PWA manifest(start_url 指向 index.html)
+├── vertical.html                 ⮕ 轉址到 index.html(直式已整合,保留不破壞舊書籤)
+├── edit.html                     ⮕ 轉址到 index.html(EDIT 模式已取代)
+├── icon.svg / icon-gen.html       PWA icon 源碼 + 一次性產生工具
+├── icon-192.png / 512 / 180       PWA icons
+├── 維護說明.html / 雲端設定步驟.html  使用者指南
 ├── README.md                     Markdown 維護指南
 ├── CLAUDE.md                     本檔
 └── cloud_setup/
-    └── tvwall_api.gs             🆕 Apps Script 程式碼(用戶要貼到 Sheet)
+    └── tvwall_api.gs             Apps Script 程式碼(v3 ・ 圖片多格 chunking 儲存)
 ```
 
 ## 雲端架構

@@ -1440,9 +1440,9 @@
       const key = el.dataset.qr;
       const url = QR_URLS[key];
       el.innerHTML = '';
-      // 檢查有沒有自訂 QR 圖片(只大 QR 才能自訂,小角落 QR 還是用內建生成)
+      // 檢查有沒有自訂 QR 圖片(大小 QR 都套用,只要 admin 上傳了)
       let customImg = '';
-      if (key === 'line-big' && CONFIG.qrImageLine) customImg = CONFIG.qrImageLine;
+      if ((key === 'line-big' || key === 'line-small') && CONFIG.qrImageLine) customImg = CONFIG.qrImageLine;
       else if (key === 'mindspectrum' && CONFIG.qrImageMindspectrum) customImg = CONFIG.qrImageMindspectrum;
       if (customImg) {
         const img = document.createElement('img');

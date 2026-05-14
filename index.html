@@ -982,24 +982,32 @@
 
   /* === S1 主畫面 ・ 超大標題、置左、置中 === */
   body[data-orient="vertical"] .s1 .headline {
-    font-size: clamp(90px, 14vw, 260px);
-    line-height: 1.1;
+    font-size: clamp(90px, min(16vw, 15vh), 300px);
+    line-height: 1.08;
     letter-spacing: .03em;
   }
   body[data-orient="vertical"] .s1 .gold-line {
-    width: clamp(48px, 7vw, 100px);
-    height: 4px;
-    margin: clamp(20px, 3vh, 50px) 0;
+    width: clamp(60px, 8vw, 140px);
+    height: 5px;
+    margin: clamp(24px, 3.5vh, 60px) 0;
   }
   body[data-orient="vertical"] .s1 .subhead {
-    font-size: clamp(24px, 3.5vw, 50px);
-    max-width: 90%;
-    line-height: 1.7;
+    font-size: clamp(28px, 4vw, 64px);
+    max-width: 95%;
+    line-height: 1.65;
+  }
+  body[data-orient="vertical"] .s1 .stages-stamp {
+    font-size: clamp(20px, 2.2vw, 44px);
+    margin-top: clamp(36px, 4vh, 80px);
+    letter-spacing: .2em;
+  }
+  body[data-orient="vertical"] .s1 .stages-stamp span {
+    margin: 0 clamp(6px, 1vw, 16px);
   }
 
   /* === S2 4 班別 ・ 2×2 大格子 === */
   body[data-orient="vertical"] .s2 .headline {
-    font-size: clamp(64px, 8.5vw, 160px);
+    font-size: clamp(56px, min(8.5vw, 8vh), 160px);
     line-height: 1.15;
   }
   body[data-orient="vertical"] .s2 .gold-line { width: clamp(40px, 6vw, 80px); }
@@ -1016,7 +1024,7 @@
     letter-spacing: .28em;
   }
   body[data-orient="vertical"] .s2 .stage .name {
-    font-size: clamp(42px, 7vw, 100px);
+    font-size: clamp(38px, min(7vw, 6.5vh), 100px);
     line-height: 1;
   }
   body[data-orient="vertical"] .s2 .stage .tag {
@@ -1029,7 +1037,7 @@
   body[data-orient="vertical"] .s3 { padding-right: 7vw; }
   body[data-orient="vertical"] .s3 .text-col { width: 100%; }
   body[data-orient="vertical"] .s3 .headline {
-    font-size: clamp(60px, 8.5vw, 170px);
+    font-size: clamp(52px, min(8.5vw, 8vh), 170px);
     line-height: 1.1;
   }
   body[data-orient="vertical"] .s3 .gold-line { width: clamp(40px, 6vw, 80px); }
@@ -1055,7 +1063,7 @@
 
   /* === S4 見證 ・ 大字 + 大引號 === */
   body[data-orient="vertical"] .s4 .quote-mark {
-    font-size: clamp(160px, 22vw, 400px);
+    font-size: clamp(120px, min(22vw, 18vh), 360px);
     margin-bottom: clamp(-50px, -3vh, -80px);
   }
   body[data-orient="vertical"] .s4 .testimony-wrap {
@@ -1065,7 +1073,7 @@
     max-width: 100%;
   }
   body[data-orient="vertical"] .s4 .testimony .text {
-    font-size: clamp(40px, 6vw, 120px);
+    font-size: clamp(36px, min(6vw, 5.5vh), 120px);
     line-height: 1.5;
   }
   body[data-orient="vertical"] .s4 .testimony .who {
@@ -1076,7 +1084,7 @@
   /* === S5 心智光譜 ・ flow 自然排,不用 absolute === */
   body[data-orient="vertical"] .s5 .text-col { width: 100%; }
   body[data-orient="vertical"] .s5 .headline {
-    font-size: clamp(56px, 8vw, 160px);
+    font-size: clamp(48px, min(8vw, 7.5vh), 160px);
     line-height: 1.1;
   }
   body[data-orient="vertical"] .s5 .gold-line { width: clamp(40px, 6vw, 80px); }
@@ -1103,8 +1111,8 @@
     transform: none !important;
     animation: none !important;
     opacity: 1 !important;
-    width: clamp(220px, 32vw, 460px) !important;
-    height: clamp(220px, 32vw, 460px);
+    width: clamp(320px, 46vw, 680px) !important;
+    height: clamp(320px, 46vw, 680px);
     margin: clamp(24px, 3vh, 48px) auto 0 !important;
   }
   body[data-orient="vertical"] .s5 .qr-big-label {
@@ -1117,14 +1125,14 @@
     opacity: 1 !important;
     text-align: center;
     width: auto !important;
-    margin: clamp(10px, 1.5vh, 24px) auto 0 !important;
-    font-size: clamp(18px, 2.2vw, 36px);
+    margin: clamp(14px, 2vh, 32px) auto 0 !important;
+    font-size: clamp(22px, 2.8vw, 46px);
   }
 
   /* === S6 加 LINE ・ 同 S5 ・ flow 自然 === */
   body[data-orient="vertical"] .s6 .text-col { width: 100%; }
   body[data-orient="vertical"] .s6 .headline {
-    font-size: clamp(56px, 8vw, 160px);
+    font-size: clamp(48px, min(8vw, 7.5vh), 160px);
     line-height: 1.1;
   }
   body[data-orient="vertical"] .s6 .gold-line { width: clamp(40px, 6vw, 80px); }
@@ -1141,8 +1149,8 @@
     transform: none !important;
     animation: none !important;
     opacity: 1 !important;
-    width: clamp(220px, 32vw, 460px) !important;
-    height: clamp(220px, 32vw, 460px);
+    width: clamp(320px, 46vw, 680px) !important;
+    height: clamp(320px, 46vw, 680px);
     margin: clamp(24px, 3vh, 48px) auto 0 !important;
   }
   body[data-orient="vertical"] .s6 .qr-big-label {
@@ -1155,8 +1163,8 @@
     opacity: 1 !important;
     text-align: center;
     width: auto !important;
-    margin: clamp(10px, 1.5vh, 24px) auto 0 !important;
-    font-size: clamp(18px, 2.2vw, 36px);
+    margin: clamp(14px, 2vh, 32px) auto 0 !important;
+    font-size: clamp(22px, 2.8vw, 46px);
   }
 
   /* === S7 課程花絮 ・ 上圖下文 === */

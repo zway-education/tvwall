@@ -131,25 +131,48 @@
     letter-spacing: .2em;
     z-index: 5;
   }
-  .preview-frame {
-    border: none;
+  /* 預覽 scaler — 用容器決定可用區、iframe 鎖定真實 TV 像素再 transform 縮放 */
+  .preview-scaler {
+    position: relative;
     background: #000;
     box-shadow: 0 8px 40px rgba(0,0,0,.5);
-    transition: all .3s;
+    overflow: hidden;
   }
-  /* 橫式 16:9 */
-  .preview-pane.horizontal .preview-frame {
+  .preview-pane.horizontal .preview-scaler {
     width: 100%;
-    max-width: 100%;
     aspect-ratio: 16/9;
+    max-width: 100%;
     max-height: 100%;
   }
-  /* 直式 9:16 */
-  .preview-pane.vertical .preview-frame {
+  .preview-pane.vertical .preview-scaler {
     height: 100%;
     aspect-ratio: 9/16;
     max-width: 100%;
     width: auto;
+  }
+  .preview-frame {
+    border: none;
+    background: #000;
+    position: absolute;
+    top: 0; left: 0;
+    transform-origin: 0 0;
+  }
+  /* 真實 TV 像素 — vw/vh 計算基準跟實機一致 */
+  .preview-pane.horizontal .preview-frame {
+    width: 1920px; height: 1080px;
+  }
+  .preview-pane.vertical .preview-frame {
+    width: 1080px; height: 1920px;
+  }
+  /* 解析度指示器 */
+  .res-badge {
+    position: absolute;
+    top: 8px; right: 12px;
+    color: rgba(255,255,255,.5);
+    font-size: .65rem;
+    letter-spacing: .15em;
+    z-index: 5;
+    font-family: monospace;
   }
 
   /* 右:編輯表單(iframe admin.html) */
@@ -202,7 +225,10 @@
 
   <div class="preview-pane horizontal" id="preview-pane">
     <span class="label">📺 LIVE PREVIEW</span>
-    <iframe class="preview-frame" id="preview-frame" src="index.html?embedded=1"></iframe>
+    <span class="res-badge" id="res-badge">1920×1080</span>
+    <div class="preview-scaler" id="preview-scaler">
+      <iframe class="preview-frame" id="preview-frame" src="index.html?embedded=1"></iframe>
+    </div>
   </div>
 
   <div class="form-pane">
@@ -224,7 +250,26 @@
     // 橫式 → index.html / 直式 → vertical.html(獨立檔)
     const frame = document.getElementById('preview-frame');
     frame.src = orient === 'vertical' ? 'vertical.html?embedded=1' : 'index.html?embedded=1';
+    document.getElementById('res-badge').textContent = orient === 'vertical' ? '1080×1920' : '1920×1080';
+    // 等 layout 套好再重算 scale
+    requestAnimationFrame(updatePreviewScale);
   }
+
+  // 鎖定真實 TV 像素 → 用 CSS transform 縮放適應預覽框
+  function updatePreviewScale() {
+    const scaler = document.getElementById('preview-scaler');
+    const frame = document.getElementById('preview-frame');
+    if (!scaler || !frame) return;
+    const tvW = currentOrient === 'vertical' ? 1080 : 1920;
+    const tvH = currentOrient === 'vertical' ? 1920 : 1080;
+    const scaleW = scaler.clientWidth / tvW;
+    const scaleH = scaler.clientHeight / tvH;
+    const scale = Math.min(scaleW, scaleH);
+    frame.style.transform = `scale(${scale})`;
+  }
+  window.addEventListener('resize', updatePreviewScale);
+  // 初次也跑一次(load 完才能拿到正確 clientWidth/Height)
+  window.addEventListener('load', () => requestAnimationFrame(updatePreviewScale));
 
   function refreshPreview() {
     const frame = document.getElementById('preview-frame');

@@ -1609,6 +1609,22 @@
       }
     }
   });
+
+  // ===== EDIT 模式整合:被 index.html 以 iframe 嵌入時,把互動回報給父層 =====
+  // 讓父層的「10 秒閒置」計時器在表單操作時重置
+  (function reportActivityToParent() {
+    if (window.parent === window) return; // 非嵌入,略過
+    let last = 0;
+    const ping = () => {
+      const now = Date.now();
+      if (now - last < 500) return; // 節流,每 0.5 秒最多一次
+      last = now;
+      window.parent.postMessage({ type: 'tvwall-edit-activity' }, '*');
+    };
+    ['click', 'keydown', 'input', 'touchstart', 'mousemove'].forEach(ev => {
+      document.addEventListener(ev, ping, { passive: true });
+    });
+  })();
 </script>
 
 </body>

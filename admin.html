@@ -1391,6 +1391,8 @@
         updateCloudStatus('local');
       }
       await refreshCloudMeta();
+      // 通知 edit.html(若 admin 是在 iframe 內)
+      try { if (window.parent !== window) window.parent.postMessage({ type: 'tvwall-saved' }, '*'); } catch(_) {}
     } catch(e) {
       showToast('❌ 儲存失敗:' + e.message, 'error');
     }

@@ -863,6 +863,80 @@
   .slide.has-bg-image .subhead { text-shadow: 0 2px 8px rgba(0,0,0,.5); }
   .slide.has-bg-image .headline { text-shadow: 0 3px 12px rgba(0,0,0,.5); }
 
+  /* ╔══════════════════════════════════════════════════════════╗
+     ║   📱 直式版型(orient=vertical)・ 9:16 海報式            ║
+     ╚══════════════════════════════════════════════════════════╝ */
+  body[data-orient="vertical"] .slide { padding: 7vh 6vw; }
+  body[data-orient="vertical"] .slide .inner { align-items: flex-start; }
+
+  /* 直式 S1 主畫面:超大字 */
+  body[data-orient="vertical"] .s1 .headline { font-size: clamp(60px, 11vw, 200px); }
+  body[data-orient="vertical"] .s1 .subhead { font-size: clamp(20px, 2.5vw, 42px); max-width: 90%; }
+
+  /* 直式 S2:4 班別改縱向堆疊(因為橫向窄) */
+  body[data-orient="vertical"] .s2 .stages {
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(10px, 1.5vh, 24px);
+  }
+  body[data-orient="vertical"] .s2 .headline { font-size: clamp(40px, 6vw, 100px); }
+  body[data-orient="vertical"] .s2 .stage { padding: clamp(14px, 2vh, 28px) clamp(12px, 2vw, 24px); }
+  body[data-orient="vertical"] .s2 .stage .name { font-size: clamp(24px, 4vw, 56px); }
+
+  /* 直式 S3 創辦人:文字置頂,肖像置中下方 */
+  body[data-orient="vertical"] .s3 .text-col { width: 100%; }
+  body[data-orient="vertical"] .s3 .headline { font-size: clamp(48px, 8vw, 150px); }
+  body[data-orient="vertical"] .s3 .story { font-size: clamp(18px, 2.4vw, 42px); }
+  body[data-orient="vertical"] .s3 .portrait {
+    position: absolute;
+    right: 50%;
+    bottom: 12vh;
+    top: auto;
+    transform: translateX(50%);
+    width: 50vw;
+    max-width: 50vw;
+  }
+
+  /* 直式 S4 見證 */
+  body[data-orient="vertical"] .s4 .testimony { max-width: 95%; }
+  body[data-orient="vertical"] .s4 .testimony .text { font-size: clamp(28px, 4vw, 80px); }
+
+  /* 直式 S5 心智光譜 + S6 LINE:QR 移到下方置中 */
+  body[data-orient="vertical"] .s5 .text-col,
+  body[data-orient="vertical"] .s6 .text-col { width: 100%; }
+  body[data-orient="vertical"] .s5 .headline,
+  body[data-orient="vertical"] .s6 .headline { font-size: clamp(48px, 8vw, 150px); }
+  body[data-orient="vertical"] .s5 .qr-big,
+  body[data-orient="vertical"] .s6 .qr-big {
+    position: absolute;
+    right: 50%;
+    bottom: 14vh;
+    top: auto;
+    transform: translateX(50%);
+    width: clamp(220px, 30vw, 400px);
+    height: clamp(220px, 30vw, 400px);
+  }
+  body[data-orient="vertical"] .s5 .qr-big-label,
+  body[data-orient="vertical"] .s6 .qr-big-label {
+    right: 50%;
+    bottom: 9vh;
+    top: auto;
+    transform: translateX(50%);
+    text-align: center;
+    width: auto;
+  }
+
+  /* 直式 S7 課程花絮 */
+  body[data-orient="vertical"] .highlight {
+    grid-template-columns: 1fr;
+    grid-template-rows: 60% 1fr;
+  }
+
+  /* 直式 logo 改較小 */
+  body[data-orient="vertical"] .slide-logo {
+    width: clamp(40px, 6vw, 100px);
+    height: clamp(40px, 6vw, 100px);
+  }
+
   /* 進度條 — 底部一條極細,顯示當前 slide 進度 */
   .progress {
     position: fixed;
@@ -1133,6 +1207,17 @@
     const valid = ['A','B','C','E'];
     const l = valid.includes(layoutName) ? layoutName : 'A';
     document.body.setAttribute('data-layout', l);
+  }
+
+  // ========== 套用螢幕方向(從 URL ?orient=vertical 讀)==========
+  function applyOrientation() {
+    const params = new URLSearchParams(location.search);
+    const orient = params.get('orient');
+    if (orient === 'vertical') {
+      document.body.setAttribute('data-orient', 'vertical');
+    } else {
+      document.body.removeAttribute('data-orient');
+    }
   }
 
   // ========== 雲端輪詢(切 slide 時順便檢查)==========
@@ -1428,7 +1513,8 @@
 
   // ========== 啟動 ==========
   window.addEventListener('load', async () => {
-    // 1. 立即套用配色 & 版型 + cached 渲染(避免白屏)
+    // 1. 立即套用配色 & 版型 + 方向 + cached 渲染(避免白屏)
+    applyOrientation();
     applyTheme(CONFIG.theme);
     applyLayout(CONFIG.layout);
     renderTestimonies();

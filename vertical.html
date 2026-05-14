@@ -493,6 +493,18 @@
     animation: qrSlideIn 0.8s ease 2.3s forwards;
   }
   .qr-big canvas, .qr-big img { width: 100%; height: 100%; display: block; }
+  /* 自訂上傳 QR 圖 ・ 去掉白底膠囊+padding,讓圖自己當版面填滿 */
+  .qr-big.has-custom-img,
+  .qr-corner.has-custom-img {
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+  }
+  .qr-big.has-custom-img img,
+  .qr-corner.has-custom-img img {
+    object-fit: contain;
+    border-radius: inherit;
+  }
   .qr-big-label {
     position: absolute;
     right: 6vw;
@@ -1488,11 +1500,14 @@
       const key = el.dataset.qr;
       const url = QR_URLS[key];
       el.innerHTML = '';
+      el.classList.remove('has-custom-img');
       // 檢查有沒有自訂 QR 圖片(大小 QR 都套用,只要 admin 上傳了)
       let customImg = '';
       if ((key === 'line-big' || key === 'line-small') && CONFIG.qrImageLine) customImg = CONFIG.qrImageLine;
       else if (key === 'mindspectrum' && CONFIG.qrImageMindspectrum) customImg = CONFIG.qrImageMindspectrum;
       if (customImg) {
+        // 有自訂上傳圖 → 容器去白底,圖直接填滿當版面
+        el.classList.add('has-custom-img');
         const img = document.createElement('img');
         img.src = customImg;
         img.style.width = '100%';

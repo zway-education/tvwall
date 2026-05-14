@@ -1229,22 +1229,25 @@
             return canvas;
           };
 
+          // v3 雲端支援「單圖跨多格」(chunking),畫質預算大幅放寬,不再被 50K 壓死
+          const PNG_BUDGET = 150000;   // ≈ 110KB ・ 約 4 格
+          const JPEG_BUDGET = 100000;  // ≈ 75KB  ・ 約 3 格
           if (isPng) {
-            // PNG:保留透明度,逐步降解析度直到 <45KB(留 Sheet 單格 50K 的餘裕)
+            // PNG:保留透明度 + 無損(QR 必用),逐步降解析度直到符合預算
             let canvas = render(dim);
             let result = canvas.toDataURL('image/png');
-            while (result.length > 45000 && dim > 64) {
+            while (result.length > PNG_BUDGET && dim > 64) {
               dim = Math.round(dim * 0.85);
               canvas = render(dim);
               result = canvas.toDataURL('image/png');
             }
-            // PNG 還是壓不下來(極複雜圖)→ fallback 用 JPEG 保留圖案,放棄透明
-            if (result.length > 45000) {
+            // PNG 還是壓不下來(極複雜大圖)→ fallback 用 JPEG 保留圖案,放棄透明
+            if (result.length > PNG_BUDGET) {
               console.warn('[tvwall] PNG 太大,降級為 JPEG(透明會失去)');
               const c2 = render(maxDim);
               let q = quality;
               result = c2.toDataURL('image/jpeg', q);
-              while (result.length > 40000 && q > 0.3) {
+              while (result.length > JPEG_BUDGET && q > 0.3) {
                 q -= 0.1;
                 result = c2.toDataURL('image/jpeg', q);
               }
@@ -1255,7 +1258,7 @@
             const canvas = render(dim);
             let q = quality;
             let result = canvas.toDataURL('image/jpeg', q);
-            while (result.length > 40000 && q > 0.3) {
+            while (result.length > JPEG_BUDGET && q > 0.3) {
               q -= 0.1;
               result = canvas.toDataURL('image/jpeg', q);
             }

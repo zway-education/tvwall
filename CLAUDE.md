@@ -19,12 +19,17 @@ K12覺知素養教育學苑櫃檯電視牆,**Chrome kiosk + 雲端同步**。
 ## v3 統一入口架構(重點)
 
 - **單一入口**:kiosk、手機 PWA、編輯都開 `index.html`
-- **PLAY 模式**(預設):7 張 slide 輪播,公眾看到的
-- **EDIT 模式**(工程師):**長按畫面左上角 3 秒** → 數字鍵盤 → 輸入密碼 **`63811`** → 進入左預覽右表單的分割編輯畫面
+- **起始畫面**(開啟即見,`#landing`):兩個按鈕「▶ 播放電視牆」「🔧 進入後台」
+  - **10 秒無操作 → 自動進播放**(kiosk 友善;起始畫面上有互動會重置 10 秒)
+  - `embedded=1` 時起始畫面立即隱藏(EDIT 預覽 iframe 直接播放)
+- **PLAY 模式**:7 張 slide 輪播,公眾看到的
+- **進入 EDIT 模式**(工程師)兩條路,都要密碼 **`63811`**:
+  - 起始畫面點「🔧 進入後台」→ 數字鍵盤
+  - PLAY 模式中**長按 LOGO 3 秒**(隱藏手勢,公眾不知道)→ 數字鍵盤
   - 密碼常數 `ENGINEER_PASSCODE` 在 index.html 的 `<script>` 內
+- **EDIT 模式**:左預覽嵌 `index.html?embedded=1`、右表單嵌 `admin.html`
   - 10 秒無操作自動退回 PLAY(第 7 秒先跳「還在編輯嗎?」警告)
-  - 左預覽嵌 `index.html?embedded=1`、右表單嵌 `admin.html`
-  - `embedded=1` 時停用工程師入口(避免遞迴)
+  - `embedded=1` 時停用起始畫面 + 工程師入口(避免遞迴)
   - EDIT 模式選版型/配色/方向 → 左預覽**即時套用**(postMessage,不用儲存)
 - **方向自動偵測**:依螢幕長寬比自動選橫/直式;後台 `orientation` 欄位可強制覆蓋(`auto`/`horizontal`/`vertical`)。index.html 內含完整 `body[data-orient="vertical"]` 直式 CSS
 - **設計**:slide 轉場 1.1s cubic-bezier;有背景圖的 slide 跑 Ken Burns 緩慢推近(`::before` scale 動畫)

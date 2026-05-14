@@ -1722,12 +1722,10 @@
         if (!parsed.qr || !parsed.testimonies || !parsed.durations) {
           throw new Error('檔案格式不對');
         }
-        state = {
-          qr: { ...window.TVWALL_DEFAULTS.qr, ...parsed.qr },
-          testimonies: parsed.testimonies,
-          durations: { ...window.TVWALL_DEFAULTS.durations, ...parsed.durations },
-          testimonyInterval: parsed.testimonyInterval || 4000,
-        };
+        // 用跟正常載入相同的完整合併邏輯還原設定 —
+        // 舊版只手動還原 4 個欄位,會把 images / layout / theme /
+        // orientation / highlights / stages 等其他設定全部清掉
+        state = window.TVWALL_merge(parsed);
         renderAll();
         showToast('📥 已匯入,記得按儲存');
       } catch(err) {

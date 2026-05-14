@@ -129,6 +129,11 @@ function _merge(parsed) {
   };
 }
 
+// admin.html 的 importJSON 需要跟正常載入路徑共用同一套合併邏輯,
+// 所以把 _merge 掛到 window(否則匯入備份會漏掉 images / layout /
+// theme / orientation / highlights / stages 等欄位)
+window.TVWALL_merge = _merge;
+
 // ============ 立即可用(同步)・ 給 index.html 啟動用 ============
 
 window.TVWALL_loadCached = function() {

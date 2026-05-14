@@ -882,7 +882,8 @@
     width: clamp(72px, 6.5vw, 130px);
     height: clamp(72px, 6.5vw, 130px);
     z-index: 50;
-    pointer-events: none;
+    /* pointer-events: auto → LOGO 可接收長按(工程師隱藏入口);embedded 模式由 JS 停用 */
+    pointer-events: auto;
     opacity: 0;
     transition: opacity .6s;
     /* 微膠囊背景 ・ 半透明白,在任何背景上都能襯出 LOGO 不會髒 */
@@ -1236,14 +1237,65 @@
     font-family: var(--sans);
   }
 
-  /* ====== 工程師熱區(左上角看不見的 64×64)====== */
-  .engineer-hotspot {
-    position: fixed; top: 0; left: 0;
-    width: 64px; height: 64px;
-    z-index: 200;
-    cursor: default;
+  /* ====== 🏠 起始選擇畫面 ・ 播放 / 進入後台 ====== */
+  .landing {
+    position: fixed; inset: 0; z-index: 220;
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 60%, var(--brand-darker) 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--sans);
+    color: var(--cream);
   }
-  body.embedded .engineer-hotspot { display: none; }
+  .landing[hidden] { display: none; }
+  .landing-inner { text-align: center; padding: 5vmin; }
+  .landing-brand {
+    font-size: clamp(16px, 2.2vmin, 32px);
+    letter-spacing: .3em; opacity: .8;
+    margin-bottom: clamp(8px, 1.5vmin, 18px);
+  }
+  .landing-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 7vmin, 110px);
+    font-weight: 900; letter-spacing: .05em;
+    margin-bottom: clamp(28px, 5vmin, 70px);
+  }
+  .landing-buttons {
+    display: flex; gap: clamp(16px, 3vmin, 44px);
+    justify-content: center; flex-wrap: wrap;
+  }
+  .landing-btn {
+    display: flex; flex-direction: column; align-items: center;
+    gap: clamp(8px, 1.4vmin, 18px);
+    width: clamp(180px, 28vmin, 360px);
+    padding: clamp(28px, 5vmin, 64px) clamp(16px, 3vmin, 40px);
+    border-radius: clamp(14px, 2vmin, 28px);
+    border: 2px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.08);
+    color: var(--cream);
+    font-family: inherit; cursor: pointer;
+    transition: all .18s;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .landing-btn:hover {
+    background: rgba(255,255,255,.16);
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+  .landing-btn-play {
+    background: var(--accent); color: var(--brand-darker);
+    border-color: var(--accent);
+  }
+  .landing-btn-play:hover { background: var(--accent-warm); }
+  .landing-btn-icon { font-size: clamp(32px, 6vmin, 80px); line-height: 1; }
+  .landing-btn-label {
+    font-size: clamp(18px, 2.6vmin, 40px);
+    font-weight: 700; letter-spacing: .08em;
+  }
+  .landing-hint {
+    margin-top: clamp(28px, 5vmin, 64px);
+    font-size: clamp(13px, 1.8vmin, 26px);
+    letter-spacing: .15em; opacity: .6;
+  }
 
   /* ====== 數字密碼鍵盤 ====== */
   .keypad-overlay {
@@ -1498,8 +1550,24 @@
   <button onclick="document.documentElement.requestFullscreen()">⛶ 全螢幕</button>
 </div>
 
-<!-- ============== 🔧 工程師入口熱區(看不見的左上角)============== -->
-<div id="engineer-hotspot" class="engineer-hotspot"></div>
+<!-- ============== 🏠 起始選擇畫面(播放 / 進入後台)============== -->
+<div id="landing" class="landing">
+  <div class="landing-inner">
+    <div class="landing-brand">K12 覺知素養教育學苑</div>
+    <div class="landing-title">櫃檯電視牆</div>
+    <div class="landing-buttons">
+      <button type="button" class="landing-btn landing-btn-play" onclick="dismissLanding()">
+        <span class="landing-btn-icon">▶</span>
+        <span class="landing-btn-label">播放電視牆</span>
+      </button>
+      <button type="button" class="landing-btn landing-btn-admin" onclick="landingToBackend()">
+        <span class="landing-btn-icon">🔧</span>
+        <span class="landing-btn-label">進入後台</span>
+      </button>
+    </div>
+    <div class="landing-hint">10 秒無操作將自動開始播放</div>
+  </div>
+</div>
 
 <!-- ============== 🔢 數字密碼鍵盤 ============== -->
 <div id="keypad-overlay" class="keypad-overlay" hidden>
@@ -1698,14 +1766,44 @@
       }
     }
   });
-  // ========== 工程師入口 ・ 長按左上角 3 秒 → 數字鍵盤 ==========
+  // ========== 🏠 起始選擇畫面 ・ 播放 / 進入後台 ==========
+  let landingIdleTimer = null;
+  function resetLandingIdle() {
+    clearTimeout(landingIdleTimer);
+    // 閒置 10 秒 → 自動進播放
+    landingIdleTimer = setTimeout(dismissLanding, 10000);
+  }
+  function dismissLanding() {
+    clearTimeout(landingIdleTimer);
+    const el = document.getElementById('landing');
+    if (el) el.hidden = true;
+  }
+  function landingToBackend() {
+    clearTimeout(landingIdleTimer);
+    const el = document.getElementById('landing');
+    if (el) el.hidden = true;
+    showKeypad();
+  }
+  (function setupLanding() {
+    const el = document.getElementById('landing');
+    if (!el) return;
+    if (IS_EMBEDDED) { el.hidden = true; return; } // 預覽 iframe 不顯示起始畫面
+    // 起始畫面上有互動 → 重置 10 秒(讓使用者有時間決定)
+    ['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel'].forEach(ev => {
+      el.addEventListener(ev, () => { if (!el.hidden) resetLandingIdle(); }, { passive: true });
+    });
+    resetLandingIdle(); // 載入即啟動 10 秒倒數
+  })();
+
+  // ========== 工程師入口 ・ 長按 LOGO 3 秒 → 數字鍵盤 ==========
   const ENGINEER_PASSCODE = '63811';
   let keypadEntry = '';
   let pressTimer = null;
 
   (function setupEngineerEntrance() {
     if (IS_EMBEDDED) return; // 預覽 iframe 內不啟用
-    const hotspot = document.getElementById('engineer-hotspot');
+    const hotspot = document.getElementById('slide-logo');
+    if (!hotspot) return;
     const startPress = () => {
       clearTimeout(pressTimer);
       pressTimer = setTimeout(showKeypad, 3000);

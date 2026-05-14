@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>K12覺知素養教育學苑 ・ 直式</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="cloud_config.js"></script>
+<script src="defaults.js"></script>
+<style>
+  :root {
+    /* === 預設配色 ・ 🌿 翠玉綠 === */
+    --brand: #1f8a5c;
+    --brand-deep: #0e6340;
+    --brand-darker: #073920;
+    --accent: #c9a96e;
+    --accent-warm: #e0b87e;
+    --cream: #faf7f2;
+    --cream-deep: #f0e8d6;
+    --ink-soft: #5a5048;
+    --spec-red: #D63030;
+    --spec-orange: #E8600A;
+    --spec-green: #2E8B5A;
+    --spec-blue: #3A70B0;
+    --accent-deep: #8a6f2e;
+    --serif: "Noto Serif TC", "Source Han Serif TC", "PMingLiU", serif;
+    --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  }
+  /* === ☕ 暖咖琥珀 === */
+  body[data-theme="amber"] {
+    --brand: #6b4423;
+    --brand-deep: #4a2f17;
+    --brand-darker: #2e1a0c;
+    --accent: #d97757;
+    --accent-warm: #e89178;
+    --accent-deep: #a8553b;
+    --cream: #faf3e9;
+    --cream-deep: #ede0c8;
+  }
+  /* === 🌸 米白薄荷 === */
+  body[data-theme="mint"] {
+    --brand: #6b9080;
+    --brand-deep: #4a6b5d;
+    --brand-darker: #2e4439;
+    --accent: #d4a373;
+    --accent-warm: #e6b889;
+    --accent-deep: #a87d4a;
+    --cream: #f5f0e8;
+    --cream-deep: #e8e0d0;
+  }
+  /* === ⚫ 深焦碳金 === */
+  body[data-theme="gold"] {
+    --brand: #1a1a1a;
+    --brand-deep: #0a0a0a;
+    --brand-darker: #000000;
+    --accent: #d4af37;
+    --accent-warm: #e8c659;
+    --accent-deep: #a98a2c;
+    --cream: #ebeae8;
+    --cream-deep: #d4d2cf;
+  }
+  /* === 📚 復古書房 === */
+  body[data-theme="leather"] {
+    --brand: #4e342e;
+    --brand-deep: #2e1a14;
+    --brand-darker: #1a0d0a;
+    --accent: #c0392b;
+    --accent-warm: #d65548;
+    --accent-deep: #8e2419;
+    --cream: #f3e5cd;
+    --cream-deep: #e0cca8;
+  }
+  /* === 🌊 海洋蔚藍 === */
+  body[data-theme="navy"] {
+    --brand: #1e4d6b;
+    --brand-deep: #163a52;
+    --brand-darker: #0d2638;
+    --accent: #e0a96d;
+    --accent-warm: #f0bf85;
+    --accent-deep: #b8854a;
+    --cream: #f0f6f8;
+    --cream-deep: #d4e0e4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: var(--sans); }
+  body { cursor: none; }
+
+  .tvwall {
+    position: fixed; inset: 0;
+    width: 100vw; height: 100vh;
+  }
+
+  .slide {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s ease, visibility 0.8s;
+    padding: 5vh 6vw;
+    display: flex; flex-direction: column; justify-content: center;
+    overflow: hidden;
+  }
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 10;
+  }
+
+  /* ============== 共通元件 ============== */
+  .eyebrow {
+    position: absolute;
+    top: 6vh; left: 6vw;
+    font-family: var(--sans);
+    font-size: clamp(14px, 1.1vw, 24px);
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    font-weight: 400;
+    opacity: 0;
+    animation: fadeIn 1s ease 0.3s forwards;
+  }
+  .slide.active .eyebrow { animation: fadeIn 1s ease 0.3s forwards; }
+  .slide:not(.active) .eyebrow,
+  .slide:not(.active) .headline,
+  .slide:not(.active) .gold-line,
+  .slide:not(.active) .subhead,
+  .slide:not(.active) .foot { animation: none; opacity: 0; }
+
+  .headline {
+    font-family: var(--serif);
+    font-weight: 700;
+    line-height: 1.22;
+    letter-spacing: .03em;
+    opacity: 0;
+    animation: rise 1.2s ease 0.5s forwards;
+  }
+  .headline .gold { color: var(--accent); }
+
+  .gold-line {
+    width: clamp(36px, 3.2vw, 64px);
+    height: 3px;
+    background: var(--accent);
+    margin: clamp(14px, 1.6vh, 28px) 0;
+    opacity: 0;
+    animation: expandLine 0.8s ease 1.0s forwards;
+    transform-origin: left center;
+  }
+
+  .subhead {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: clamp(20px, 1.7vw, 36px);
+    line-height: 1.7;
+    letter-spacing: .04em;
+    max-width: 70%;
+    opacity: 0;
+    animation: rise 1s ease 1.1s forwards;
+  }
+
+  .foot {
+    position: absolute;
+    bottom: 6vh; left: 6vw; right: 6vw;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    font-family: var(--sans);
+    font-size: clamp(13px, 1vw, 22px);
+    letter-spacing: .08em;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.3s forwards;
+  }
+
+  /* QR 角落小章(每張都有) */
+  .qr-corner {
+    width: clamp(72px, 6vw, 120px);
+    height: clamp(72px, 6vw, 120px);
+    background: #fff;
+    border-radius: 6px;
+    padding: 4%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,.18);
+  }
+  .qr-corner-label {
+    font-size: clamp(10px, 0.75vw, 16px);
+    letter-spacing: .15em;
+    text-align: right;
+    margin-bottom: 4px;
+  }
+  .qr-corner-wrap {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+  }
+  .qr-corner canvas, .qr-corner img { width: 100%; height: 100%; display: block; }
+
+  /* ============== Slide 1 - 主畫面 ============== */
+  .s1 {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+    color: var(--cream);
+  }
+  .s1::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 75% 30%, rgba(201,169,110,.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .s1 .headline {
+    font-size: clamp(72px, 8.5vw, 180px);
+    font-weight: 900;
+  }
+  .s1 .subhead { max-width: 60%; }
+
+  /* ============== Slide 2 - 4 個成長階段 (米白) ============== */
+  .s2 {
+    background: var(--cream);
+    color: var(--brand-deep);
+  }
+  .s2 .eyebrow { color: var(--ink-soft); }
+  .s2 .headline {
+    font-size: clamp(54px, 5.5vw, 120px);
+    font-weight: 800;
+    color: var(--brand-deep);
+  }
+  .s2 .gold-line { background: var(--brand); }
+  .s2 .foot { color: var(--ink-soft); }
+  .s2 .qr-corner-label { color: var(--ink-soft); }
+  .s2 .qr-corner {
+    background: var(--brand);
+    padding: 6%;
+  }
+  .stages {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(14px, 1.2vw, 28px);
+    margin-top: clamp(20px, 3vh, 60px);
+  }
+  .s2 .stage {
+    background: #fff;
+    border: 1px solid rgba(31,138,92,.25);
+    border-radius: 10px;
+    padding: clamp(18px, 2vh, 36px) clamp(14px, 1.4vw, 28px);
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(14,99,64,.10), 0 2px 6px rgba(14,99,64,.06);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardIn 0.8s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  .s2 .stage .name { color: var(--brand-deep); }
+  .s2 .stage .tag { color: var(--ink-soft); opacity: 1; }
+  .slide.active .stage:nth-child(1) { animation-delay: 1.3s; }
+  .slide.active .stage:nth-child(2) { animation-delay: 1.45s; }
+  .slide.active .stage:nth-child(3) { animation-delay: 1.6s; }
+  .slide.active .stage:nth-child(4) { animation-delay: 1.75s; }
+
+  .stage .age {
+    color: var(--accent);
+    font-size: clamp(13px, 1vw, 22px);
+    letter-spacing: .25em;
+    margin-bottom: clamp(6px, .8vh, 14px);
+    font-weight: 500;
+  }
+  .stage .name {
+    font-family: var(--serif);
+    font-size: clamp(32px, 3.2vw, 64px);
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .stage .tag {
+    font-size: clamp(14px, 1.1vw, 24px);
+    margin-top: clamp(10px, 1.4vh, 22px);
+    opacity: .82;
+    letter-spacing: .06em;
+    line-height: 1.5;
+  }
+
+  /* ============== Slide 3 - 創辦人故事 (焦黑) ============== */
+  .s3 {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    color: var(--cream);
+  }
+  .s3 .text-col {
+    width: 64%;
+  }
+  .s3 .eyebrow { color: var(--accent); }
+  .s3 .headline {
+    font-size: clamp(54px, 6.5vw, 140px);
+    font-weight: 800;
+  }
+  .s3 .story {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(26px, 2.4vw, 50px);
+    line-height: 2;
+    margin-top: clamp(20px, 3vh, 50px);
+  }
+  .s3 .story span {
+    display: block;
+    opacity: 0;
+    animation: rise 0.6s ease forwards;
+  }
+  .slide.active .s3 .story span:nth-child(1),
+  .s3 .story span:nth-child(1) { animation-delay: 1.6s; }
+  .slide.active .s3 .story span:nth-child(2),
+  .s3 .story span:nth-child(2) { animation-delay: 1.9s; }
+  .slide.active .s3 .story span:nth-child(3),
+  .s3 .story span:nth-child(3) { animation-delay: 2.2s; }
+  .slide.active .s3 .story span:nth-child(4),
+  .s3 .story span:nth-child(4) { animation-delay: 2.5s; color: var(--accent); }
+
+  .portrait {
+    position: absolute;
+    right: 6vw;
+    top: 50%;
+    transform: translateY(-50%) translateX(40px);
+    opacity: 0;
+    width: 26vw;
+    aspect-ratio: 3 / 4;
+    background: linear-gradient(135deg, #c9a96e 0%, #8a6f2e 100%);
+    border-radius: 6px;
+    border: 3px solid var(--accent);
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--brand-darker);
+    font-size: clamp(14px, 1vw, 22px);
+    font-weight: 700;
+    letter-spacing: .2em;
+    animation: portraitIn 1.2s ease 0.6s forwards;
+    overflow: hidden;
+  }
+  .portrait::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 35%, rgba(255,255,255,.4) 0%, transparent 40%),
+      radial-gradient(ellipse at 50% 65%, rgba(20,48,40,.3) 0%, transparent 50%);
+  }
+  .portrait .ph-text {
+    position: relative; z-index: 1;
+    text-align: center; line-height: 1.8;
+  }
+  .s3 .foot { color: var(--accent); }
+  .s3 .foot strong { color: var(--accent-warm); font-weight: 500; }
+
+  /* ============== Slide 4 - 真實見證 ============== */
+  .s4 {
+    background: var(--cream);
+    color: var(--brand);
+  }
+  .s4 .eyebrow { color: var(--ink-soft); }
+  .s4 .quote-mark {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(120px, 12vw, 280px);
+    line-height: .4;
+    color: var(--accent);
+    margin-bottom: clamp(-30px, -2vh, -60px);
+    font-weight: 700;
+  }
+  .s4 .testimony-wrap { position: relative; min-height: 36vh; }
+  .testimony {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    display: flex; flex-direction: column;
+    max-width: 85%;
+  }
+  .testimony.show { opacity: 1; }
+  .testimony .text {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(32px, 3.4vw, 72px);
+    line-height: 1.6;
+    color: var(--brand);
+  }
+  .testimony .text b {
+    color: var(--brand);
+    background: linear-gradient(180deg, transparent 65%, rgba(201,169,110,.4) 65%);
+    padding: 0 .1em;
+    font-weight: 800;
+  }
+  .testimony .who {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: clamp(18px, 1.5vw, 32px);
+    color: var(--ink-soft);
+    margin-top: clamp(20px, 2.4vh, 40px);
+    letter-spacing: .1em;
+  }
+  .s4 .dots {
+    display: flex; gap: 12px;
+  }
+  .s4 .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(31,138,92,.25);
+    transition: all .4s;
+  }
+  .s4 .dot.active {
+    background: var(--brand);
+    width: 36px;
+    border-radius: 5px;
+  }
+
+  /* ============== Slide 5 - 心智光譜 (焦黑+綠調讓 4 色光點更亮) ============== */
+  .s5 {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0e2d20 100%);
+    color: var(--cream);
+  }
+  .s5::before {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(214,48,48,.06) 0%, transparent 20%),
+      radial-gradient(circle at 50% 30%, rgba(232,96,10,.06) 0%, transparent 20%),
+      radial-gradient(circle at 65% 30%, rgba(46,139,90,.06) 0%, transparent 20%),
+      radial-gradient(circle at 80% 30%, rgba(58,112,176,.06) 0%, transparent 20%);
+    pointer-events: none;
+  }
+  .s5 .text-col { width: 65%; }
+  .s5 .eyebrow { color: var(--accent); }
+  .s5 .headline {
+    font-size: clamp(54px, 6vw, 130px);
+    font-weight: 800;
+  }
+  .spectrum-dots {
+    display: flex; gap: clamp(12px, 1.4vw, 28px);
+    margin: clamp(20px, 2.6vh, 50px) 0 clamp(12px, 1.6vh, 30px);
+  }
+  .spec-dot {
+    width: clamp(28px, 2.6vw, 56px);
+    height: clamp(28px, 2.6vw, 56px);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(.3);
+    animation: spectrumPop 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  .slide.active .spec-dot:nth-child(1) { animation-delay: 1.5s; }
+  .slide.active .spec-dot:nth-child(2) { animation-delay: 1.7s; }
+  .slide.active .spec-dot:nth-child(3) { animation-delay: 1.9s; }
+  .slide.active .spec-dot:nth-child(4) { animation-delay: 2.1s; }
+  .spec-red { background: var(--spec-red); box-shadow: 0 0 50px var(--spec-red); }
+  .spec-orange { background: var(--spec-orange); box-shadow: 0 0 50px var(--spec-orange); }
+  .spec-green { background: var(--spec-green); box-shadow: 0 0 50px var(--spec-green); }
+  .spec-blue { background: var(--spec-blue); box-shadow: 0 0 50px var(--spec-blue); }
+
+  .qr-big {
+    position: absolute;
+    right: 6vw;
+    top: 50%;
+    transform: translateY(-50%) translateX(40px);
+    opacity: 0;
+    width: clamp(180px, 16vw, 340px);
+    height: clamp(180px, 16vw, 340px);
+    background: #fff;
+    border-radius: 12px;
+    padding: 4%;
+    box-shadow: 0 20px 60px rgba(0,0,0,.4);
+    animation: qrSlideIn 0.8s ease 2.3s forwards;
+  }
+  .qr-big canvas, .qr-big img { width: 100%; height: 100%; display: block; }
+  .qr-big-label {
+    position: absolute;
+    right: 6vw;
+    top: calc(50% + clamp(100px, 9vw, 180px));
+    transform: translateX(40px);
+    opacity: 0;
+    text-align: center;
+    width: clamp(180px, 16vw, 340px);
+    color: var(--accent);
+    font-size: clamp(14px, 1.1vw, 24px);
+    letter-spacing: .25em;
+    animation: qrLabelIn 0.6s ease 2.7s forwards;
+  }
+
+  /* ============== Slide 6 - 加 LINE (金杏暖底) ============== */
+  .s6 {
+    background: linear-gradient(135deg, var(--accent-warm) 0%, var(--accent) 50%, var(--accent-deep) 100%);
+    color: var(--brand-darker);
+  }
+  .s6 .eyebrow { color: var(--brand-deep); opacity: 0.85; }
+  .s6 .headline {
+    font-size: clamp(54px, 6vw, 130px);
+    font-weight: 800;
+    color: #1a1a1a;
+  }
+  .s6 .headline .gold { color: var(--brand-deep); }
+  .s6 .gold-line { background: var(--brand-deep); }
+  .s6 .subhead { color: rgba(26,26,26,.85); }
+  .s6 .subhead b { color: var(--brand-deep); }
+  .s6 .foot { color: #1a1a1a; opacity: 0.8; }
+  .s6 .qr-corner-label { color: var(--brand-deep); }
+  .s6 .text-col { width: 65%; }
+  .s6 .qr-big { animation-delay: 0.8s; }
+  .s6 .qr-big-label {
+    animation-delay: 1.2s;
+    color: var(--brand-deep);
+  }
+
+  /* ============== Animations ============== */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes expandLine {
+    from { opacity: 0; transform: scaleX(0); }
+    to { opacity: 1; transform: scaleX(1); }
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes portraitIn {
+    from { opacity: 0; transform: translateY(-50%) translateX(40px); }
+    to { opacity: .92; transform: translateY(-50%) translateX(0); }
+  }
+  @keyframes spectrumPop {
+    0% { opacity: 0; transform: scale(.3); }
+    60% { opacity: 1; transform: scale(1.15); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes qrSlideIn {
+    from { opacity: 0; transform: translateY(-50%) translateX(40px); }
+    to { opacity: 1; transform: translateY(-50%) translateX(0); }
+  }
+  @keyframes qrLabelIn {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ============== Slide 7 ・ 課程花絮 ============== */
+  .s7 {
+    background: linear-gradient(135deg, var(--brand-darker) 0%, var(--brand-deep) 100%);
+    color: var(--cream);
+  }
+  .s7 .eyebrow { color: var(--accent); }
+  .highlight-wrap {
+    position: absolute;
+    inset: 12vh 6vw 14vh 6vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .highlight {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 60% 40%;
+    gap: clamp(20px, 3vw, 50px);
+    opacity: 0;
+    transition: opacity .8s ease;
+  }
+  .highlight.show { opacity: 1; }
+  .highlight .img-area {
+    background: var(--brand-darker);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid rgba(201,169,110,.3);
+    box-shadow: 0 12px 40px rgba(0,0,0,.4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .highlight .img-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .highlight .placeholder {
+    color: var(--accent);
+    font-size: 1rem;
+    text-align: center;
+    padding: 20px;
+  }
+  .highlight .caption {
+    align-self: center;
+    padding: 20px 0;
+  }
+  .highlight .h-date {
+    font-family: var(--sans);
+    color: var(--accent);
+    font-size: clamp(14px, 1.1vw, 22px);
+    letter-spacing: .25em;
+    margin-bottom: 12px;
+  }
+  .highlight .h-title {
+    font-family: var(--serif);
+    font-weight: 800;
+    font-size: clamp(34px, 3.4vw, 72px);
+    line-height: 1.25;
+    margin-bottom: 16px;
+  }
+  .highlight .h-desc {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: clamp(16px, 1.3vw, 28px);
+    line-height: 1.7;
+    opacity: .9;
+  }
+
+  /* ╔══════════════════════════════════════════════════════════╗
+     ║   📐 版型公版庫(A 是預設 ・ B/C/E 是替代版型)              ║
+     ╚══════════════════════════════════════════════════════════╝ */
+
+  /* ====== 版型 B ・ 極簡留白派(全置中、大字、留白)====== */
+  body[data-layout="B"] .slide .inner { align-items: center; text-align: center; }
+  body[data-layout="B"] .slide .eyebrow {
+    position: static;
+    text-align: center;
+    margin-bottom: clamp(16px, 2vh, 36px);
+    width: 100%;
+    left: auto; top: auto;
+  }
+  body[data-layout="B"] .slide .headline {
+    text-align: center;
+    font-size: clamp(80px, 7.5vw, 180px);
+    letter-spacing: .04em;
+  }
+  body[data-layout="B"] .slide .gold-line {
+    margin-left: auto;
+    margin-right: auto;
+    width: 36px;
+  }
+  body[data-layout="B"] .slide .subhead {
+    text-align: center;
+    max-width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  body[data-layout="B"] .slide .foot {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+  body[data-layout="B"] .slide .qr-corner-wrap {
+    align-items: center;
+  }
+  body[data-layout="B"] .stages {
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  body[data-layout="B"] .s3 .text-col {
+    width: 100%;
+    text-align: center;
+  }
+  body[data-layout="B"] .s3 .story {
+    text-align: center;
+  }
+  body[data-layout="B"] .s3 .portrait {
+    right: 50%;
+    transform: translate(50%, -50%);
+    width: 18vw;
+  }
+  body[data-layout="B"] .s5 .text-col,
+  body[data-layout="B"] .s6 .text-col {
+    width: 100%;
+    text-align: center;
+  }
+  body[data-layout="B"] .s5 .spectrum-dots {
+    justify-content: center;
+  }
+  body[data-layout="B"] .s5 .qr-big,
+  body[data-layout="B"] .s6 .qr-big {
+    right: 50%;
+    transform: translate(50%, calc(50% - clamp(120px, 11vw, 220px)));
+    top: auto;
+    bottom: clamp(80px, 8vh, 140px);
+  }
+  body[data-layout="B"] .s5 .qr-big-label,
+  body[data-layout="B"] .s6 .qr-big-label {
+    right: 50%;
+    transform: translateX(50%);
+    text-align: center;
+    width: clamp(180px, 16vw, 340px);
+    top: auto;
+    bottom: clamp(50px, 5vh, 90px);
+  }
+  body[data-layout="B"] .testimony { max-width: 90%; margin: 0 auto; }
+  body[data-layout="B"] .testimony .text,
+  body[data-layout="B"] .testimony .who { text-align: center; }
+
+  /* ====== 版型 C ・ 雜誌封面派(左大塊標題 + 右側欄)====== */
+  body[data-layout="C"] .slide {
+    display: grid;
+    grid-template-columns: 60% 40%;
+    grid-template-rows: 1fr;
+    padding: 0;
+  }
+  body[data-layout="C"] .slide .inner,
+  body[data-layout="C"] .slide .text-col {
+    grid-column: 1;
+    background: var(--brand-darker);
+    padding: 6% 6%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  }
+  body[data-layout="C"] .slide .headline {
+    font-size: clamp(80px, 7vw, 180px);
+    line-height: 1.05;
+    letter-spacing: .02em;
+    font-weight: 900;
+  }
+  body[data-layout="C"] .slide .eyebrow {
+    position: absolute;
+    top: 5%;
+    left: 6%;
+    color: var(--accent);
+  }
+  body[data-layout="C"] .slide .gold-line { margin: 24px 0; }
+  body[data-layout="C"] .slide .subhead {
+    font-size: clamp(18px, 1.3vw, 28px);
+    max-width: 100%;
+  }
+  body[data-layout="C"] .slide .foot {
+    position: absolute;
+    bottom: 5%;
+    left: 6%;
+    right: auto;
+    width: 54%;
+    font-size: clamp(12px, .85vw, 18px);
+  }
+  body[data-layout="C"] .slide .qr-corner-wrap {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    z-index: 5;
+  }
+  body[data-layout="C"] .stages {
+    grid-column: 2;
+    grid-template-columns: 1fr;
+    background: var(--cream);
+    padding: 6% 5%;
+    margin: 0;
+    gap: clamp(8px, 1vh, 20px);
+  }
+  body[data-layout="C"] .s2 .stage {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(31,138,92,.2);
+    border-radius: 0;
+    box-shadow: none;
+    padding: clamp(10px, 1.4vh, 22px) 0;
+    text-align: left;
+  }
+  body[data-layout="C"] .s3 .portrait {
+    position: relative;
+    grid-column: 2;
+    top: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+    border: none;
+  }
+  body[data-layout="C"] .s4 .quote-mark { font-size: clamp(160px, 14vw, 320px); }
+  body[data-layout="C"] .s4 .testimony-wrap { grid-column: 2; padding: 8% 5%; background: var(--cream-deep); }
+  body[data-layout="C"] .s5 .qr-big,
+  body[data-layout="C"] .s6 .qr-big {
+    grid-column: 2;
+    position: relative;
+    right: 0; top: 0;
+    transform: none;
+    margin: 50% auto 0;
+    width: clamp(160px, 14vw, 280px);
+    height: clamp(160px, 14vw, 280px);
+  }
+  body[data-layout="C"] .s5 .qr-big-label,
+  body[data-layout="C"] .s6 .qr-big-label {
+    position: absolute;
+    top: auto;
+    bottom: 8%;
+    right: 5%;
+    transform: none;
+    text-align: center;
+    width: auto;
+  }
+
+  /* ====== 版型 E ・ 對話氣泡派(標題像 chat 訊息)====== */
+  body[data-layout="E"] .slide .headline {
+    display: inline-block;
+    background: var(--brand);
+    color: var(--cream);
+    padding: clamp(18px, 2.5vh, 40px) clamp(24px, 3vw, 60px);
+    border-radius: 28px 28px 28px 6px;
+    font-size: clamp(60px, 5.5vw, 130px);
+    box-shadow: 0 8px 30px rgba(0,0,0,.15);
+    max-width: 90%;
+  }
+  body[data-layout="E"] .slide .headline .gold { color: var(--accent-warm); }
+  body[data-layout="E"] .slide .eyebrow {
+    position: relative;
+    top: 0; left: 0;
+    margin-bottom: clamp(14px, 1.6vh, 28px);
+    display: inline-block;
+  }
+  body[data-layout="E"] .slide .gold-line { display: none; }
+  body[data-layout="E"] .slide .subhead {
+    margin-top: clamp(20px, 2.4vh, 40px);
+    padding-left: clamp(24px, 3vw, 60px);
+    border-left: 3px solid var(--accent);
+    max-width: 70%;
+  }
+  body[data-layout="E"] .s4 {
+    background: var(--brand-darker);
+    color: var(--cream);
+  }
+  body[data-layout="E"] .s4 .eyebrow { color: var(--accent); }
+  body[data-layout="E"] .s4 .quote-mark { color: var(--accent-warm); }
+  body[data-layout="E"] .testimony .text {
+    background: var(--brand);
+    color: var(--cream);
+    padding: 24px 32px;
+    border-radius: 24px 24px 24px 6px;
+    display: inline-block;
+    max-width: 80%;
+  }
+  body[data-layout="E"] .testimony .text b { background: linear-gradient(180deg, transparent 65%, rgba(255,255,255,.25) 65%); color: var(--cream); }
+  body[data-layout="E"] .testimony .who { color: var(--accent); margin-left: 14px; }
+
+  /* ====== 學苑 Logo(右上角浮動)====== */
+  .slide-logo {
+    position: fixed;
+    top: clamp(20px, 2vh, 40px);
+    right: clamp(20px, 2vw, 40px);
+    width: clamp(50px, 5vw, 100px);
+    height: clamp(50px, 5vw, 100px);
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .6s;
+  }
+  .slide-logo.show { opacity: 1; }
+  .slide-logo img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+  }
+
+  /* ====== Stage 卡片有照片時 ====== */
+  .s2 .stage.has-image {
+    color: #fff;
+    border-color: rgba(255,255,255,.4);
+  }
+  .s2 .stage.has-image .age { color: var(--accent-warm); }
+  .s2 .stage.has-image .name { color: #fff; }
+  .s2 .stage.has-image .tag { color: rgba(255,255,255,.9); }
+
+  /* ====== Slide 背景圖 ====== */
+  .slide.has-bg-image {
+    background-size: cover !important;
+    background-position: center !important;
+    color: var(--cream);
+  }
+  .slide.has-bg-image .eyebrow,
+  .slide.has-bg-image .foot,
+  .slide.has-bg-image .subhead { text-shadow: 0 2px 8px rgba(0,0,0,.5); }
+  .slide.has-bg-image .headline { text-shadow: 0 3px 12px rgba(0,0,0,.5); }
+
+  /* ╔══════════════════════════════════════════════════════════╗
+     ║   📱 直式版型(orient=vertical)・ 9:16 海報式            ║
+     ║   每張 slide 為 9:16 重新設計 ・ 不只是縮放橫版           ║
+     ╚══════════════════════════════════════════════════════════╝ */
+
+  /* 共通:直式內 padding 加大、元素由上往下排 */
+  body[data-orient="vertical"] .slide {
+    padding: 12vh 7vw 14vh;
+  }
+  body[data-orient="vertical"] .slide .inner {
+    width: 100%;
+    align-items: flex-start;
+  }
+  body[data-orient="vertical"] .slide .eyebrow {
+    position: absolute;
+    top: 6vh;
+    left: 7vw;
+    font-size: clamp(14px, 1.8vw, 30px);
+    letter-spacing: .35em;
+  }
+  body[data-orient="vertical"] .slide .foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(14px, 2vh, 32px);
+    bottom: 5vh;
+    left: 7vw;
+    right: 7vw;
+    font-size: clamp(14px, 1.8vw, 32px);
+  }
+  body[data-orient="vertical"] .slide .qr-corner-wrap {
+    align-self: flex-end;
+    margin-top: 0;
+  }
+  body[data-orient="vertical"] .qr-corner {
+    width: clamp(90px, 10vw, 160px);
+    height: clamp(90px, 10vw, 160px);
+  }
+  body[data-orient="vertical"] .qr-corner-label {
+    font-size: clamp(12px, 1.4vw, 22px);
+  }
+
+  /* === S1 主畫面 ・ 超大標題、置左、置中 === */
+  body[data-orient="vertical"] .s1 .headline {
+    font-size: clamp(90px, 14vw, 260px);
+    line-height: 1.1;
+    letter-spacing: .03em;
+  }
+  body[data-orient="vertical"] .s1 .gold-line {
+    width: clamp(48px, 7vw, 100px);
+    height: 4px;
+    margin: clamp(20px, 3vh, 50px) 0;
+  }
+  body[data-orient="vertical"] .s1 .subhead {
+    font-size: clamp(24px, 3.5vw, 50px);
+    max-width: 90%;
+    line-height: 1.7;
+  }
+
+  /* === S2 4 班別 ・ 2×2 大格子 === */
+  body[data-orient="vertical"] .s2 .headline {
+    font-size: clamp(64px, 8.5vw, 160px);
+    line-height: 1.15;
+  }
+  body[data-orient="vertical"] .s2 .gold-line { width: clamp(40px, 6vw, 80px); }
+  body[data-orient="vertical"] .s2 .stages {
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(14px, 2.4vh, 40px);
+    margin-top: clamp(36px, 5vh, 80px);
+  }
+  body[data-orient="vertical"] .s2 .stage {
+    padding: clamp(24px, 3vh, 48px) clamp(16px, 2.5vw, 36px);
+  }
+  body[data-orient="vertical"] .s2 .stage .age {
+    font-size: clamp(15px, 1.9vw, 32px);
+    letter-spacing: .28em;
+  }
+  body[data-orient="vertical"] .s2 .stage .name {
+    font-size: clamp(42px, 7vw, 100px);
+    line-height: 1;
+  }
+  body[data-orient="vertical"] .s2 .stage .tag {
+    font-size: clamp(15px, 1.9vw, 32px);
+    line-height: 1.5;
+    margin-top: clamp(10px, 1.5vh, 22px);
+  }
+
+  /* === S3 創辦人 ・ 文字置中 + 肖像填底(flow 自然排)=== */
+  body[data-orient="vertical"] .s3 { padding-right: 7vw; }
+  body[data-orient="vertical"] .s3 .text-col { width: 100%; }
+  body[data-orient="vertical"] .s3 .headline {
+    font-size: clamp(60px, 8.5vw, 170px);
+    line-height: 1.1;
+  }
+  body[data-orient="vertical"] .s3 .gold-line { width: clamp(40px, 6vw, 80px); }
+  body[data-orient="vertical"] .s3 .story {
+    font-size: clamp(20px, 2.6vw, 44px);
+    line-height: 1.85;
+    margin-top: clamp(20px, 2.5vh, 40px);
+  }
+  body[data-orient="vertical"] .s3 .portrait {
+    position: relative !important;
+    right: auto !important;
+    left: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    height: clamp(180px, 22vh, 340px);
+    aspect-ratio: auto;
+    margin: clamp(20px, 2.5vh, 40px) 0 0 !important;
+  }
+
+  /* === S4 見證 ・ 大字 + 大引號 === */
+  body[data-orient="vertical"] .s4 .quote-mark {
+    font-size: clamp(160px, 22vw, 400px);
+    margin-bottom: clamp(-50px, -3vh, -80px);
+  }
+  body[data-orient="vertical"] .s4 .testimony-wrap {
+    min-height: 50vh;
+  }
+  body[data-orient="vertical"] .s4 .testimony {
+    max-width: 100%;
+  }
+  body[data-orient="vertical"] .s4 .testimony .text {
+    font-size: clamp(40px, 6vw, 120px);
+    line-height: 1.5;
+  }
+  body[data-orient="vertical"] .s4 .testimony .who {
+    font-size: clamp(20px, 2.5vw, 44px);
+    margin-top: clamp(24px, 3vh, 60px);
+  }
+
+  /* === S5 心智光譜 ・ flow 自然排,不用 absolute === */
+  body[data-orient="vertical"] .s5 .text-col { width: 100%; }
+  body[data-orient="vertical"] .s5 .headline {
+    font-size: clamp(56px, 8vw, 160px);
+    line-height: 1.1;
+  }
+  body[data-orient="vertical"] .s5 .gold-line { width: clamp(40px, 6vw, 80px); }
+  body[data-orient="vertical"] .s5 .subhead {
+    font-size: clamp(20px, 2.8vw, 44px);
+    max-width: 100%;
+    line-height: 1.7;
+  }
+  body[data-orient="vertical"] .s5 .spectrum-dots {
+    justify-content: center;
+    gap: clamp(20px, 3vw, 50px);
+    margin: clamp(24px, 3.5vh, 50px) 0 clamp(16px, 2vh, 30px);
+  }
+  body[data-orient="vertical"] .s5 .spec-dot {
+    width: clamp(42px, 5.5vw, 100px);
+    height: clamp(42px, 5.5vw, 100px);
+    box-shadow: 0 0 60px currentColor;
+  }
+  body[data-orient="vertical"] .s5 .qr-big {
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    top: auto !important;
+    transform: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+    width: clamp(220px, 32vw, 460px) !important;
+    height: clamp(220px, 32vw, 460px);
+    margin: clamp(24px, 3vh, 48px) auto 0 !important;
+  }
+  body[data-orient="vertical"] .s5 .qr-big-label {
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    top: auto !important;
+    transform: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+    text-align: center;
+    width: auto !important;
+    margin: clamp(10px, 1.5vh, 24px) auto 0 !important;
+    font-size: clamp(18px, 2.2vw, 36px);
+  }
+
+  /* === S6 加 LINE ・ 同 S5 ・ flow 自然 === */
+  body[data-orient="vertical"] .s6 .text-col { width: 100%; }
+  body[data-orient="vertical"] .s6 .headline {
+    font-size: clamp(56px, 8vw, 160px);
+    line-height: 1.1;
+  }
+  body[data-orient="vertical"] .s6 .gold-line { width: clamp(40px, 6vw, 80px); }
+  body[data-orient="vertical"] .s6 .subhead {
+    font-size: clamp(20px, 2.8vw, 44px);
+    max-width: 100%;
+    line-height: 1.7;
+  }
+  body[data-orient="vertical"] .s6 .qr-big {
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    top: auto !important;
+    transform: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+    width: clamp(220px, 32vw, 460px) !important;
+    height: clamp(220px, 32vw, 460px);
+    margin: clamp(24px, 3vh, 48px) auto 0 !important;
+  }
+  body[data-orient="vertical"] .s6 .qr-big-label {
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    top: auto !important;
+    transform: none !important;
+    animation: none !important;
+    opacity: 1 !important;
+    text-align: center;
+    width: auto !important;
+    margin: clamp(10px, 1.5vh, 24px) auto 0 !important;
+    font-size: clamp(18px, 2.2vw, 36px);
+  }
+
+  /* === S7 課程花絮 ・ 上圖下文 === */
+  body[data-orient="vertical"] .highlight-wrap {
+    inset: 14vh 7vw 16vh 7vw;
+  }
+  body[data-orient="vertical"] .highlight {
+    grid-template-columns: 1fr;
+    grid-template-rows: 58% 1fr;
+    gap: clamp(20px, 3vh, 50px);
+  }
+  body[data-orient="vertical"] .highlight .caption {
+    align-self: start;
+  }
+  body[data-orient="vertical"] .highlight .h-date {
+    font-size: clamp(15px, 1.8vw, 30px);
+    margin-bottom: clamp(14px, 2vh, 28px);
+  }
+  body[data-orient="vertical"] .highlight .h-title {
+    font-size: clamp(40px, 5.5vw, 100px);
+    line-height: 1.25;
+  }
+  body[data-orient="vertical"] .highlight .h-desc {
+    font-size: clamp(20px, 2.5vw, 42px);
+    line-height: 1.7;
+    margin-top: clamp(16px, 2.4vh, 36px);
+  }
+
+  /* === Logo 直式時略大、移到底部置中 === */
+  body[data-orient="vertical"] .slide-logo {
+    width: clamp(56px, 7.5vw, 130px);
+    height: clamp(56px, 7.5vw, 130px);
+    top: clamp(20px, 2.5vh, 50px);
+    right: clamp(20px, 3vw, 50px);
+  }
+
+  /* 進度條 — 底部一條極細,顯示當前 slide 進度 */
+  .progress {
+    position: fixed;
+    bottom: 0; left: 0;
+    height: 3px;
+    background: var(--accent);
+    z-index: 100;
+    width: 0%;
+    transition: width linear;
+  }
+
+  /* 手動切換按鈕(開發/驗收用,正式上線可隱藏) */
+  .controls {
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity .3s;
+    padding: 8px;
+  }
+  .controls:hover, body:hover .controls { opacity: 1; }
+  .controls button {
+    background: rgba(0,0,0,.6);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.2);
+    padding: 6px 12px;
+    margin-right: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: var(--sans);
+  }
+</style>
+</head>
+<body>
+
+<div class="slide-logo" id="slide-logo"></div>
+
+<div class="tvwall">
+
+  <!-- ============== Slide 1 ============== -->
+  <section class="slide s1 active" data-id="1">
+    <div class="eyebrow">K12覺知素養教育學苑</div>
+    <h1 class="headline">先懂心,<br>再懂教。</h1>
+    <div class="gold-line"></div>
+    <p class="subhead">陪孩子把情緒變成理解,<br>把理解變成選擇。</p>
+    <div class="foot">
+      <span>李守蕾老師 ・ 18 年覺知教育累積</span>
+      <div class="qr-corner-wrap">
+        <div class="qr-corner-label">@LINE</div>
+        <div class="qr-corner" data-qr="line-small"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== Slide 2 ============== -->
+  <section class="slide s2" data-id="2">
+    <div class="eyebrow">從 4 歲到 18 歲</div>
+    <h1 class="headline">陪孩子走過,<br>四個成長關鍵期。</h1>
+    <div class="gold-line"></div>
+    <div class="stages">
+      <div class="stage">
+        <div class="age">4 - 6 歲</div>
+        <div class="name">啟蒙</div>
+        <div class="tag">情緒辨識<br>建立安全感</div>
+      </div>
+      <div class="stage">
+        <div class="age">7 - 12 歲</div>
+        <div class="name">開智</div>
+        <div class="tag">學習動機<br>自律與專注</div>
+      </div>
+      <div class="stage">
+        <div class="age">13 - 15 歲</div>
+        <div class="name">智優</div>
+        <div class="tag">自我認同<br>關係與決策</div>
+      </div>
+      <div class="stage">
+        <div class="age">16 - 18 歲</div>
+        <div class="name">恆毅力</div>
+        <div class="tag">使命感<br>行動與承擔</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span>K12覺知素養教育學苑 ・ 一個學苑、四個階段、一條心法</span>
+      <div class="qr-corner-wrap">
+        <div class="qr-corner-label">@LINE</div>
+        <div class="qr-corner" data-qr="line-small"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== Slide 3 ============== -->
+  <section class="slide s3" data-id="3">
+    <div class="text-col">
+      <div class="eyebrow">創辦人故事</div>
+      <h1 class="headline">當一個媽媽,<br>決定<span class="gold">不放棄</span>。</h1>
+      <div class="gold-line"></div>
+      <div class="story">
+        <span>兒子拒學的那一年,</span>
+        <span>她沒有送他去輔導。</span>
+        <span>她讀了 200 本書,</span>
+        <span>然後創辦了一所學校。</span>
+      </div>
+    </div>
+    <div class="portrait" id="portrait-box">
+      <div class="ph-text">守蕾老師<br>肖像區<br><br><small style="opacity:.7;font-size:.8em">後台上傳肖像照片</small></div>
+    </div>
+    <div class="foot">
+      <span><strong>李守蕾</strong> ・ 覺知教育創辦人 ・ 自 2008 起</span>
+      <div class="qr-corner-wrap">
+        <div class="qr-corner-label">@LINE</div>
+        <div class="qr-corner" data-qr="line-small"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== Slide 4 ============== -->
+  <section class="slide s4" data-id="4">
+    <div class="eyebrow">家長與老師的真實回饋</div>
+    <div class="quote-mark">"</div>
+    <div class="testimony-wrap" id="testimony-wrap">
+      <!-- 見證內容由 script 區的 CONFIG.testimonies 動態產生 -->
+    </div>
+    <div class="foot">
+      <div class="dots" id="testimony-dots">
+        <!-- 圓點數量由見證數量自動產生 -->
+      </div>
+      <div class="qr-corner-wrap">
+        <div class="qr-corner-label" style="color:var(--ink-soft)">@LINE</div>
+        <div class="qr-corner" data-qr="line-small" style="background:var(--brand);padding:6%"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== Slide 5 ============== -->
+  <section class="slide s5" data-id="5">
+    <div class="text-col">
+      <div class="eyebrow">5 分鐘,你會認識新的孩子</div>
+      <h1 class="headline">想知道孩子的<br><span class="gold">天生底色</span>嗎?</h1>
+      <div class="spectrum-dots">
+        <div class="spec-dot spec-red"></div>
+        <div class="spec-dot spec-orange"></div>
+        <div class="spec-dot spec-green"></div>
+        <div class="spec-dot spec-blue"></div>
+      </div>
+      <div class="gold-line"></div>
+      <p class="subhead">覺知心智光譜 ・ 24 題免費自測 ・ 立即看結果</p>
+    </div>
+    <div class="qr-big" data-qr="mindspectrum"></div>
+    <div class="qr-big-label">→ 手機掃描 ・ 立即測驗</div>
+    <div class="foot">
+      <span>覺知教育 18 年研究累積 ・ 已有 2,400+ 家庭使用</span>
+    </div>
+  </section>
+
+  <!-- ============== Slide 6 ============== -->
+  <section class="slide s6" data-id="6">
+    <div class="text-col">
+      <div class="eyebrow">不急,先成為朋友</div>
+      <h1 class="headline">每週一篇,<br>陪你<span class="gold">慢慢看懂</span>孩子。</h1>
+      <div class="gold-line"></div>
+      <p class="subhead">加入 LINE <b style="color:var(--accent)">@zwayedu</b>,<br>每週收到一篇覺知教養文章。</p>
+    </div>
+    <div class="qr-big" data-qr="line-big"></div>
+    <div class="qr-big-label">→ 加為好友</div>
+    <div class="foot">
+      <span>K12覺知素養教育學苑 ・ 高雄鼓山 美術東三路 86 號</span>
+    </div>
+  </section>
+
+  <!-- ============== Slide 7 ・ 課程花絮 ============== -->
+  <section class="slide s7" data-id="7">
+    <div class="eyebrow">課程花絮 ・ 學苑日常</div>
+    <div class="highlight-wrap" id="highlight-wrap">
+      <!-- 由 CONFIG.highlights 動態渲染;沒有照片時整張 slide 自動跳過 -->
+    </div>
+    <div class="foot">
+      <div class="dots" id="highlight-dots"></div>
+      <div class="qr-corner-wrap">
+        <div class="qr-corner-label">@LINE</div>
+        <div class="qr-corner" data-qr="line-small"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="progress" id="progress"></div>
+
+<div class="controls">
+  <button onclick="prevSlide()">← 上一張</button>
+  <button onclick="nextSlide()">下一張 →</button>
+  <button onclick="togglePause()" id="pauseBtn">⏸ 暫停</button>
+  <button onclick="document.documentElement.requestFullscreen()">⛶ 全螢幕</button>
+</div>
+
+<script>
+  // ╔════════════════════════════════════════════════════════════════╗
+  // ║                                                                ║
+  // ║   內容請從後台管理頁 admin.html 修改                              ║
+  // ║   - 雲端模式:電視牆每 30 秒自動同步最新內容(切 slide 時套用)     ║
+  // ║   - 本機模式:讀 localStorage 或 defaults.js                     ║
+  // ║                                                                ║
+  // ╚════════════════════════════════════════════════════════════════╝
+
+  // 初始用 cached(即時)・ 之後 async 從雲端 refresh
+  let CONFIG = window.TVWALL_loadCached();
+  let lastUpdatedAt = localStorage.getItem('tvwall_updated_at') || '';
+  let lastPullTime = 0;
+
+  // ========== Slide 設定(會隨 CONFIG 動態更新)==========
+  let SLIDES = buildSlides(CONFIG);
+
+  function buildSlides(cfg) {
+    const slides = [
+      { id: 1, duration: cfg.durations.s1 },
+      { id: 2, duration: cfg.durations.s2 },
+      { id: 3, duration: cfg.durations.s3 },
+      { id: 4, duration: cfg.durations.s4 },
+      { id: 5, duration: cfg.durations.s5 },
+      { id: 6, duration: cfg.durations.s6 },
+    ];
+    // 只有當有花絮照片才把 Slide 7 加入輪播
+    if (Array.isArray(cfg.highlights) && cfg.highlights.length > 0) {
+      slides.push({ id: 7, duration: cfg.durations.s7 || 12000 });
+    }
+    return slides;
+  }
+
+  // ========== QR 連結 → 內部使用(會隨 CONFIG 更新)==========
+  let QR_URLS = buildQrUrls(CONFIG);
+
+  function buildQrUrls(cfg) {
+    return {
+      "line-small":   cfg.qr.line,
+      "line-big":     cfg.qr.line,
+      "mindspectrum": cfg.qr.mindspectrum,
+    };
+  }
+
+  // ========== 套用新 CONFIG(雲端拉到更新時呼叫)==========
+  function applyConfig(newConfig) {
+    CONFIG = newConfig;
+    SLIDES = buildSlides(CONFIG);
+    QR_URLS = buildQrUrls(CONFIG);
+    applyTheme(CONFIG.theme);
+    applyLayout(CONFIG.layout);
+    renderTestimonies();
+    renderHighlights();
+    renderQRs();
+    renderPortrait();
+    renderLogo();
+    renderStageImages();
+    renderSlideBackgrounds();
+    console.log('[tvwall] 已套用新設定 ・ 更新時間:', lastUpdatedAt);
+  }
+
+  // ========== 套用配色(6 套主題)==========
+  function applyTheme(themeName) {
+    const valid = ['green','amber','mint','gold','leather','navy'];
+    const t = valid.includes(themeName) ? themeName : 'green';
+    if (t === 'green') document.body.removeAttribute('data-theme');
+    else document.body.setAttribute('data-theme', t);
+  }
+
+  // ========== 套用版型(4 種版型)==========
+  function applyLayout(layoutName) {
+    const valid = ['A','B','C','E'];
+    const l = valid.includes(layoutName) ? layoutName : 'A';
+    document.body.setAttribute('data-layout', l);
+  }
+
+  // ========== 螢幕方向 ・ vertical.html 永遠直式 ==========
+  function applyOrientation() {
+    document.body.setAttribute('data-orient', 'vertical');
+  }
+
+  // ========== 雲端輪詢(切 slide 時順便檢查)==========
+  async function maybePullCloud() {
+    if (!window.TVWALL_isCloudEnabled || !window.TVWALL_isCloudEnabled()) return;
+    const now = Date.now();
+    const interval = (window.TVWALL_API && window.TVWALL_API.pollInterval) || 30000;
+    if (now - lastPullTime < interval) return;
+    lastPullTime = now;
+    try {
+      const r = await window.TVWALL_loadCloud();
+      if (r.updated_at && r.updated_at !== lastUpdatedAt) {
+        lastUpdatedAt = r.updated_at;
+        applyConfig(r.config);
+      }
+    } catch(e) {
+      console.warn('[tvwall] 雲端輪詢失敗(繼續用本機 cache):', e.message);
+    }
+  }
+
+  // ========== 動態渲染見證(從 CONFIG.testimonies)==========
+  function renderTestimonies() {
+    const wrap = document.getElementById('testimony-wrap');
+    const dotsBox = document.getElementById('testimony-dots');
+    if (!wrap || !dotsBox) return;
+    wrap.innerHTML = CONFIG.testimonies.map((t, i) => `
+      <div class="testimony${i === 0 ? ' show' : ''}" data-i="${i}">
+        <div class="text">${t.text}</div>
+        <div class="who">${t.who}</div>
+      </div>
+    `).join('');
+    dotsBox.innerHTML = CONFIG.testimonies.map((_, i) =>
+      `<div class="dot${i === 0 ? ' active' : ''}"></div>`
+    ).join('');
+  }
+
+  // ========== QR 渲染(支援自訂上傳圖)==========
+  function renderQRs() {
+    document.querySelectorAll('[data-qr]').forEach(el => {
+      const key = el.dataset.qr;
+      const url = QR_URLS[key];
+      el.innerHTML = '';
+      // 檢查有沒有自訂 QR 圖片(只大 QR 才能自訂,小角落 QR 還是用內建生成)
+      let customImg = '';
+      if (key === 'line-big' && CONFIG.qrImageLine) customImg = CONFIG.qrImageLine;
+      else if (key === 'mindspectrum' && CONFIG.qrImageMindspectrum) customImg = CONFIG.qrImageMindspectrum;
+      if (customImg) {
+        const img = document.createElement('img');
+        img.src = customImg;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'contain';
+        el.appendChild(img);
+        return;
+      }
+      if (!url || !window.QRCode) return;
+      QRCode.toCanvas(url, {
+        errorCorrectionLevel: 'H',
+        margin: 0,
+        color: {
+          dark:  '#0e6340',
+          light: '#ffffff',
+        },
+        width: el.dataset.qr.includes('big') ? 360 : 120,
+      }, (err, canvas) => {
+        if (err) { el.textContent = 'QR'; return; }
+        el.appendChild(canvas);
+      });
+    });
+  }
+
+  // ========== Logo / Stage 圖 / 背景圖 渲染 ==========
+  function renderLogo() {
+    const el = document.getElementById('slide-logo');
+    if (!el) return;
+    if (CONFIG.logoImage) {
+      el.innerHTML = `<img src="${CONFIG.logoImage}" alt="logo">`;
+      el.classList.add('show');
+    } else {
+      el.innerHTML = '';
+      el.classList.remove('show');
+    }
+  }
+
+  function renderStageImages() {
+    const stages = document.querySelectorAll('.s2 .stage');
+    stages.forEach((card, i) => {
+      const img = CONFIG[`stage${i+1}Image`];
+      if (img) {
+        card.style.backgroundImage = `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.65)), url(${img})`;
+        card.classList.add('has-image');
+      } else {
+        card.style.backgroundImage = '';
+        card.classList.remove('has-image');
+      }
+    });
+  }
+
+  function renderSlideBackgrounds() {
+    for (let i = 1; i <= 7; i++) {
+      const slide = document.querySelector(`.s${i}`);
+      if (!slide) continue;
+      const img = CONFIG[`bgImageS${i}`];
+      if (img) {
+        slide.style.backgroundImage = `linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.65)), url(${img})`;
+        slide.classList.add('has-bg-image');
+      } else {
+        slide.style.backgroundImage = '';
+        slide.classList.remove('has-bg-image');
+      }
+    }
+  }
+
+  // ========== 肖像渲染(支援自訂上傳)==========
+  function renderPortrait() {
+    const box = document.getElementById('portrait-box');
+    if (!box) return;
+    if (CONFIG.portrait) {
+      box.innerHTML = `<img src="${CONFIG.portrait}" style="width:100%;height:100%;object-fit:cover;display:block">`;
+      box.style.background = '#0a0a0a';
+    } else {
+      box.innerHTML = '<div class="ph-text">守蕾老師<br>肖像區<br><br><small style="opacity:.7;font-size:.8em">後台上傳肖像照片</small></div>';
+      box.style.background = '';
+    }
+  }
+
+  // ========== 輪播控制 ==========
+  let current = 0;
+  let timer = null;
+  let progressTimer = null;
+  let paused = false;
+  const slideEls = () => document.querySelectorAll('.slide');
+  const progressEl = document.getElementById('progress');
+
+  function showSlide(idx) {
+    // 把所有 slide 都 deactivate(用 querySelector 不是 NodeList[idx])
+    document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
+    // 找到對應 id 的 slide
+    const slideId = SLIDES[idx].id;
+    const target = document.querySelector(`.slide.s${slideId}`);
+    if (!target) return;
+    target.classList.add('active');
+    current = idx;
+    startProgressBar(SLIDES[idx].duration);
+
+    // Slide 4 內部見證輪換
+    if (slideId === 4) startTestimonyRotation();
+    else stopTestimonyRotation();
+    // Slide 7 內部花絮輪換
+    if (slideId === 7) startHighlightRotation();
+    else stopHighlightRotation();
+  }
+
+  function nextSlide() {
+    clearTimeout(timer);
+    showSlide((current + 1) % SLIDES.length);
+    scheduleNext();
+  }
+
+  function prevSlide() {
+    clearTimeout(timer);
+    showSlide((current - 1 + SLIDES.length) % SLIDES.length);
+    scheduleNext();
+  }
+
+  function scheduleNext() {
+    clearTimeout(timer);
+    if (paused) return;
+    timer = setTimeout(async () => {
+      // 切下一張前先檢查雲端(限頻每 30 秒一次)
+      await maybePullCloud();
+      showSlide((current + 1) % SLIDES.length);
+      scheduleNext();
+    }, SLIDES[current].duration);
+  }
+
+  function togglePause() {
+    paused = !paused;
+    const btn = document.getElementById('pauseBtn');
+    if (paused) {
+      clearTimeout(timer);
+      clearInterval(progressTimer);
+      btn.textContent = '▶ 繼續';
+    } else {
+      scheduleNext();
+      startProgressBar(SLIDES[current].duration);
+      btn.textContent = '⏸ 暫停';
+    }
+  }
+
+  function startProgressBar(duration) {
+    clearInterval(progressTimer);
+    progressEl.style.transition = 'none';
+    progressEl.style.width = '0%';
+    // force reflow
+    void progressEl.offsetWidth;
+    progressEl.style.transition = `width ${duration}ms linear`;
+    progressEl.style.width = '100%';
+  }
+
+  // ========== Slide 4 見證輪換 ==========
+  let testimonyTimer = null;
+  let testimonyIdx = 0;
+  function startTestimonyRotation() {
+    const count = CONFIG.testimonies.length;
+    if (count === 0) return;
+    testimonyIdx = 0;
+    showTestimony(0);
+    if (count === 1) return;  // 只有 1 條就不輪換
+    testimonyTimer = setInterval(() => {
+      testimonyIdx = (testimonyIdx + 1) % count;
+      showTestimony(testimonyIdx);
+    }, CONFIG.testimonyInterval);
+  }
+  function stopTestimonyRotation() {
+    clearInterval(testimonyTimer);
+    // reset to first for next time
+    document.querySelectorAll('.testimony').forEach((el, i) => {
+      el.classList.toggle('show', i === 0);
+    });
+    document.querySelectorAll('#testimony-dots .dot').forEach((el, i) => {
+      el.classList.toggle('active', i === 0);
+    });
+  }
+  function showTestimony(i) {
+    document.querySelectorAll('.testimony').forEach((el, j) => {
+      el.classList.toggle('show', j === i);
+    });
+    document.querySelectorAll('#testimony-dots .dot').forEach((el, j) => {
+      el.classList.toggle('active', j === i);
+    });
+  }
+
+  // ========== Slide 7 課程花絮輪換 ==========
+  let highlightTimer = null;
+  let highlightIdx = 0;
+  function renderHighlights() {
+    const wrap = document.getElementById('highlight-wrap');
+    const dotsBox = document.getElementById('highlight-dots');
+    if (!wrap || !dotsBox) return;
+    const items = (CONFIG.highlights || []);
+    if (items.length === 0) {
+      wrap.innerHTML = '';
+      dotsBox.innerHTML = '';
+      return;
+    }
+    wrap.innerHTML = items.map((h, i) => `
+      <div class="highlight${i === 0 ? ' show' : ''}" data-i="${i}">
+        <div class="img-area">
+          ${h.image ? `<img src="${h.image}" alt="${(h.title || '').replace(/"/g, '&quot;')}">` : '<div class="placeholder">(尚未上傳照片)</div>'}
+        </div>
+        <div class="caption">
+          ${h.date ? `<div class="h-date">${h.date}</div>` : ''}
+          <div class="h-title">${h.title || ''}</div>
+          ${h.desc ? `<div class="h-desc">${h.desc}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+    dotsBox.innerHTML = items.map((_, i) =>
+      `<div class="dot${i === 0 ? ' active' : ''}"></div>`
+    ).join('');
+  }
+  function startHighlightRotation() {
+    const items = CONFIG.highlights || [];
+    if (items.length === 0) return;
+    highlightIdx = 0;
+    showHighlight(0);
+    if (items.length === 1) return;
+    highlightTimer = setInterval(() => {
+      highlightIdx = (highlightIdx + 1) % items.length;
+      showHighlight(highlightIdx);
+    }, 4500);
+  }
+  function stopHighlightRotation() {
+    clearInterval(highlightTimer);
+  }
+  function showHighlight(i) {
+    document.querySelectorAll('.highlight').forEach((el, j) => {
+      el.classList.toggle('show', j === i);
+    });
+    document.querySelectorAll('#highlight-dots .dot').forEach((el, j) => {
+      el.classList.toggle('active', j === i);
+    });
+  }
+
+  // ========== 鍵盤快捷鍵 ==========
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') prevSlide();
+    if (e.key === 'ArrowRight') nextSlide();
+    if (e.key === ' ') { e.preventDefault(); togglePause(); }
+    if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen();
+  });
+
+  // ========== 啟動 ==========
+  window.addEventListener('load', async () => {
+    // 1. 立即套用配色 & 版型 + 方向 + cached 渲染(避免白屏)
+    applyOrientation();
+    applyTheme(CONFIG.theme);
+    applyLayout(CONFIG.layout);
+    renderTestimonies();
+    renderHighlights();
+    renderQRs();
+    renderPortrait();
+    renderLogo();
+    renderStageImages();
+    renderSlideBackgrounds();
+    startProgressBar(SLIDES[0].duration);
+    scheduleNext();
+
+    // 2. 啟動 1 秒後試著從雲端拉一次(如果有設定)
+    setTimeout(async () => {
+      if (window.TVWALL_isCloudEnabled && window.TVWALL_isCloudEnabled()) {
+        try {
+          const r = await window.TVWALL_loadCloud();
+          if (r.updated_at && r.updated_at !== lastUpdatedAt) {
+            lastUpdatedAt = r.updated_at;
+            applyConfig(r.config);
+          }
+          console.log('[tvwall] 雲端模式 ✓');
+        } catch(e) {
+          console.warn('[tvwall] 雲端連線失敗,使用本機 cache:', e.message);
+        }
+      } else {
+        console.log('[tvwall] 本機模式(尚未配置 cloud_config.js)');
+      }
+    }, 1000);
+  });
+</script>
+
+</body>
+</html>

@@ -194,7 +194,7 @@
     </div>
     <button class="btn" id="btn-refresh" onclick="refreshPreview()">🔄 重整預覽</button>
     <button class="btn" onclick="window.open('admin.html', '_blank')">↗ 開全螢幕編輯</button>
-    <button class="btn" onclick="window.open('index.html', '_blank')">↗ 開電視牆</button>
+    <button class="btn" onclick="window.open(currentOrient === 'vertical' ? 'vertical.html' : 'index.html', '_blank')">↗ 開電視牆</button>
   </div>
 </header>
 
@@ -221,10 +221,9 @@
     pane.className = 'preview-pane ' + orient;
     document.getElementById('btn-h').classList.toggle('active', orient === 'horizontal');
     document.getElementById('btn-v').classList.toggle('active', orient === 'vertical');
-    // reload iframe with new orient param
+    // 橫式 → index.html / 直式 → vertical.html(獨立檔)
     const frame = document.getElementById('preview-frame');
-    const base = 'index.html?embedded=1';
-    frame.src = orient === 'vertical' ? base + '&orient=vertical' : base;
+    frame.src = orient === 'vertical' ? 'vertical.html?embedded=1' : 'index.html?embedded=1';
   }
 
   function refreshPreview() {
@@ -233,7 +232,7 @@
     btn.classList.add('refreshing');
     setTimeout(() => btn.classList.remove('refreshing'), 1000);
     // 加上 timestamp 強制 reload
-    const base = currentOrient === 'vertical' ? 'index.html?embedded=1&orient=vertical' : 'index.html?embedded=1';
+    const base = currentOrient === 'vertical' ? 'vertical.html?embedded=1' : 'index.html?embedded=1';
     frame.src = base + '&t=' + Date.now();
   }
 

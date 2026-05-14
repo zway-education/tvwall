@@ -29,6 +29,15 @@ window.TVWALL_DEFAULTS = {
     },
   ],
 
+  // Slide 2 的 4 張班級卡片(可在後台改文字 + 拖拉排序)
+  // 標語用 \n 換行,index.html 渲染時轉成 <br>
+  stages: [
+    { age: '3 - 6 歲',  name: '啟蒙班',   tag: '當孩子能說出「我難過」,\n那就是學會了。' },
+    { age: '7 - 12 歲', name: '開智班',   tag: '學會自律,\n是國小最重要的那堂課。' },
+    { age: '13 - 15 歲', name: '智優班',  tag: '讓青春期,\n不再變成關上的那扇門。' },
+    { age: '全齡適用',  name: '全人測評', tag: '先看懂孩子,\n再開始教育。' },
+  ],
+
   durations: {
     s1: 15000,
     s2: 12000,
@@ -93,6 +102,9 @@ function _merge(parsed) {
     testimonies: (Array.isArray(parsed.testimonies) && parsed.testimonies.length > 0)
       ? parsed.testimonies
       : D.testimonies,
+    stages: (Array.isArray(parsed.stages) && parsed.stages.length > 0)
+      ? parsed.stages
+      : D.stages,
     durations: { ...D.durations, ...(parsed.durations || {}) },
     testimonyInterval: parsed.testimonyInterval || D.testimonyInterval,
     portrait: parsed.portrait || '',

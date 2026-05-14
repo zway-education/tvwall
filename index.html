@@ -1414,27 +1414,8 @@
     <div class="eyebrow">從 3 歲開始 ・ 看懂孩子</div>
     <h1 class="headline">陪孩子走過,<br>每一個成長關鍵期。</h1>
     <div class="gold-line"></div>
-    <div class="stages">
-      <div class="stage">
-        <div class="age">3 - 6 歲</div>
-        <div class="name">啟蒙班</div>
-        <div class="tag">當孩子能說出「我難過」,<br>那就是學會了。</div>
-      </div>
-      <div class="stage">
-        <div class="age">7 - 12 歲</div>
-        <div class="name">開智班</div>
-        <div class="tag">學會自律,<br>是國小最重要的那堂課。</div>
-      </div>
-      <div class="stage">
-        <div class="age">13 - 15 歲</div>
-        <div class="name">智優班</div>
-        <div class="tag">讓青春期,<br>不再變成關上的那扇門。</div>
-      </div>
-      <div class="stage">
-        <div class="age">全齡適用</div>
-        <div class="name">全人測評</div>
-        <div class="tag">先看懂孩子,<br>再開始教育。</div>
-      </div>
+    <div class="stages" id="stages-wrap">
+      <!-- 4 張班級卡片由 CONFIG.stages 動態渲染(renderStages)・ 後台可改文字 + 拖拉排序 -->
     </div>
     <div class="foot">
       <span>K12覺知素養教育學苑 ・ 一個學苑、三個班級、一條心法</span>
@@ -1659,6 +1640,7 @@
     applyTheme(CONFIG.theme);
     applyLayout(CONFIG.layout);
     renderTestimonies();
+    renderStages();
     renderHighlights();
     renderQRs();
     renderPortrait();
@@ -1886,6 +1868,20 @@
     dotsBox.innerHTML = CONFIG.testimonies.map((_, i) =>
       `<div class="dot${i === 0 ? ' active' : ''}"></div>`
     ).join('');
+  }
+
+  // ========== 動態渲染 Slide 2 班級卡片(從 CONFIG.stages)==========
+  function renderStages() {
+    const wrap = document.getElementById('stages-wrap');
+    if (!wrap) return;
+    const stages = Array.isArray(CONFIG.stages) ? CONFIG.stages : [];
+    wrap.innerHTML = stages.map(s => `
+      <div class="stage">
+        <div class="age">${s.age || ''}</div>
+        <div class="name">${s.name || ''}</div>
+        <div class="tag">${(s.tag || '').replace(/\n/g, '<br>')}</div>
+      </div>
+    `).join('');
   }
 
   // ========== QR 渲染(支援自訂上傳圖)==========
@@ -2170,6 +2166,7 @@
     applyTheme(CONFIG.theme);
     applyLayout(CONFIG.layout);
     renderTestimonies();
+    renderStages();
     renderHighlights();
     renderQRs();
     renderPortrait();

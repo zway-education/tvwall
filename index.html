@@ -865,57 +865,197 @@
 
   /* ╔══════════════════════════════════════════════════════════╗
      ║   📱 直式版型(orient=vertical)・ 9:16 海報式            ║
+     ║   每張 slide 為 9:16 重新設計 ・ 不只是縮放橫版           ║
      ╚══════════════════════════════════════════════════════════╝ */
-  body[data-orient="vertical"] .slide { padding: 7vh 6vw; }
-  body[data-orient="vertical"] .slide .inner { align-items: flex-start; }
 
-  /* 直式 S1 主畫面:超大字 */
-  body[data-orient="vertical"] .s1 .headline { font-size: clamp(60px, 11vw, 200px); }
-  body[data-orient="vertical"] .s1 .subhead { font-size: clamp(20px, 2.5vw, 42px); max-width: 90%; }
+  /* 共通:直式內 padding 加大、元素由上往下排 */
+  body[data-orient="vertical"] .slide {
+    padding: 12vh 7vw 14vh;
+  }
+  body[data-orient="vertical"] .slide .inner {
+    width: 100%;
+    align-items: flex-start;
+  }
+  body[data-orient="vertical"] .slide .eyebrow {
+    position: absolute;
+    top: 6vh;
+    left: 7vw;
+    font-size: clamp(14px, 1.8vw, 30px);
+    letter-spacing: .35em;
+  }
+  body[data-orient="vertical"] .slide .foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(14px, 2vh, 32px);
+    bottom: 5vh;
+    left: 7vw;
+    right: 7vw;
+    font-size: clamp(14px, 1.8vw, 32px);
+  }
+  body[data-orient="vertical"] .slide .qr-corner-wrap {
+    align-self: flex-end;
+    margin-top: 0;
+  }
+  body[data-orient="vertical"] .qr-corner {
+    width: clamp(90px, 10vw, 160px);
+    height: clamp(90px, 10vw, 160px);
+  }
+  body[data-orient="vertical"] .qr-corner-label {
+    font-size: clamp(12px, 1.4vw, 22px);
+  }
 
-  /* 直式 S2:4 班別改縱向堆疊(因為橫向窄) */
+  /* === S1 主畫面 ・ 超大標題、置左、置中 === */
+  body[data-orient="vertical"] .s1 .headline {
+    font-size: clamp(90px, 14vw, 260px);
+    line-height: 1.1;
+    letter-spacing: .03em;
+  }
+  body[data-orient="vertical"] .s1 .gold-line {
+    width: clamp(48px, 7vw, 100px);
+    height: 4px;
+    margin: clamp(20px, 3vh, 50px) 0;
+  }
+  body[data-orient="vertical"] .s1 .subhead {
+    font-size: clamp(24px, 3.5vw, 50px);
+    max-width: 90%;
+    line-height: 1.7;
+  }
+
+  /* === S2 4 班別 ・ 2×2 大格子 === */
+  body[data-orient="vertical"] .s2 .headline {
+    font-size: clamp(64px, 8.5vw, 160px);
+    line-height: 1.15;
+  }
+  body[data-orient="vertical"] .s2 .gold-line { width: clamp(40px, 6vw, 80px); }
   body[data-orient="vertical"] .s2 .stages {
     grid-template-columns: 1fr 1fr;
-    gap: clamp(10px, 1.5vh, 24px);
+    gap: clamp(14px, 2.4vh, 40px);
+    margin-top: clamp(36px, 5vh, 80px);
   }
-  body[data-orient="vertical"] .s2 .headline { font-size: clamp(40px, 6vw, 100px); }
-  body[data-orient="vertical"] .s2 .stage { padding: clamp(14px, 2vh, 28px) clamp(12px, 2vw, 24px); }
-  body[data-orient="vertical"] .s2 .stage .name { font-size: clamp(24px, 4vw, 56px); }
+  body[data-orient="vertical"] .s2 .stage {
+    padding: clamp(24px, 3vh, 48px) clamp(16px, 2.5vw, 36px);
+  }
+  body[data-orient="vertical"] .s2 .stage .age {
+    font-size: clamp(15px, 1.9vw, 32px);
+    letter-spacing: .28em;
+  }
+  body[data-orient="vertical"] .s2 .stage .name {
+    font-size: clamp(42px, 7vw, 100px);
+    line-height: 1;
+  }
+  body[data-orient="vertical"] .s2 .stage .tag {
+    font-size: clamp(15px, 1.9vw, 32px);
+    line-height: 1.5;
+    margin-top: clamp(10px, 1.5vh, 22px);
+  }
 
-  /* 直式 S3 創辦人:文字置頂,肖像置中下方 */
+  /* === S3 創辦人 ・ 文字置中 + 肖像填底 === */
+  body[data-orient="vertical"] .s3 { padding-right: 7vw; }
   body[data-orient="vertical"] .s3 .text-col { width: 100%; }
-  body[data-orient="vertical"] .s3 .headline { font-size: clamp(48px, 8vw, 150px); }
-  body[data-orient="vertical"] .s3 .story { font-size: clamp(18px, 2.4vw, 42px); }
+  body[data-orient="vertical"] .s3 .headline {
+    font-size: clamp(72px, 10vw, 200px);
+    line-height: 1.1;
+  }
+  body[data-orient="vertical"] .s3 .gold-line { width: clamp(40px, 6vw, 80px); }
+  body[data-orient="vertical"] .s3 .story {
+    font-size: clamp(22px, 3vw, 50px);
+    line-height: 1.9;
+    margin-top: clamp(24px, 3vh, 50px);
+  }
   body[data-orient="vertical"] .s3 .portrait {
     position: absolute;
-    right: 50%;
-    bottom: 12vh;
+    bottom: 18vh;
+    right: 7vw;
+    left: 7vw;
     top: auto;
-    transform: translateX(50%);
-    width: 50vw;
-    max-width: 50vw;
+    transform: none;
+    width: auto;
+    height: 28vh;
+    aspect-ratio: auto;
   }
 
-  /* 直式 S4 見證 */
-  body[data-orient="vertical"] .s4 .testimony { max-width: 95%; }
-  body[data-orient="vertical"] .s4 .testimony .text { font-size: clamp(28px, 4vw, 80px); }
+  /* === S4 見證 ・ 大字 + 大引號 === */
+  body[data-orient="vertical"] .s4 .quote-mark {
+    font-size: clamp(160px, 22vw, 400px);
+    margin-bottom: clamp(-50px, -3vh, -80px);
+  }
+  body[data-orient="vertical"] .s4 .testimony-wrap {
+    min-height: 50vh;
+  }
+  body[data-orient="vertical"] .s4 .testimony {
+    max-width: 100%;
+  }
+  body[data-orient="vertical"] .s4 .testimony .text {
+    font-size: clamp(40px, 6vw, 120px);
+    line-height: 1.5;
+  }
+  body[data-orient="vertical"] .s4 .testimony .who {
+    font-size: clamp(20px, 2.5vw, 44px);
+    margin-top: clamp(24px, 3vh, 60px);
+  }
 
-  /* 直式 S5 心智光譜 + S6 LINE:QR 移到下方置中 */
-  body[data-orient="vertical"] .s5 .text-col,
+  /* === S5 心智光譜 ・ 大 QR 置底中、4 色點放大 === */
+  body[data-orient="vertical"] .s5 .text-col { width: 100%; }
+  body[data-orient="vertical"] .s5 .headline {
+    font-size: clamp(68px, 9vw, 180px);
+    line-height: 1.1;
+  }
+  body[data-orient="vertical"] .s5 .gold-line { width: clamp(40px, 6vw, 80px); }
+  body[data-orient="vertical"] .s5 .subhead {
+    font-size: clamp(24px, 3.2vw, 50px);
+    max-width: 100%;
+    line-height: 1.7;
+  }
+  body[data-orient="vertical"] .s5 .spectrum-dots {
+    justify-content: flex-start;
+    gap: clamp(24px, 3.6vw, 60px);
+    margin: clamp(36px, 5vh, 70px) 0 clamp(20px, 3vh, 40px);
+  }
+  body[data-orient="vertical"] .s5 .spec-dot {
+    width: clamp(48px, 6.5vw, 120px);
+    height: clamp(48px, 6.5vw, 120px);
+    box-shadow: 0 0 80px currentColor;
+  }
+  body[data-orient="vertical"] .s5 .qr-big {
+    position: absolute;
+    right: 50%;
+    bottom: 16vh;
+    top: auto;
+    transform: translateX(50%);
+    width: clamp(280px, 38vw, 540px);
+    height: clamp(280px, 38vw, 540px);
+  }
+  body[data-orient="vertical"] .s5 .qr-big-label {
+    right: 50%;
+    bottom: 9vh;
+    top: auto;
+    transform: translateX(50%);
+    text-align: center;
+    width: auto;
+    font-size: clamp(20px, 2.5vw, 42px);
+  }
+
+  /* === S6 加 LINE ・ 同 S5 大 QR 置底中 === */
   body[data-orient="vertical"] .s6 .text-col { width: 100%; }
-  body[data-orient="vertical"] .s5 .headline,
-  body[data-orient="vertical"] .s6 .headline { font-size: clamp(48px, 8vw, 150px); }
-  body[data-orient="vertical"] .s5 .qr-big,
+  body[data-orient="vertical"] .s6 .headline {
+    font-size: clamp(68px, 9vw, 180px);
+    line-height: 1.1;
+  }
+  body[data-orient="vertical"] .s6 .gold-line { width: clamp(40px, 6vw, 80px); }
+  body[data-orient="vertical"] .s6 .subhead {
+    font-size: clamp(24px, 3.2vw, 50px);
+    max-width: 100%;
+    line-height: 1.7;
+  }
   body[data-orient="vertical"] .s6 .qr-big {
     position: absolute;
     right: 50%;
-    bottom: 14vh;
+    bottom: 16vh;
     top: auto;
     transform: translateX(50%);
-    width: clamp(220px, 30vw, 400px);
-    height: clamp(220px, 30vw, 400px);
+    width: clamp(280px, 38vw, 540px);
+    height: clamp(280px, 38vw, 540px);
   }
-  body[data-orient="vertical"] .s5 .qr-big-label,
   body[data-orient="vertical"] .s6 .qr-big-label {
     right: 50%;
     bottom: 9vh;
@@ -923,18 +1063,41 @@
     transform: translateX(50%);
     text-align: center;
     width: auto;
+    font-size: clamp(20px, 2.5vw, 42px);
   }
 
-  /* 直式 S7 課程花絮 */
+  /* === S7 課程花絮 ・ 上圖下文 === */
+  body[data-orient="vertical"] .highlight-wrap {
+    inset: 14vh 7vw 16vh 7vw;
+  }
   body[data-orient="vertical"] .highlight {
     grid-template-columns: 1fr;
-    grid-template-rows: 60% 1fr;
+    grid-template-rows: 58% 1fr;
+    gap: clamp(20px, 3vh, 50px);
+  }
+  body[data-orient="vertical"] .highlight .caption {
+    align-self: start;
+  }
+  body[data-orient="vertical"] .highlight .h-date {
+    font-size: clamp(15px, 1.8vw, 30px);
+    margin-bottom: clamp(14px, 2vh, 28px);
+  }
+  body[data-orient="vertical"] .highlight .h-title {
+    font-size: clamp(40px, 5.5vw, 100px);
+    line-height: 1.25;
+  }
+  body[data-orient="vertical"] .highlight .h-desc {
+    font-size: clamp(20px, 2.5vw, 42px);
+    line-height: 1.7;
+    margin-top: clamp(16px, 2.4vh, 36px);
   }
 
-  /* 直式 logo 改較小 */
+  /* === Logo 直式時略大、移到底部置中 === */
   body[data-orient="vertical"] .slide-logo {
-    width: clamp(40px, 6vw, 100px);
-    height: clamp(40px, 6vw, 100px);
+    width: clamp(56px, 7.5vw, 130px);
+    height: clamp(56px, 7.5vw, 130px);
+    top: clamp(20px, 2.5vh, 50px);
+    right: clamp(20px, 3vw, 50px);
   }
 
   /* 進度條 — 底部一條極細,顯示當前 slide 進度 */

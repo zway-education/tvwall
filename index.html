@@ -2366,8 +2366,10 @@
       el.classList.remove('has-custom-img');
       // 檢查有沒有自訂 QR 圖片(大小 QR 都套用,只要 admin 上傳了)
       let customImg = '';
-      if ((key === 'line-big' || key === 'line-small') && CONFIG.qrImageLine) customImg = CONFIG.qrImageLine;
+      if ((key === 'line-big' || key === 'line-small' || key === 'line-social') && CONFIG.qrImageLine) customImg = CONFIG.qrImageLine;
       else if (key === 'mindspectrum' && CONFIG.qrImageMindspectrum) customImg = CONFIG.qrImageMindspectrum;
+      else if (key === 'facebook' && CONFIG.qrImageFacebook) customImg = CONFIG.qrImageFacebook;
+      else if (key === 'instagram' && CONFIG.qrImageInstagram) customImg = CONFIG.qrImageInstagram;
       if (customImg) {
         // 有自訂上傳圖 → 容器去白底,圖直接填滿當版面
         el.classList.add('has-custom-img');

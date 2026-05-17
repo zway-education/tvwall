@@ -60,9 +60,12 @@ window.TVWALL_DEFAULTS = {
   // - portrait 空 → Slide 3 顯示金色佔位卡
   // - qrImageLine 空 → Slide 6 大 QR 由 qrcode.js 動態生成
   // - qrImageMindspectrum 空 → Slide 5 大 QR 由 qrcode.js 動態生成
+  // - qrImageFacebook / qrImageInstagram 空 → Slide 11 三合一 QR 由 qrcode.js 動態生成
   portrait: "",
   qrImageLine: "",
   qrImageMindspectrum: "",
+  qrImageFacebook: "",
+  qrImageInstagram: "",
 
   // 學苑 logo(顯示在 slide 角落)
   logoImage: "",
@@ -116,6 +119,8 @@ function _merge(parsed) {
     portrait: parsed.portrait || '',
     qrImageLine: parsed.qrImageLine || '',
     qrImageMindspectrum: parsed.qrImageMindspectrum || '',
+    qrImageFacebook: parsed.qrImageFacebook || '',
+    qrImageInstagram: parsed.qrImageInstagram || '',
     logoImage: parsed.logoImage || '',
     stage1Image: parsed.stage1Image || '',
     stage2Image: parsed.stage2Image || '',

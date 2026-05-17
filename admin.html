@@ -883,6 +883,30 @@
         <div class="img-info" id="info-qrImageMindspectrum"></div>
       </div>
 
+      <div class="image-card">
+        <h3>📘 自訂 QR ・ Facebook</h3>
+        <p class="img-desc">不上傳 = 用上方 FB 連結即時生成</p>
+        <div class="img-preview" id="preview-qrImageFacebook"><span class="img-placeholder">使用內建生成</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-qrImageFacebook').click()">📷 選圖片</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageFacebook')">✕ 回復內建</button>
+          <input type="file" id="upload-qrImageFacebook" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'qrImageFacebook', 900)">
+        </div>
+        <div class="img-info" id="info-qrImageFacebook"></div>
+      </div>
+
+      <div class="image-card">
+        <h3>📷 自訂 QR ・ Instagram</h3>
+        <p class="img-desc">不上傳 = 用上方 IG 連結即時生成</p>
+        <div class="img-preview" id="preview-qrImageInstagram"><span class="img-placeholder">使用內建生成</span></div>
+        <div class="img-actions">
+          <button class="btn-small" onclick="document.getElementById('upload-qrImageInstagram').click()">📷 選圖片</button>
+          <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageInstagram')">✕ 回復內建</button>
+          <input type="file" id="upload-qrImageInstagram" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'qrImageInstagram', 900)">
+        </div>
+        <div class="img-info" id="info-qrImageInstagram"></div>
+      </div>
+
     </div>
 
     <h3 class="subhead-h3" style="margin-top:32px">🎓 4 班別配圖(Slide 2)</h3>
@@ -1316,6 +1340,7 @@
   // ====== 圖片上傳/壓縮(通用版 ・ stateKey 直接當 element ID)======
   const IMAGE_FIELDS = [
     'portrait', 'qrImageLine', 'qrImageMindspectrum',
+    'qrImageFacebook', 'qrImageInstagram',
     'logoImage',
     'stage1Image', 'stage2Image', 'stage3Image', 'stage4Image',
     'bgImageS1', 'bgImageS2', 'bgImageS3', 'bgImageS4', 'bgImageS5', 'bgImageS6', 'bgImageS7'
@@ -1412,7 +1437,7 @@
   }
 
   // QR 欄位清單 ・ 這些一律強制 PNG(無損,QR 才掃得到、不糊)
-  const QR_IMAGE_FIELDS = ['qrImageLine', 'qrImageMindspectrum'];
+  const QR_IMAGE_FIELDS = ['qrImageLine', 'qrImageMindspectrum', 'qrImageFacebook', 'qrImageInstagram'];
 
   async function handleImageUpload(event, stateKey, maxDim) {
     const file = event.target.files[0];
@@ -1632,6 +1657,8 @@
       portrait: state.portrait || '',
       qrImageLine: state.qrImageLine || '',
       qrImageMindspectrum: state.qrImageMindspectrum || '',
+      qrImageFacebook: state.qrImageFacebook || '',
+      qrImageInstagram: state.qrImageInstagram || '',
       logoImage: state.logoImage || '',
       stage1Image: state.stage1Image || '',
       stage2Image: state.stage2Image || '',

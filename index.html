@@ -993,11 +993,12 @@
   .s12 .gold-line { background: var(--accent); }
   .s12 .subhead {
     color: var(--ink-soft);
-    font-size: clamp(18px, 1.55vw, 32px);
+    font-size: clamp(16px, 1.4vw, 30px);
     margin-top: clamp(14px, 2vh, 28px);
-    max-width: 80%;
+    max-width: none;             /* 不限寬,讓單行能伸展 */
     line-height: 1.7;
     font-weight: 500;
+    white-space: nowrap;         /* 強制單行(使用者要求不換行) */
   }
   .s12 .subhead b { color: var(--brand-deep); font-weight: 700; }
   .s12 .zhiku-claims {
@@ -2155,7 +2156,7 @@
   <!-- ============== Slide 13 ・ 7 位專家陣容(grid)============== -->
   <section class="slide s13" data-id="13">
     <div class="eyebrow">專業智庫 ・ Expert Panel</div>
-    <h1 class="headline">他們,是覺知教育的<span class="gold">幕後設計者</span></h1>
+    <h1 class="headline">他們,是覺知教育的<span class="gold">幕後推動者</span></h1>
     <div class="gold-line"></div>
     <div class="experts">
       <div class="expert">

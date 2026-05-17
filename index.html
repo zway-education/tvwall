@@ -312,12 +312,7 @@
     line-height: 1.55;
     font-weight: 500;
     text-align: left;              /* 長文靠左讀起來順 */
-    /* 最多 3 行,超過自動省略(避免撐爆卡片) */
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    /* 文字完整顯示,不再截斷成「...」 */
   }
 
   /* ============== Slide 3 - 創辦人故事 (焦黑) ============== */
@@ -442,12 +437,7 @@
     font-weight: 500;
     text-align: left;
     letter-spacing: .04em;
-    /* 最多 3 行,超過自動省略(避免撐爆) */
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    /* 文字完整顯示,不截斷 */
   }
   .s3 .sys-arrow {
     align-self: center;
@@ -804,12 +794,7 @@
     color: var(--ink-soft);
     text-align: left;
     letter-spacing: .04em;
-    /* 最多 3 行 */
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    /* 文字完整顯示,不截斷 */
   }
   .s8 .foot { color: var(--brand-deep); }
   .s8 .qr-corner-label { color: var(--ink-soft); }

@@ -378,6 +378,70 @@
   .s3 .foot { color: var(--accent); }
   .s3 .foot strong { color: var(--accent-warm); font-weight: 500; }
 
+  /* === Slide 3 ・ 四大覺知系統(水平流程,看見→陪伴→賦能→同行)=== */
+  .s3 .systems {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: clamp(10px, 1.2vw, 24px);
+    margin-top: clamp(30px, 4vh, 70px);
+    width: 100%;
+  }
+  .s3 .system {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: flex-start;
+    padding: clamp(18px, 2.4vh, 38px) clamp(14px, 1.6vw, 28px);
+    background: rgba(201,169,110,.08);
+    border: 1px solid rgba(201,169,110,.2);
+    border-top: 3px solid var(--accent);
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: rise 0.8s ease forwards;
+  }
+  .slide.active .s3 .system:nth-child(1) { animation-delay: 1.3s; }
+  .slide.active .s3 .system:nth-child(3) { animation-delay: 1.55s; }
+  .slide.active .s3 .system:nth-child(5) { animation-delay: 1.8s; }
+  .slide.active .s3 .system:nth-child(7) { animation-delay: 2.05s; }
+  .s3 .sys-step {
+    font-family: var(--sans);
+    font-size: clamp(13px, 1.1vw, 24px);
+    letter-spacing: .35em;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: clamp(8px, 1vh, 16px);
+  }
+  .s3 .sys-name {
+    font-family: var(--serif);
+    font-size: clamp(22px, 2.2vw, 46px);
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--cream);
+    margin-bottom: clamp(12px, 1.6vh, 24px);
+  }
+  .s3 .sys-tag {
+    font-family: var(--sans);
+    font-size: clamp(13px, 1.1vw, 22px);
+    line-height: 1.7;
+    color: rgba(250,247,242,.78);
+    font-weight: 300;
+  }
+  .s3 .sys-arrow {
+    align-self: center;
+    font-size: clamp(20px, 2.2vw, 44px);
+    color: var(--accent-warm);
+    opacity: .55;
+    flex: 0 0 auto;
+    padding: 0 clamp(2px, 0.4vw, 8px);
+    user-select: none;
+    opacity: 0;
+    animation: fadeIn 0.6s ease forwards;
+  }
+  .slide.active .s3 .sys-arrow:nth-child(2) { animation-delay: 1.4s; }
+  .slide.active .s3 .sys-arrow:nth-child(4) { animation-delay: 1.65s; }
+  .slide.active .s3 .sys-arrow:nth-child(6) { animation-delay: 1.9s; }
+
   /* ============== Slide 4 - 真實見證 ============== */
   .s4 {
     background: var(--cream);
@@ -453,7 +517,20 @@
       radial-gradient(circle at 80% 30%, rgba(58,112,176,.06) 0%, transparent 20%);
     pointer-events: none;
   }
-  .s5 .text-col { width: 56%; }
+  .s5 .text-col { width: 56%; align-self: flex-end; }   /* QR 移到左邊後,文字推到右邊 */
+  /* S5 ・ 大 QR 移到左邊 + 放大(便於觀眾掃描)*/
+  .s5 .qr-big {
+    left: 6vw;
+    right: auto;
+    width: clamp(280px, 26vw, 580px);
+    height: clamp(280px, 26vw, 580px);
+  }
+  .s5 .qr-big-label {
+    left: 6vw;
+    right: auto;
+    width: clamp(280px, 26vw, 580px);
+    top: calc(50% + clamp(160px, 15vw, 320px));
+  }
   .s5 .eyebrow { color: var(--accent); }
   .s5 .headline {
     font-size: clamp(48px, min(6vw, 9.5vh), 130px);
@@ -1034,18 +1111,35 @@
     margin-top: clamp(10px, 1.5vh, 22px);
   }
 
-  /* === S3 創辦人 ・ 文字置中 + 肖像填底(flow 自然排)=== */
+  /* === S3 四大覺知系統 ・ 直式 → 改成上下流(箭頭轉成 ↓)=== */
   body[data-orient="vertical"] .s3 { padding-right: 7vw; }
-  body[data-orient="vertical"] .s3 .text-col { width: 100%; }
   body[data-orient="vertical"] .s3 .headline {
     font-size: clamp(52px, min(8.5vw, 8vh), 170px);
     line-height: 1.1;
   }
   body[data-orient="vertical"] .s3 .gold-line { width: clamp(40px, 6vw, 80px); }
-  body[data-orient="vertical"] .s3 .story {
-    font-size: clamp(20px, 2.6vw, 44px);
-    line-height: 1.85;
-    margin-top: clamp(20px, 2.5vh, 40px);
+  body[data-orient="vertical"] .s3 .systems {
+    flex-direction: column;
+    align-items: stretch;
+    gap: clamp(8px, 1.4vh, 18px);
+    margin-top: clamp(24px, 3vh, 50px);
+  }
+  body[data-orient="vertical"] .s3 .system {
+    padding: clamp(16px, 2vh, 28px) clamp(20px, 3vw, 36px);
+  }
+  body[data-orient="vertical"] .s3 .sys-step {
+    font-size: clamp(14px, 1.6vw, 26px);
+  }
+  body[data-orient="vertical"] .s3 .sys-name {
+    font-size: clamp(28px, min(4.4vw, 4vh), 60px);
+  }
+  body[data-orient="vertical"] .s3 .sys-tag {
+    font-size: clamp(16px, 2vw, 30px);
+  }
+  body[data-orient="vertical"] .s3 .sys-arrow {
+    transform: rotate(90deg);   /* → 轉成 ↓ */
+    font-size: clamp(20px, 3vw, 40px);
+    padding: clamp(2px, 0.6vh, 6px) 0;
   }
   body[data-orient="vertical"] .s3 .portrait {
     position: relative !important;
@@ -1428,22 +1522,36 @@
 
   <!-- ============== Slide 3 ============== -->
   <section class="slide s3" data-id="3">
-    <div class="text-col">
-      <div class="eyebrow">創辦人故事</div>
-      <h1 class="headline">當一個媽媽,<br>決定<span class="gold">不放棄</span>。</h1>
-      <div class="gold-line"></div>
-      <div class="story">
-        <span>兒子拒學的那一年,</span>
-        <span>她沒有送他去輔導。</span>
-        <span>她讀了 200 本書,</span>
-        <span>然後創辦了一所學校。</span>
+    <div class="eyebrow">四大覺知系統 ・ 一個循環</div>
+    <h1 class="headline">從<span class="gold">看見</span>開始,<br>陪孩子走完<span class="gold">每一步</span>。</h1>
+    <div class="gold-line"></div>
+    <div class="systems">
+      <div class="system">
+        <div class="sys-step">看 ・ 見</div>
+        <div class="sys-name">覺知全人測評</div>
+        <div class="sys-tag">先看懂孩子,<br>再開始教育。</div>
+      </div>
+      <div class="sys-arrow">→</div>
+      <div class="system">
+        <div class="sys-step">陪 ・ 伴</div>
+        <div class="sys-name">覺知 SEL 課程</div>
+        <div class="sys-tag">依年齡建立<br>一生受用的能力。</div>
+      </div>
+      <div class="sys-arrow">→</div>
+      <div class="system">
+        <div class="sys-step">賦 ・ 能</div>
+        <div class="sys-name">覺知 STEAM-R</div>
+        <div class="sys-tag">以內在定力,<br>駕馭科技速度。</div>
+      </div>
+      <div class="sys-arrow">→</div>
+      <div class="system">
+        <div class="sys-step">同 ・ 行</div>
+        <div class="sys-name">家長學堂</div>
+        <div class="sys-tag">少一塊,都不<br>完整的成長拼圖。</div>
       </div>
     </div>
-    <div class="portrait" id="portrait-box">
-      <div class="ph-text">守蕾老師<br>肖像區<br><br><small style="opacity:.7;font-size:.8em">後台上傳肖像照片</small></div>
-    </div>
     <div class="foot">
-      <span><strong>李守蕾</strong> ・ 覺知教育創辦人 ・ 自 2008 起</span>
+      <span>看見 → 陪伴 → 賦能 → 同行 → 再看見</span>
       <div class="qr-corner-wrap">
         <div class="qr-corner-label">@LINE</div>
         <div class="qr-corner" data-qr="line-small"></div>

@@ -311,6 +311,13 @@
     letter-spacing: .05em;
     line-height: 1.55;
     font-weight: 500;
+    text-align: left;              /* 長文靠左讀起來順 */
+    /* 最多 3 行,超過自動省略(避免撐爆卡片) */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   /* ============== Slide 3 - 創辦人故事 (焦黑) ============== */
@@ -1347,6 +1354,7 @@
     margin-top: clamp(12px, 1.8vh, 28px);
     font-weight: 500;
     opacity: .9;
+    /* text-align: left + line-clamp:3 從橫式繼承,不用再寫 */
   }
 
   /* === S3 四大覺知系統 ・ 直式 → 改成上下流(箭頭轉成 ↓)=== */

@@ -12,6 +12,8 @@ window.TVWALL_DEFAULTS = {
   qr: {
     line:         "https://lin.ee/nnDYAZE",
     mindspectrum: "https://zway-education.github.io/mindspectrum-advanced/",
+    facebook:     "",  // 後台填:K12 覺知 SEL 粉專 URL
+    instagram:    "",  // 後台填:K12 IG URL(@k12kh_art)
   },
 
   testimonies: [
@@ -49,6 +51,7 @@ window.TVWALL_DEFAULTS = {
     s8: 13000,  // SEL 5 能力
     s9: 12000,  // 4C 國際素養
     s10: 13000, // 學習動機 CTA
+    s11: 14000, // 社群三合一(FB / IG / LINE)
   },
 
   testimonyInterval: 4000,

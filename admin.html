@@ -750,6 +750,16 @@
       <label>心智光譜測驗連結 <small>(Slide 5 大 QR)</small></label>
       <input type="url" id="qr-mindspectrum" placeholder="https://...">
     </div>
+
+    <div class="field">
+      <label>Facebook 粉專連結 <small>(Slide 11 三合一)</small></label>
+      <input type="url" id="qr-facebook" placeholder="https://www.facebook.com/...">
+    </div>
+
+    <div class="field">
+      <label>Instagram 連結 <small>(Slide 11 三合一)</small></label>
+      <input type="url" id="qr-instagram" placeholder="https://www.instagram.com/...">
+    </div>
   </section>
 
   <!-- ============== ❷ 真實見證 ============== -->
@@ -1143,6 +1153,8 @@
     // QR
     document.getElementById('qr-line').value = state.qr.line || '';
     document.getElementById('qr-mindspectrum').value = state.qr.mindspectrum || '';
+    document.getElementById('qr-facebook').value = state.qr.facebook || '';
+    document.getElementById('qr-instagram').value = state.qr.instagram || '';
     // Durations
     ['s1','s2','s3','s4','s5','s6'].forEach(k => {
       const sec = Math.round((state.durations[k] || 12000) / 1000);
@@ -1602,6 +1614,8 @@
       qr: {
         line: document.getElementById('qr-line').value.trim(),
         mindspectrum: document.getElementById('qr-mindspectrum').value.trim(),
+        facebook: document.getElementById('qr-facebook').value.trim(),
+        instagram: document.getElementById('qr-instagram').value.trim(),
       },
       testimonies: state.testimonies.map(t => ({ text: t.text, who: t.who })),
       stages: (state.stages || []).map(s => ({ age: s.age, name: s.name, tag: s.tag })),

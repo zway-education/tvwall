@@ -1,146 +1,182 @@
 // ╔════════════════════════════════════════════════════════════════╗
-// ║   直式電視牆 ・ 預設內容 + 雲端載入器                              ║
+// ║   電視牆預設內容 + 雲端/本機雙模式載入器                            ║
+// ║   index.html 跟 admin.html 都會讀這個檔                          ║
 // ║                                                                ║
-// ║   獨立於橫式版:                                                  ║
-// ║   - namespace: window.TVV_*(避免跟橫式 TVWALL_* 衝突)            ║
-// ║   - localStorage key: 'tvwall_v_config'(跟橫式分開存)            ║
-// ║   - cloud API: TVV_API.url(獨立的 Apps Script + Sheet)          ║
+// ║   雙模式:                                                       ║
+// ║   - 雲端模式:cloud_config.js 有填 URL → 從 Apps Script API 讀寫   ║
+// ║   - 本機模式:URL 未填或連不上 → 從 localStorage 讀寫(單裝置)     ║
 // ╚════════════════════════════════════════════════════════════════╝
 
-window.TVV_DEFAULTS = {
+window.TVWALL_DEFAULTS = {
 
   qr: {
     line:         "https://lin.ee/nnDYAZE",
     mindspectrum: "https://zway-education.github.io/mindspectrum-advanced/",
-    facebook:     "",
-    instagram:    "",
+    facebook:     "",  // 後台填:K12 覺知 SEL 粉專 URL
+    instagram:    "",  // 後台填:K12 IG URL(@k12kh_art)
   },
 
-  // 直式 slide 預設內容(可在 vertical/admin.html 改)
-  slides: [
+  testimonies: [
     {
-      type: 'stages',
-      eyebrow: '從 3 歲開始 ・ 看懂孩子',
-      headline: '陪孩子走過,\n每一個成長關鍵期。',
-      stages: [
-        {
-          age: '3 - 6 歲',
-          name: '啟蒙班',
-          tag: '孩子能不再只是被情緒帶著走,而是開始看見自己內心的情緒。',
-        },
-        {
-          age: '7 - 10 歲',
-          name: '開智班',
-          tag: '從他律到自律,把「被提醒」,慢慢變成「我可以自己做到」。',
-        },
-        {
-          age: '10 歲以上',
-          name: '智優班',
-          tag: '陪青春期孩子看懂自己,把沉默、防衛與迷惘,轉化成正確的目標。',
-        },
-      ],
-      foot: 'K12覺知素養教育學苑 ・ 蒙以養正 ・ 老而有尊',
+      text: '我兒子以前回家就摔門。<br>現在他會說<b>「媽媽,我今天心情有點亂。」</b>',
+      who:  '— 國中智優 ・ 陳媽媽(高雄)'
     },
     {
-      type: 'hero',
-      eyebrow: 'K12覺知素養教育學苑 ・ 覺察己心 ・ 知行合一',
-      headline: '先懂心,\n再懂教。',
-      subhead: '從現在開始,看懂孩子。',
-      foot: '覺知素養教育 ・ 20 年系統 ・ 非認知能力 ・ SEL',
+      text: '教完數學再教 SEL,<br>孩子<b>主動讀書的比例多了一倍</b>。',
+      who:  '— 國小開智 ・ 楊老師'
     },
     {
-      type: 'qr',
-      eyebrow: '5 分鐘,你會認識新的孩子',
-      headline: '想知道你的教養風格與\n孩子的天生心智底色嗎?',
-      qrKey: 'mindspectrum',
-      qrLabel: '→ 手機掃描 ・ 立即測驗',
-      foot: '覺知心智光譜 ・ 5 分鐘自測 ・ 立即看見教養結果',
-    },
-    {
-      type: 'qr',
-      eyebrow: '在教養的路上,我們伴您',
-      headline: '從日常裡的片刻開始,\n一步一步靠近孩子的內心。',
-      qrKey: 'line-big',
-      qrLabel: '→ 加為好友',
-      foot: 'K12覺知素養教育學苑 ・ 加入 LINE @931irimh',
+      text: '孩子知道自己是什麼樣的人,<br>選大學科系<b>就不再焦慮了</b>。',
+      who:  '— 智優班 ・ 林爸爸'
     },
   ],
 
+  // Slide 2 的 4 張班級卡片(可在後台改文字 + 拖拉排序)
+  // 標語用 \n 換行,index.html 渲染時轉成 <br>
+  stages: [
+    { age: '3 - 6 歲',  name: '啟蒙班',   tag: '孩子能不再只是被情緒帶著走,\n而是開始看見自己內心的情緒。' },
+    { age: '7 - 12 歲', name: '開智班',   tag: '從他律到自律,\n我們陪孩子把「被提醒」,\n慢慢變成「我可以自己做到」。' },
+    { age: '13 - 15 歲', name: '智優班',  tag: '我們陪青春期孩子看懂自己,\n把沉默、防衛與迷惘,\n慢慢轉化成表達、選擇與方向。' },
+    { age: '全齡適用',  name: '全人測評', tag: '先看懂孩子,\n再開始教育。' },
+  ],
+
   durations: {
-    s1: 15000,   // stages 3 班級(內容多,給長一點)
+    s1: 15000,
     s2: 12000,
-    s3: 14000,
-    s4: 13000,
+    s3: 12000,
+    s4: 12000,
+    s5: 15000,
+    s6: 12000,
+    s7: 14000,  // 課程花絮(內部每 4.5 秒換一張,所以這張要長一點)
+    s8: 13000,  // SEL 5 能力
+    s9: 12000,  // 4C 國際素養
+    s10: 13000, // 學習動機 CTA
+    s11: 14000, // 社群三合一(FB / IG / LINE)
+    s12: 14000, // 智庫總覽(學苑後盾)
+    s13: 15000, // 7 位專家陣容
   },
 
-  // 圖片(base64 data URL)
-  logoImage: "",
+  testimonyInterval: 4000,
+
+  // 圖片(base64 data URL),預設為空字串 → fallback 行為:
+  // - portrait 空 → Slide 3 顯示金色佔位卡
+  // - qrImageLine 空 → Slide 6 大 QR 由 qrcode.js 動態生成
+  // - qrImageMindspectrum 空 → Slide 5 大 QR 由 qrcode.js 動態生成
+  // - qrImageFacebook / qrImageInstagram 空 → Slide 11 三合一 QR 由 qrcode.js 動態生成
+  portrait: "",
   qrImageLine: "",
   qrImageMindspectrum: "",
   qrImageFacebook: "",
   qrImageInstagram: "",
 
-  // 配色(green / amber / mint / gold / leather / navy)
-  theme: "green",
+  // 學苑 logo(顯示在 slide 角落)
+  logoImage: "",
+
+  // 4 個成長階段配圖(Slide 2 卡片背景)
+  stage1Image: "",  // 啟蒙
+  stage2Image: "",  // 開智
+  stage3Image: "",  // 智優
+  stage4Image: "",  // 恆毅力
+
+  // 每張 slide 的背景圖(可選,有就用,沒有就用色塊)
+  bgImageS1: "",
+  bgImageS2: "",
+  bgImageS3: "",
+  bgImageS4: "",
+  bgImageS5: "",
+  bgImageS6: "",
+  bgImageS7: "",
+
+  // 螢幕方向 ・ 直式版強制 vertical
+  orientation: "vertical",
+
+  // 版型(A 標題置左 / B 極簡留白 / C 雜誌封面 / E 對話氣泡)
+  layout: "A",
+
+  // 配色 ・ 直式預設「navy 海洋蔚藍」跟橫式翠玉綠區隔
+  theme: "navy",
+
+  // Slide 7 課程花絮(陣列,每張一個 object)
+  // 結構:[{ image: "data:image/jpeg;base64,...", title: "活動名稱", date: "2026/04/15", desc: "簡述" }]
+  highlights: [],
 };
 
 // ============ 工具 ============
 
-function _vclone(obj) { return JSON.parse(JSON.stringify(obj)); }
+function _clone(obj) { return JSON.parse(JSON.stringify(obj)); }
 
-function _vmerge(parsed) {
-  const D = window.TVV_DEFAULTS;
-  if (!parsed || typeof parsed !== 'object') return _vclone(D);
+function _merge(parsed) {
+  const D = window.TVWALL_DEFAULTS;
+  if (!parsed || typeof parsed !== 'object') return _clone(D);
   return {
     qr: { ...D.qr, ...(parsed.qr || {}) },
-    slides: (Array.isArray(parsed.slides) && parsed.slides.length > 0)
-      ? parsed.slides
-      : D.slides,
+    testimonies: (Array.isArray(parsed.testimonies) && parsed.testimonies.length > 0)
+      ? parsed.testimonies
+      : D.testimonies,
+    stages: (Array.isArray(parsed.stages) && parsed.stages.length > 0)
+      ? parsed.stages
+      : D.stages,
     durations: { ...D.durations, ...(parsed.durations || {}) },
-    logoImage: parsed.logoImage || '',
+    testimonyInterval: parsed.testimonyInterval || D.testimonyInterval,
+    portrait: parsed.portrait || '',
     qrImageLine: parsed.qrImageLine || '',
     qrImageMindspectrum: parsed.qrImageMindspectrum || '',
     qrImageFacebook: parsed.qrImageFacebook || '',
     qrImageInstagram: parsed.qrImageInstagram || '',
-    theme: parsed.theme || 'green',
+    logoImage: parsed.logoImage || '',
+    stage1Image: parsed.stage1Image || '',
+    stage2Image: parsed.stage2Image || '',
+    stage3Image: parsed.stage3Image || '',
+    stage4Image: parsed.stage4Image || '',
+    bgImageS1: parsed.bgImageS1 || '',
+    bgImageS2: parsed.bgImageS2 || '',
+    bgImageS3: parsed.bgImageS3 || '',
+    bgImageS4: parsed.bgImageS4 || '',
+    bgImageS5: parsed.bgImageS5 || '',
+    bgImageS6: parsed.bgImageS6 || '',
+    bgImageS7: parsed.bgImageS7 || '',
+    orientation: 'vertical',                       /* 直式版鎖死 vertical,後台改也沒用 */
+    layout: parsed.layout || 'A',
+    theme: parsed.theme || 'navy',                 /* 直式預設 navy */
+    highlights: Array.isArray(parsed.highlights) ? parsed.highlights : [],
   };
 }
 
-window.TVV_merge = _vmerge;
+// admin.html 的 importJSON 需要跟正常載入路徑共用同一套合併邏輯,
+// 所以把 _merge 掛到 window(否則匯入備份會漏掉 images / layout /
+// theme / orientation / highlights / stages 等欄位)
+window.TVWALL_merge = _merge;
 
-// ============ 同步:本機 cache ============
+// ============ 立即可用(同步)・ 給 index.html 啟動用 ============
 
-const VKEY = 'tvwall_v_config';
-const VUPDATED_KEY = 'tvwall_v_updated_at';
-const VUPDATED_BY_KEY = 'tvwall_v_updated_by';
-
-window.TVV_loadCached = function() {
+window.TVWALL_loadCached = function() {
   try {
-    const saved = localStorage.getItem(VKEY);
-    if (!saved) return _vclone(window.TVV_DEFAULTS);
-    return _vmerge(JSON.parse(saved));
+    const saved = localStorage.getItem('tvwall_v_config');
+    if (!saved) return _clone(window.TVWALL_DEFAULTS);
+    return _merge(JSON.parse(saved));
   } catch(e) {
-    console.warn('[tvv] localStorage 讀取失敗', e);
-    return _vclone(window.TVV_DEFAULTS);
+    console.warn('[tvwall] localStorage 讀取失敗', e);
+    return _clone(window.TVWALL_DEFAULTS);
   }
 };
 
-// ============ 雲端讀寫(非同步)============
+// ============ 從雲端拉(非同步)============
 
-window.TVV_loadCloud = async function() {
-  if (!window.TVV_isCloudEnabled || !window.TVV_isCloudEnabled()) {
+window.TVWALL_loadCloud = async function() {
+  if (!window.TVWALL_isCloudEnabled || !window.TVWALL_isCloudEnabled()) {
     throw new Error('Cloud not configured');
   }
-  const api = window.TVV_API;
+  const api = window.TVWALL_API;
   const url = api.url + "?action=get&key=" + encodeURIComponent(api.key) + "&t=" + Date.now();
   const res = await fetch(url);
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const data = await res.json();
   if (!data.ok) throw new Error(data.error || 'API error');
-  const merged = _vmerge(data.config);
-  localStorage.setItem(VKEY, JSON.stringify(merged));
-  localStorage.setItem(VUPDATED_KEY, data.updated_at || '');
-  localStorage.setItem(VUPDATED_BY_KEY, data.updated_by || '');
+  const merged = _merge(data.config);
+  // 寫入本機 cache(離線可用)
+  localStorage.setItem('tvwall_v_config', JSON.stringify(merged));
+  localStorage.setItem('tvwall_v_updated_at', data.updated_at || '');
+  localStorage.setItem('tvwall_v_updated_by', data.updated_by || '');
   return {
     config: merged,
     updated_at: data.updated_at || '',
@@ -148,13 +184,16 @@ window.TVV_loadCloud = async function() {
   };
 };
 
-window.TVV_saveCloud = async function(config, updatedBy) {
-  if (!window.TVV_isCloudEnabled || !window.TVV_isCloudEnabled()) {
+// ============ 寫入雲端(非同步)============
+
+window.TVWALL_saveCloud = async function(config, updatedBy) {
+  if (!window.TVWALL_isCloudEnabled || !window.TVWALL_isCloudEnabled()) {
     throw new Error('Cloud not configured');
   }
-  const api = window.TVV_API;
+  const api = window.TVWALL_API;
   const res = await fetch(api.url, {
     method: 'POST',
+    // 不設 Content-Type: application/json 避開 Apps Script 不支援的 preflight
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({
       key: api.key,
@@ -166,50 +205,61 @@ window.TVV_saveCloud = async function(config, updatedBy) {
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const data = await res.json();
   if (!data.ok) throw new Error(data.error || 'API error');
-  localStorage.setItem(VKEY, JSON.stringify(config));
-  localStorage.setItem(VUPDATED_KEY, data.updated_at || new Date().toISOString());
+  // 也寫入本機 cache(後續離線可用)
+  localStorage.setItem('tvwall_v_config', JSON.stringify(config));
+  localStorage.setItem('tvwall_v_updated_at', data.updated_at || new Date().toISOString());
   return data;
 };
 
-window.TVV_saveLocal = function(config) {
+// ============ 本機儲存(雲端 fallback)============
+
+window.TVWALL_saveLocal = function(config) {
   try {
-    localStorage.setItem(VKEY, JSON.stringify(config));
-    localStorage.setItem(VUPDATED_KEY, new Date().toISOString());
+    localStorage.setItem('tvwall_v_config', JSON.stringify(config));
+    localStorage.setItem('tvwall_v_updated_at', new Date().toISOString());
     return true;
   } catch(e) {
-    console.error('[tvv] localStorage 寫入失敗', e);
+    console.error('[tvwall] localStorage 寫入失敗', e);
     return false;
   }
 };
 
-window.TVV_loadSmart = async function() {
-  if (window.TVV_isCloudEnabled && window.TVV_isCloudEnabled()) {
+// ============ 智慧載入(雲端優先 ・ 失敗回本機)============
+
+window.TVWALL_loadSmart = async function() {
+  if (window.TVWALL_isCloudEnabled && window.TVWALL_isCloudEnabled()) {
     try {
-      const r = await window.TVV_loadCloud();
+      const r = await window.TVWALL_loadCloud();
       return { source: 'cloud', ...r };
     } catch(e) {
-      console.warn('[tvv] 雲端讀取失敗,回退本機', e);
+      console.warn('[tvwall] 雲端讀取失敗,回退本機', e);
     }
   }
   return {
     source: 'local',
-    config: window.TVV_loadCached(),
-    updated_at: localStorage.getItem(VUPDATED_KEY) || '',
-    updated_by: localStorage.getItem(VUPDATED_BY_KEY) || '',
+    config: window.TVWALL_loadCached(),
+    updated_at: localStorage.getItem('tvwall_v_updated_at') || '',
+    updated_by: localStorage.getItem('tvwall_v_updated_by') || '',
   };
 };
 
-window.TVV_saveSmart = async function(config, updatedBy) {
-  if (window.TVV_isCloudEnabled && window.TVV_isCloudEnabled()) {
+// ============ 智慧儲存(雲端優先 ・ 失敗回本機)============
+
+window.TVWALL_saveSmart = async function(config, updatedBy) {
+  if (window.TVWALL_isCloudEnabled && window.TVWALL_isCloudEnabled()) {
     try {
-      await window.TVV_saveCloud(config, updatedBy);
+      await window.TVWALL_saveCloud(config, updatedBy);
       return { ok: true, source: 'cloud' };
     } catch(e) {
-      console.warn('[tvv] 雲端寫入失敗,僅存本機', e);
-      window.TVV_saveLocal(config);
+      console.warn('[tvwall] 雲端寫入失敗,僅存本機', e);
+      window.TVWALL_saveLocal(config);
       return { ok: true, source: 'local', warning: e.message };
     }
   }
-  const ok = window.TVV_saveLocal(config);
+  const ok = window.TVWALL_saveLocal(config);
   return { ok, source: 'local' };
 };
+
+// 舊版相容(避免 admin.html 內舊 code 壞掉)
+window.TVWALL_loadConfig = window.TVWALL_loadCached;
+window.TVWALL_saveConfig = window.TVWALL_saveLocal;

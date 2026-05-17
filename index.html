@@ -1051,21 +1051,21 @@
     animation: fadeIn 1s ease 1.2s forwards;
   }
   .s13 .expert {
-    flex: 1 1 calc(14.2% - 24px);   /* 7 per row at wide widths */
-    min-width: 130px;
-    max-width: 230px;
+    flex: 1 1 calc(25% - 22px);     /* 4 per row at wide widths(8 人 = 4+4 兩行) */
+    min-width: 160px;
+    max-width: 280px;
     display: flex; flex-direction: column;
     align-items: center;
     text-align: center;
     background: #fff;
     border: 1px solid rgba(31,138,92,.18);
     border-radius: 12px;
-    padding: clamp(14px, 1.8vh, 28px) clamp(8px, 1vw, 16px);
+    padding: clamp(14px, 1.8vh, 28px) clamp(10px, 1.2vw, 20px);
     box-shadow: 0 8px 24px rgba(14,99,64,.08);
   }
   .s13 .expert img {
-    width: clamp(72px, 7vw, 130px);
-    height: clamp(72px, 7vw, 130px);
+    width: clamp(78px, 7.5vw, 140px);
+    height: clamp(78px, 7.5vw, 140px);
     object-fit: cover;
     border-radius: 50%;
     border: 3px solid var(--accent);
@@ -1074,18 +1074,19 @@
   }
   .s13 .ex-name {
     font-family: var(--serif);
-    font-size: clamp(15px, 1.25vw, 24px);
+    font-size: clamp(16px, 1.35vw, 26px);
     font-weight: 800;
     color: var(--brand-darker);
     letter-spacing: .03em;
     white-space: nowrap;
   }
   .s13 .ex-role {
-    font-size: clamp(11px, 0.88vw, 17px);
+    font-size: clamp(11px, 0.92vw, 18px);
     color: var(--ink-soft);
     margin-top: clamp(4px, 0.5vh, 8px);
-    letter-spacing: .05em;
-    line-height: 1.4;
+    letter-spacing: .04em;
+    line-height: 1.45;
+    /* 副標可能 14 字以上,允許自然換行 2-3 行 */
   }
   .s13 .foot { color: var(--brand-deep); opacity: .82; }
 
@@ -1895,7 +1896,7 @@
       <span>啟蒙班 3-6 歲</span><span class="dot">・</span><span>開智班 7-12 歲</span><span class="dot">・</span><span>智優班 13-15 歲</span><span class="dot">・</span><span>STEAM-R</span>
     </div>
     <div class="foot">
-      <span>覺知素養教育 ・ 18 年覺知教育系統 ・ 非認知能力 ・ SEL</span>
+      <span>覺知素養教育 ・ 20 年覺知教育系統 ・ 非認知能力 ・ SEL</span>
       <!-- S1 不放 QR(品牌主畫面留白給 LOGO);加 LINE 在 S6 / S11 有大 QR 引導 -->
     </div>
   </section>
@@ -2129,13 +2130,13 @@
   <!-- ============== Slide 12 ・ 智庫總覽(學苑後盾)============== -->
   <section class="slide s12" data-id="12">
     <div class="eyebrow">學苑後盾 ・ 專業智庫</div>
-    <h1 class="headline">7 位博士、教授守護<br><span class="gold">每一個孩子的成長承諾</span></h1>
+    <h1 class="headline">8 位專家共同守護<br><span class="gold">每一個孩子的成長承諾</span></h1>
     <div class="gold-line"></div>
     <p class="subhead">跨越 <b>醫學 ・ 法律 ・ 教育 ・ 系統工程</b> 的智囊團,確保每一份教育設計都經得起學術與實務的檢驗。</p>
     <div class="zhiku-claims">
       <div class="claim">
-        <div class="claim-num">7</div>
-        <div class="claim-text">位博士、教授</div>
+        <div class="claim-num">8</div>
+        <div class="claim-text">位專家陣容</div>
       </div>
       <div class="claim">
         <div class="claim-num">4+</div>
@@ -2158,39 +2159,44 @@
     <div class="gold-line"></div>
     <div class="experts">
       <div class="expert">
+        <img src="https://pic03.eapple.com.tw/zwayedu/team_03.jpg" alt="李守蕾 老師">
+        <div class="ex-name">李守蕾 老師</div>
+        <div class="ex-role">覺知教育創辦人</div>
+      </div>
+      <div class="expert">
         <img src="https://pic03.eapple.com.tw/zwayedu/team_04.jpg" alt="楊智綸 博士">
         <div class="ex-name">楊智綸 博士</div>
-        <div class="ex-role">法律倫理守護</div>
+        <div class="ex-role">法律倫理與社會信任的守護者</div>
       </div>
       <div class="expert">
         <img src="https://pic03.eapple.com.tw/zwayedu/team_05.jpg" alt="杜佩蘭 博士">
         <div class="ex-name">杜佩蘭 博士</div>
-        <div class="ex-role">職能開發領航</div>
+        <div class="ex-role">職能開發與知識領航人</div>
       </div>
       <div class="expert">
         <img src="https://pic03.eapple.com.tw/zwayedu/team_06.jpg" alt="黃英忠 博士">
         <div class="ex-name">黃英忠 博士</div>
-        <div class="ex-role">學術連結導師</div>
+        <div class="ex-role">學術連結與人才培育導師</div>
       </div>
       <div class="expert">
         <img src="https://pic03.eapple.com.tw/zwayedu/team_07.jpg" alt="張肇松 博士">
         <div class="ex-name">張肇松 博士</div>
-        <div class="ex-role">醫學身心照護</div>
+        <div class="ex-role">醫學視角與身心穩定照護</div>
       </div>
       <div class="expert">
-        <img src="https://pic03.eapple.com.tw/zwayedu/team_08.jpg" alt="張國義 博士">
-        <div class="ex-name">張國義 博士</div>
-        <div class="ex-role">教育系統化</div>
+        <img src="https://pic03.eapple.com.tw/zwayedu/team_08.jpg" alt="張國義 榮譽顧問">
+        <div class="ex-name">張國義 榮譽顧問</div>
+        <div class="ex-role">教育系統化與心理行為對話</div>
       </div>
       <div class="expert">
-        <img src="https://pic03.eapple.com.tw/zwayedu/team_09.jpg" alt="陳維新 博士">
-        <div class="ex-name">陳維新 博士</div>
-        <div class="ex-role">系統工程基石</div>
+        <img src="https://pic03.eapple.com.tw/zwayedu/team_09.jpg" alt="陳維新 榮譽顧問">
+        <div class="ex-name">陳維新 榮譽顧問</div>
+        <div class="ex-role">系統工程與精密邏輯科學</div>
       </div>
       <div class="expert">
         <img src="https://pic03.eapple.com.tw/zwayedu/team_10.jpg" alt="敬世龍 博士">
         <div class="ex-name">敬世龍 博士</div>
-        <div class="ex-role">教育治理對話</div>
+        <div class="ex-role">教育治理與課綱實踐對話</div>
       </div>
     </div>
     <div class="foot">

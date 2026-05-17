@@ -194,21 +194,8 @@
   .qr-corner-wrap {
     display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
   }
-  /* S1 + S2:把右下的 QR 集中到右上(LOGO 正下方),跟 LOGO 對齊右邊
-     使用 position:fixed 才能跳出 .foot 的 absolute 定位基準,改以 viewport 為錨點 */
-  .s1.active .qr-corner-wrap,
-  .s2.active .qr-corner-wrap {
-    position: fixed;
-    top: clamp(140px, 17vh, 210px);   /* LOGO 下方留約 20-30px gap */
-    right: clamp(24px, 2.4vw, 48px);
-    bottom: auto; left: auto;
-    z-index: 51;
-  }
-  body[data-orient="vertical"] .s1.active .qr-corner-wrap,
-  body[data-orient="vertical"] .s2.active .qr-corner-wrap {
-    top: clamp(140px, 18vh, 280px);
-    right: clamp(22px, 3.4vw, 50px);
-  }
+  /* S1 + S2:右上只放 LOGO(放大),QR 維持在 .foot 右下(預設)
+     ※ 使用者偏好:右上只留 LOGO,不要 @LINE 文字混在那邊 */
   .qr-corner canvas, .qr-corner img { width: 100%; height: 100%; display: block; }
 
   /* ============== Slide 1 - 主畫面 ============== */
@@ -1199,13 +1186,13 @@
   body[data-layout="E"] .testimony .text b { background: linear-gradient(180deg, transparent 65%, rgba(255,255,255,.25) 65%); color: var(--cream); }
   body[data-layout="E"] .testimony .who { color: var(--accent); margin-left: 14px; }
 
-  /* ====== 學苑 Logo(右上角浮動)====== */
+  /* ====== 學苑 Logo(右上角浮動 ・ 放大版)====== */
   .slide-logo {
     position: fixed;
     top: clamp(20px, 2.4vh, 40px);
     right: clamp(24px, 2.4vw, 48px);
-    width: clamp(72px, 6.5vw, 130px);
-    height: clamp(72px, 6.5vw, 130px);
+    width: clamp(110px, 9.5vw, 200px);
+    height: clamp(110px, 9.5vw, 200px);
     z-index: 50;
     /* pointer-events: auto → LOGO 可接收長按(工程師隱藏入口);embedded 模式由 JS 停用 */
     pointer-events: auto;
@@ -1216,7 +1203,7 @@
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border-radius: 50%;
-    padding: clamp(8px, 0.9vw, 18px);
+    padding: clamp(10px, 1.2vw, 22px);
   }
   .slide-logo.show { opacity: .9; }
   .slide-logo img {
@@ -1536,14 +1523,14 @@
     margin-top: clamp(16px, 2.4vh, 36px);
   }
 
-  /* === Logo 直式時略大、移到底部置中 === */
+  /* === Logo 直式時更大 ・ 視覺主角 === */
   body[data-orient="vertical"] .slide-logo {
-    width: clamp(88px, 9vw, 160px);
-    height: clamp(88px, 9vw, 160px);
-    top: clamp(22px, 2.4vh, 44px);
-    right: clamp(22px, 3.4vw, 50px);
+    width: clamp(140px, 13vw, 240px);
+    height: clamp(140px, 13vw, 240px);
+    top: clamp(24px, 2.6vh, 50px);
+    right: clamp(22px, 3.4vw, 56px);
     left: auto;
-    padding: clamp(10px, 1.1vw, 22px);
+    padding: clamp(14px, 1.6vw, 28px);
   }
 
   /* 進度條 — 底部一條極細,顯示當前 slide 進度 */
@@ -1967,7 +1954,7 @@
     <div class="eyebrow">動機 ・ 從看見孩子開始</div>
     <h1 class="headline">孩子<span class="gold">不喜歡讀書</span>、<br>沒有<span class="gold">學習動機</span>?</h1>
     <div class="gold-line"></div>
-    <p class="subhead">您知道為什麼嗎?<br>找我們聊一聊,用<b>覺知</b>打開孩子對<b style="color:var(--accent)">人生目標的想像與動力</b>。</p>
+    <p class="subhead">您知道為什麼嗎?<br>找我們談一談,用<b>覺知</b>打開孩子對<b style="color:var(--accent)">人生目標的好奇</b>。</p>
     <div class="foot">
       <span>K12覺知素養教育學苑 ・ 高雄市鼓山區美術東三路 86 號 ・ 07-5528626</span>
       <div class="qr-corner-wrap">

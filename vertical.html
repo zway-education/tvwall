@@ -96,6 +96,55 @@
     width: 100vw; height: 100vh;
   }
 
+  /* ====== 預覽模式 ・ 在橫向螢幕(瀏覽器/筆電)模擬 9:16 直立框 ・ 縮放到看得清整個版面 ======
+     真實的直式 kiosk 是 1080×1920 portrait 螢幕,使用 100vw/100vh 即可。
+     但設計師在 1920×1080 橫向螢幕預覽時整張會被橫向拉開,看不到全貌。
+     JS 偵測 (vw > vh) 時自動加 body.preview-fit class。 */
+  body.preview-fit {
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  body.preview-fit .tvwall {
+    position: relative !important;
+    inset: auto !important;
+    height: 96vh !important;                  /* 留 4vh 邊框讓使用者看到「畫框」邊界 */
+    width: calc(96vh * 9 / 16) !important;    /* 9:16 portrait ratio */
+    max-width: 96vw !important;
+    aspect-ratio: 9 / 16;
+    box-shadow: 0 0 0 2px var(--accent), 0 30px 80px rgba(0,0,0,.6);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  /* 預覽模式時,讓 .slide-logo 跟 .controls 等 fixed 元素也限縮在框內 */
+  body.preview-fit .slide-logo {
+    /* fixed → 相對 .tvwall 重定位 */
+    position: absolute !important;
+  }
+  body.preview-fit .controls {
+    position: absolute !important;
+    bottom: 16px !important;
+  }
+  body.preview-fit .progress {
+    position: absolute !important;
+  }
+  /* 角落小提示:讓使用者知道在預覽模式 */
+  body.preview-fit::after {
+    content: "📐 預覽模式 ・ 模擬 9:16 直立框";
+    position: fixed;
+    top: 12px; left: 12px;
+    background: rgba(201,169,110,.85);
+    color: #1a1a1a;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: .85rem;
+    font-family: var(--sans);
+    letter-spacing: .1em;
+    z-index: 999;
+    pointer-events: none;
+  }
+
   .slide {
     position: absolute; inset: 0;
     width: 100%; height: 100%;
@@ -2359,6 +2408,17 @@
     const l = valid.includes(layoutName) ? layoutName : 'A';
     document.body.setAttribute('data-layout', l);
   }
+
+  // ========== 預覽模式 ・ 橫向螢幕(設計師預覽)自動模擬 9:16 直立框 ==========
+  function applyPreviewFit() {
+    // embedded(EDIT mode iframe)不啟用,iframe 本來就會被限框
+    if (new URLSearchParams(location.search).get('embedded') === '1') return;
+    // 偵測:寬 > 高 = 橫向螢幕 = 設計師預覽 = 啟用 fit-to-window
+    const isLandscape = window.innerWidth > window.innerHeight;
+    document.body.classList.toggle('preview-fit', isLandscape);
+  }
+  applyPreviewFit();
+  window.addEventListener('resize', applyPreviewFit);
 
   // ========== 套用螢幕方向 ・ 直式版鎖死 vertical ==========
   function applyOrientation() {

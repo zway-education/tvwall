@@ -758,6 +758,7 @@
   </div>
   <div class="actions">
     <span class="cloud-status" id="cloud-status"><span class="dot"></span><span id="cloud-status-text">檢查中</span></span>
+    <button class="btn btn-ghost" onclick="forceCloudSync()" title="從雲端拉取最新版,蓋掉本機未儲存的編輯">🔄 重新同步</button>
     <button class="btn btn-ghost" onclick="openPreview()">👁 預覽電視牆</button>
     <button class="btn btn-primary" onclick="saveAll()">💾 儲存所有變更</button>
   </div>
@@ -1807,6 +1808,71 @@
     window.open('index.html', '_blank');
   }
 
+  // ====== 跨裝置同步:手動「重新從雲端拉」+ 自動偵測別台改了什麼 ======
+  // 解決使用者的痛點:在 A 裝置改完後,B 裝置 admin 仍顯示舊版,
+  // 因為 admin 只在啟動時拉一次雲端。
+  async function forceCloudSync() {
+    if (!window.TVWALL_isCloudEnabled || !window.TVWALL_isCloudEnabled()) {
+      showToast('⚠ 沒有設定雲端 → 沒辦法跨裝置', 'error');
+      return;
+    }
+    showToast('🔄 從雲端拉取最新版...');
+    try {
+      // 重置 cloudInitDone,讓任何進行中的 save 都會等新一輪雲端載入完成
+      cloudInitDone = (async () => {
+        const r = await window.TVWALL_loadCloud();
+        state = r.config;
+        lastUpdatedAt = r.updated_at;
+        lastUpdatedBy = r.updated_by;
+        renderAll();
+        await refreshCloudMeta();
+        updateCloudStatus('cloud');
+      })();
+      await cloudInitDone;
+      showToast('✓ 已同步到雲端最新版');
+    } catch(e) {
+      showToast('❌ 同步失敗:' + e.message, 'error');
+      updateCloudStatus('offline');
+    }
+  }
+
+  // 每 30 秒輕量檢查雲端的 updated_at,跟本機紀錄不同就跳醒目提示
+  // (不直接覆蓋表單,因為使用者可能正在編輯沒儲存的內容)
+  function startCrossDevicePoller() {
+    if (!window.TVWALL_isCloudEnabled || !window.TVWALL_isCloudEnabled()) return;
+    setInterval(async () => {
+      // 表單正在輸入(< 5 秒前有 keystroke / focus)就跳過,避免打斷編輯
+      try {
+        const url = window.TVWALL_API.url + '?action=get&key=' +
+                    encodeURIComponent(window.TVWALL_API.key) + '&t=' + Date.now();
+        const res = await fetch(url);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.ok || !data.updated_at) return;
+        if (data.updated_at !== lastUpdatedAt) {
+          // 別台改了 → 跳醒目提示(讓使用者決定要不要 force sync,避免覆蓋自己編輯)
+          showSyncBanner(data.updated_at, data.updated_by);
+        }
+      } catch(_) { /* 網路飄忽,下次再說 */ }
+    }, 30000);
+  }
+
+  function showSyncBanner(remoteAt, remoteBy) {
+    let bar = document.getElementById('sync-banner');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'sync-banner';
+      bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;' +
+        'background:linear-gradient(90deg,#ffd966,#f4b400);color:#3a2a00;' +
+        'padding:12px 20px;font-weight:600;text-align:center;' +
+        'box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;font-family:inherit';
+      bar.onclick = () => { bar.remove(); forceCloudSync(); };
+      document.body.appendChild(bar);
+    }
+    const who = remoteBy && remoteBy !== lastUpdatedBy ? `(${remoteBy})` : '';
+    bar.innerHTML = `🔔 雲端有別台儲存了新版${who} ・ 點這條 banner 「重新同步」蓋掉目前表單`;
+  }
+
   function updateCloudStatus(mode) {
     const el = document.getElementById('cloud-status');
     const txt = document.getElementById('cloud-status-text');
@@ -1920,6 +1986,8 @@
       })();
       await cloudInitDone;
     }
+    // 啟動跨裝置 polling:每 30 秒檢查雲端 updated_at,有別台儲存就跳 banner
+    startCrossDevicePoller();
   });
 
   // ===== EDIT 模式整合:被 index.html 以 iframe 嵌入時,把互動回報給父層 =====

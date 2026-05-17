@@ -517,7 +517,7 @@
       radial-gradient(circle at 80% 30%, rgba(58,112,176,.06) 0%, transparent 20%);
     pointer-events: none;
   }
-  .s5 .text-col { width: 56%; align-self: flex-end; }   /* QR 移到左邊後,文字推到右邊 */
+  .s5 .text-col { width: 65%; align-self: flex-end; }   /* QR 移到左邊後,文字推到右邊;新標題較長,給多一點寬度 */
   /* S5 ・ 大 QR 移到左邊 + 放大(便於觀眾掃描)*/
   .s5 .qr-big {
     left: 6vw;
@@ -533,8 +533,10 @@
   }
   .s5 .eyebrow { color: var(--accent); }
   .s5 .headline {
-    font-size: clamp(48px, min(6vw, 9.5vh), 130px);
+    /* 標題加長(教養風格 + 心智光譜底色),font 上限降一點讓兩行能塞下 text-col 65% 寬度 */
+    font-size: clamp(40px, min(4.8vw, 7.5vh), 95px);
     font-weight: 800;
+    line-height: 1.2;
   }
   .spectrum-dots {
     display: flex; gap: clamp(12px, 1.4vw, 28px);
@@ -1492,7 +1494,7 @@
     <div class="gold-line"></div>
     <p class="subhead">陪孩子把情緒變成理解,<br>把理解變成選擇。</p>
     <div class="stages-stamp">
-      <span>啟蒙班 3-6</span><span class="dot">・</span><span>開智班 7-12</span><span class="dot">・</span><span>智優班 13-15</span><span class="dot">・</span><span>STEAM-R</span>
+      <span>啟蒙班 3-6 歲</span><span class="dot">・</span><span>開智班 7-12 歲</span><span class="dot">・</span><span>智優班 13-15 歲</span><span class="dot">・</span><span>STEAM-R</span>
     </div>
     <div class="foot">
       <span>李守蕾老師 ・ 18 年覺知教育累積</span>
@@ -1581,7 +1583,7 @@
   <section class="slide s5" data-id="5">
     <div class="text-col">
       <div class="eyebrow">5 分鐘,你會認識新的孩子</div>
-      <h1 class="headline">想知道孩子的<br><span class="gold">天生底色</span>嗎?</h1>
+      <h1 class="headline">想知道您的<span class="gold">教養風格</span><br>與孩子的<span class="gold">天生心智光譜底色</span>嗎?</h1>
       <div class="spectrum-dots">
         <div class="spec-dot spec-red"></div>
         <div class="spec-dot spec-orange"></div>

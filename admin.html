@@ -1535,17 +1535,21 @@
       renderImagePreview(stateKey, dataUrl);
       const bytes = Math.round(dataUrl.length * 0.75);
       const fmt = dataUrl.indexOf('image/png') >= 0 ? 'PNG' : 'JPEG';
-      showToast(`📷 已上傳 ${(bytes/1024).toFixed(1)} KB ・ ${fmt} ・ 別忘了按儲存`);
+      showToast(`📷 已上傳 ${(bytes/1024).toFixed(1)} KB ・ ${fmt} ・ 自動同步中...`);
+      // 圖片上傳自動同步到雲端(原本要手動按儲存,容易漏)
+      await saveAll();
     } catch(err) {
       showToast('❌ 處理失敗:' + err.message, 'error');
     }
     event.target.value = '';
   }
 
-  function clearImage(stateKey) {
+  async function clearImage(stateKey) {
     state[stateKey] = '';
     renderImagePreview(stateKey, '');
-    showToast('🗑 已移除 ・ 別忘了按儲存');
+    showToast('🗑 已移除 ・ 自動同步中...');
+    // 移除也自動同步,跟上傳行為一致
+    try { await saveAll(); } catch(_) {}
   }
 
   function renderTestimonies() {

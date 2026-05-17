@@ -1230,6 +1230,9 @@
   let cloudMode = false;
   let lastUpdatedAt = '';
   let lastUpdatedBy = '';
+  // 任何 save 都要等這個 promise resolve 後才能寫雲端
+  // (避免雲端初始載入還沒完成就 save → 用空的 state 把雲端蓋掉)
+  let cloudInitDone = Promise.resolve();
 
   // ====== 渲染 ======
   function renderAll() {
@@ -1531,6 +1534,9 @@
     try {
       const preferPng = QR_IMAGE_FIELDS.indexOf(stateKey) >= 0;
       const dataUrl = await compressImage(file, maxDim || 400, 0.85, preferPng);
+      // ⚠ 等雲端載入完成再更新 state,避免:
+      //   用戶上傳 → state[fb] = data → 雲端載入完成後 state 整個被覆寫 → fb 又變空
+      await cloudInitDone;
       state[stateKey] = dataUrl;
       renderImagePreview(stateKey, dataUrl);
       const bytes = Math.round(dataUrl.length * 0.75);
@@ -1545,6 +1551,7 @@
   }
 
   async function clearImage(stateKey) {
+    await cloudInitDone;
     state[stateKey] = '';
     renderImagePreview(stateKey, '');
     showToast('🗑 已移除 ・ 自動同步中...');
@@ -1765,6 +1772,8 @@
   }
 
   async function saveAll() {
+    // 防護:雲端初始載入還沒完成 → 等等再 save,免得用空白 state 蓋掉雲端
+    await cloudInitDone;
     const config = gatherFormData();
     // 識別「誰改的」(用瀏覽器指紋簡單區分)
     const updatedBy = (function() {
@@ -1890,20 +1899,26 @@
     await refreshCloudMeta();
 
     // 若有設雲端,從雲端拉一次更新表單
+    // ⚠ 用 cloudInitDone promise 包起來 → handleImageUpload / saveAll 在寫雲端前
+    //   必須 await 這個 promise,確保 state 已經是雲端最新版,
+    //   不會用 localStorage 空白 state 覆蓋雲端
     if (window.TVWALL_isCloudEnabled && window.TVWALL_isCloudEnabled()) {
-      try {
-        const r = await window.TVWALL_loadCloud();
-        state = r.config;
-        lastUpdatedAt = r.updated_at;
-        lastUpdatedBy = r.updated_by;
-        renderAll();
-        await refreshCloudMeta();
-        updateCloudStatus('cloud');
-      } catch(e) {
-        console.warn('雲端讀取失敗,使用本機 cache:', e);
-        updateCloudStatus('offline');
-        showToast('⚠ 雲端連不上,先用本機資料 ・ 儲存只會存本機', 'error');
-      }
+      cloudInitDone = (async () => {
+        try {
+          const r = await window.TVWALL_loadCloud();
+          state = r.config;
+          lastUpdatedAt = r.updated_at;
+          lastUpdatedBy = r.updated_by;
+          renderAll();
+          await refreshCloudMeta();
+          updateCloudStatus('cloud');
+        } catch(e) {
+          console.warn('雲端讀取失敗,使用本機 cache:', e);
+          updateCloudStatus('offline');
+          showToast('⚠ 雲端連不上,先用本機資料 ・ 儲存只會存本機', 'error');
+        }
+      })();
+      await cloudInitDone;
     }
   });
 

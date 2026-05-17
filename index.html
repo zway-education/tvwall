@@ -2334,18 +2334,39 @@
   }
 
   // ========== QR 渲染(支援自訂上傳圖)==========
+  // ========== Idempotent render 共用機制 ==========
+  // 雲端輪詢每 30 秒呼叫一次 applyConfig,但大部分元素內容根本沒變。
+  // 之前每個 render function 都 innerHTML='' 再重畫 → 視覺上 QR/LOGO/圖片
+  // 會閃一下(QRCode.toCanvas 是 async,中間有空檔)。
+  // 改用 WeakMap 記住每個元素「上次渲染的指紋」,指紋沒變就 skip。
+  const _renderSigs = new WeakMap();
+  function _sigChanged(el, sig) {
+    if (_renderSigs.get(el) === sig) return false;
+    _renderSigs.set(el, sig);
+    return true;
+  }
+  // 大型 base64 字串只取首/尾 + 長度當指紋,避免每次比對都掃 100KB 字串
+  function _fingerprint(s) {
+    if (!s) return '';
+    if (s.length < 200) return s;
+    return s.length + '|' + s.slice(0, 32) + '|' + s.slice(-32);
+  }
+
   function renderQRs() {
     document.querySelectorAll('[data-qr]').forEach(el => {
       const key = el.dataset.qr;
       const url = QR_URLS[key];
-      el.innerHTML = '';
-      el.classList.remove('has-custom-img');
       // 檢查有沒有自訂 QR 圖片(大小 QR 都套用,只要 admin 上傳了)
       let customImg = '';
       if ((key === 'line-big' || key === 'line-small' || key === 'line-social') && CONFIG.qrImageLine) customImg = CONFIG.qrImageLine;
       else if (key === 'mindspectrum' && CONFIG.qrImageMindspectrum) customImg = CONFIG.qrImageMindspectrum;
       else if (key === 'facebook' && CONFIG.qrImageFacebook) customImg = CONFIG.qrImageFacebook;
       else if (key === 'instagram' && CONFIG.qrImageInstagram) customImg = CONFIG.qrImageInstagram;
+      // 指紋包含 key + customImg fingerprint + url ・ 任一改動才重繪
+      const sig = `qr|${key}|${_fingerprint(customImg)}|${url || ''}`;
+      if (!_sigChanged(el, sig)) return;
+      el.innerHTML = '';
+      el.classList.remove('has-custom-img');
       if (customImg) {
         // 有自訂上傳圖 → 容器去白底,圖直接填滿當版面
         el.classList.add('has-custom-img');
@@ -2377,6 +2398,8 @@
   function renderLogo() {
     const el = document.getElementById('slide-logo');
     if (!el) return;
+    const sig = 'logo|' + _fingerprint(CONFIG.logoImage || '');
+    if (!_sigChanged(el, sig)) return;
     if (CONFIG.logoImage) {
       el.innerHTML = `<img src="${CONFIG.logoImage}" alt="logo">`;
       el.classList.add('show');
@@ -2390,6 +2413,8 @@
     const stages = document.querySelectorAll('.s2 .stage');
     stages.forEach((card, i) => {
       const img = CONFIG[`stage${i+1}Image`];
+      const sig = 'stage|' + _fingerprint(img || '');
+      if (!_sigChanged(card, sig)) return;
       if (img) {
         card.style.backgroundImage = `linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.65)), url(${img})`;
         card.classList.add('has-image');
@@ -2405,6 +2430,8 @@
       const slide = document.querySelector(`.s${i}`);
       if (!slide) continue;
       const img = CONFIG[`bgImageS${i}`];
+      const sig = 'bg|' + _fingerprint(img || '');
+      if (!_sigChanged(slide, sig)) continue;
       if (img) {
         // 背景圖透過 CSS 變數交給 ::before 層(才能跑 Ken Burns scale 動畫)
         slide.style.setProperty('--slide-bg-image', `url("${img}")`);
@@ -2420,6 +2447,8 @@
   function renderPortrait() {
     const box = document.getElementById('portrait-box');
     if (!box) return;
+    const sig = 'portrait|' + _fingerprint(CONFIG.portrait || '');
+    if (!_sigChanged(box, sig)) return;
     if (CONFIG.portrait) {
       box.innerHTML = `<img src="${CONFIG.portrait}" style="width:100%;height:100%;object-fit:cover;display:block">`;
       box.style.background = '#0a0a0a';

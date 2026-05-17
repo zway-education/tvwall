@@ -19,6 +19,29 @@ window.TVV_DEFAULTS = {
   // 直式 slide 預設內容(可在 vertical/admin.html 改)
   slides: [
     {
+      type: 'stages',
+      eyebrow: '從 3 歲開始 ・ 看懂孩子',
+      headline: '陪孩子走過,\n每一個成長關鍵期。',
+      stages: [
+        {
+          age: '3 - 6 歲',
+          name: '啟蒙班',
+          tag: '孩子能不再只是被情緒帶著走,而是開始看見自己內心的情緒。',
+        },
+        {
+          age: '7 - 10 歲',
+          name: '開智班',
+          tag: '從他律到自律,把「被提醒」,慢慢變成「我可以自己做到」。',
+        },
+        {
+          age: '10 歲以上',
+          name: '智優班',
+          tag: '陪青春期孩子看懂自己,把沉默、防衛與迷惘,轉化成正確的目標。',
+        },
+      ],
+      foot: 'K12覺知素養教育學苑 ・ 蒙以養正 ・ 老而有尊',
+    },
+    {
       type: 'hero',
       eyebrow: 'K12覺知素養教育學苑 ・ 覺察己心 ・ 知行合一',
       headline: '先懂心,\n再懂教。',
@@ -44,9 +67,10 @@ window.TVV_DEFAULTS = {
   ],
 
   durations: {
-    s1: 12000,
-    s2: 14000,
-    s3: 13000,
+    s1: 15000,   // stages 3 班級(內容多,給長一點)
+    s2: 12000,
+    s3: 14000,
+    s4: 13000,
   },
 
   // 圖片(base64 data URL)

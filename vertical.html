@@ -142,6 +142,53 @@
   }
   .slide[data-type="hero"] .eyebrow { color: var(--accent); }
 
+  /* === Stages slide ・ 3 班級垂直堆疊 === */
+  .slide[data-type="stages"] {
+    background: linear-gradient(180deg, var(--cream) 0%, var(--cream-deep) 100%);
+    color: var(--brand-darker);
+    justify-content: flex-start;
+    text-align: left;
+  }
+  .slide[data-type="stages"] .eyebrow { color: var(--brand-deep); opacity: .85; }
+  .slide[data-type="stages"] .headline { color: var(--brand-darker); }
+  .slide[data-type="stages"] .stage-stack {
+    display: flex; flex-direction: column;
+    gap: clamp(20px, 3vh, 44px);
+    margin-top: clamp(40px, 6vh, 90px);
+    opacity: 0;
+    animation: fadeIn 1s ease 1.3s forwards;
+  }
+  .slide[data-type="stages"] .stage-card {
+    background: #fff;
+    border: 1px solid rgba(31,138,92,.22);
+    border-radius: 16px;
+    padding: clamp(24px, 3vh, 44px) clamp(28px, 3.5vw, 50px);
+    box-shadow: 0 10px 30px rgba(14,99,64,.10);
+    display: flex; flex-direction: column;
+  }
+  .slide[data-type="stages"] .stage-age {
+    font-size: clamp(20px, 2vw, 38px);
+    color: var(--accent-deep);
+    letter-spacing: .25em;
+    font-weight: 500;
+    margin-bottom: clamp(8px, 1vh, 16px);
+  }
+  .slide[data-type="stages"] .stage-name {
+    font-family: var(--serif);
+    font-size: clamp(44px, 5vw, 90px);
+    font-weight: 800;
+    color: var(--brand-deep);
+    line-height: 1.1;
+    margin-bottom: clamp(12px, 1.5vh, 22px);
+  }
+  .slide[data-type="stages"] .stage-tag {
+    font-size: clamp(20px, 2.2vw, 40px);
+    line-height: 1.55;
+    color: var(--ink-soft);
+    font-weight: 500;
+    letter-spacing: .04em;
+  }
+
   /* === QR slide ・ 大 QR 置中,標題上方 === */
   .slide[data-type="qr"] {
     background: linear-gradient(180deg, var(--brand-darker) 0%, var(--brand-deep) 100%);
@@ -314,6 +361,17 @@
       if (s.type === 'qr' && s.qrKey) {
         inner += `<div class="qr-big" data-qr="${s.qrKey}"></div>`;
         if (s.qrLabel) inner += `<div class="qr-label">${escapeHTML(s.qrLabel)}</div>`;
+      }
+      if (s.type === 'stages' && Array.isArray(s.stages)) {
+        inner += '<div class="stage-stack">';
+        s.stages.forEach(st => {
+          inner += '<div class="stage-card">';
+          if (st.age)  inner += `<div class="stage-age">${escapeHTML(st.age)}</div>`;
+          if (st.name) inner += `<div class="stage-name">${escapeHTML(st.name)}</div>`;
+          if (st.tag)  inner += `<div class="stage-tag">${escapeHTML(st.tag)}</div>`;
+          inner += '</div>';
+        });
+        inner += '</div>';
       }
       if (s.foot) inner += `<div class="foot">${escapeHTML(s.foot)}</div>`;
       sec.innerHTML = inner;

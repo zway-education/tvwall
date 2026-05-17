@@ -194,6 +194,21 @@
   .qr-corner-wrap {
     display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
   }
+  /* S1 + S2:把右下的 QR 集中到右上(LOGO 正下方),跟 LOGO 對齊右邊
+     使用 position:fixed 才能跳出 .foot 的 absolute 定位基準,改以 viewport 為錨點 */
+  .s1.active .qr-corner-wrap,
+  .s2.active .qr-corner-wrap {
+    position: fixed;
+    top: clamp(140px, 17vh, 210px);   /* LOGO 下方留約 20-30px gap */
+    right: clamp(24px, 2.4vw, 48px);
+    bottom: auto; left: auto;
+    z-index: 51;
+  }
+  body[data-orient="vertical"] .s1.active .qr-corner-wrap,
+  body[data-orient="vertical"] .s2.active .qr-corner-wrap {
+    top: clamp(140px, 18vh, 280px);
+    right: clamp(22px, 3.4vw, 50px);
+  }
   .qr-corner canvas, .qr-corner img { width: 100%; height: 100%; display: block; }
 
   /* ============== Slide 1 - 主畫面 ============== */
@@ -1632,7 +1647,7 @@
     <div class="eyebrow">K12覺知素養教育學苑 ・ 覺察己心 ・ 知行合一</div>
     <h1 class="headline">先懂心,<br>再懂教。</h1>
     <div class="gold-line"></div>
-    <p class="subhead">陪孩子把情緒變成理解,<br>把理解變成選擇。</p>
+    <p class="subhead">從現在開始,<br>看懂孩子。</p>
     <div class="stages-stamp">
       <span>啟蒙班 3-6 歲</span><span class="dot">・</span><span>開智班 7-12 歲</span><span class="dot">・</span><span>智優班 13-15 歲</span><span class="dot">・</span><span>STEAM-R</span>
     </div>
@@ -1746,12 +1761,12 @@
       <div class="eyebrow">在教養的路上,我們伴您</div>
       <h1 class="headline">每週一篇,<br>陪你<span class="gold">慢慢看懂</span>孩子。</h1>
       <div class="gold-line"></div>
-      <p class="subhead">加入 LINE <b style="color:var(--accent)">@931irimh</b>,<br>每週收到一篇覺知教養文章。</p>
+      <p class="subhead">加入 LINE <b style="background:var(--brand-deep);color:var(--cream);padding:4px 16px;border-radius:8px;display:inline-block;letter-spacing:.05em">@931irimh</b><br>每週收到一篇覺知教養文章。</p>
     </div>
     <div class="qr-big" data-qr="line-big"></div>
     <div class="qr-big-label">→ 加為好友</div>
     <div class="foot">
-      <span>K12覺知素養教育學苑 ・ 高雄鼓山 美術東三路 86 號</span>
+      <span>K12覺知素養教育學苑 ・ 高雄市鼓山區美術東三路 86 號 ・ 07-5528626</span>
     </div>
   </section>
 
@@ -1863,7 +1878,7 @@
     <div class="gold-line"></div>
     <p class="subhead">您知道,為什麼嗎?<br>找我們談一談,用<b>覺知</b>打開孩子對<b style="color:var(--accent)">人生目標的好奇</b>。</p>
     <div class="foot">
-      <span>K12覺知素養教育學苑 ・ 高雄鼓山 美術東三路 86 號</span>
+      <span>K12覺知素養教育學苑 ・ 高雄市鼓山區美術東三路 86 號 ・ 07-5528626</span>
       <div class="qr-corner-wrap">
         <div class="qr-corner-label">@LINE</div>
         <div class="qr-corner" data-qr="line-small"></div>

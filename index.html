@@ -976,6 +976,152 @@
     flex: 1;
   }
 
+  /* ============== Slide 12 ・ 智庫總覽(學苑後盾)============== */
+  .s12 {
+    background: linear-gradient(135deg, var(--cream) 0%, #e8dfd0 100%);
+    color: var(--brand-darker);
+  }
+  .s12 .eyebrow { color: var(--brand-deep); opacity: .85; }
+  .s12 .headline {
+    color: var(--brand-darker);
+    font-size: clamp(40px, min(5.2vw, 8vh), 110px);
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .s12 .headline .gold { color: var(--brand); }
+  .s12 .gold-line { background: var(--accent); }
+  .s12 .subhead {
+    color: var(--ink-soft);
+    font-size: clamp(18px, 1.55vw, 32px);
+    margin-top: clamp(14px, 2vh, 28px);
+    max-width: 80%;
+    line-height: 1.7;
+    font-weight: 500;
+  }
+  .s12 .subhead b { color: var(--brand-deep); font-weight: 700; }
+  .s12 .zhiku-claims {
+    display: flex;
+    gap: clamp(36px, 5vw, 100px);
+    margin-top: clamp(32px, 5vh, 80px);
+    opacity: 0;
+    animation: fadeIn 1s ease 1.4s forwards;
+  }
+  .s12 .claim {
+    display: flex; flex-direction: column;
+    align-items: flex-start;
+  }
+  .s12 .claim-num {
+    font-family: var(--serif);
+    font-size: clamp(64px, 7vw, 150px);
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -.02em;
+  }
+  .s12 .claim-text {
+    font-size: clamp(14px, 1.15vw, 24px);
+    color: var(--ink-soft);
+    margin-top: clamp(6px, 0.8vh, 14px);
+    letter-spacing: .15em;
+    font-weight: 500;
+  }
+  .s12 .foot { color: var(--brand-deep); opacity: .8; }
+
+  /* ============== Slide 13 ・ 7 位專家陣容(grid)============== */
+  .s13 {
+    background: linear-gradient(135deg, var(--cream) 0%, var(--cream-deep) 100%);
+    color: var(--brand-darker);
+  }
+  .s13 .eyebrow { color: var(--accent-deep); }
+  .s13 .headline {
+    color: var(--brand-darker);
+    font-size: clamp(34px, min(4vw, 6.5vh), 80px);
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .s13 .headline .gold { color: var(--brand); }
+  .s13 .gold-line { background: var(--brand); }
+  .s13 .experts {
+    display: flex; flex-wrap: wrap;
+    gap: clamp(12px, 1.4vw, 26px);
+    margin-top: clamp(24px, 3.5vh, 50px);
+    justify-content: center;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.2s forwards;
+  }
+  .s13 .expert {
+    flex: 1 1 calc(14.2% - 24px);   /* 7 per row at wide widths */
+    min-width: 130px;
+    max-width: 230px;
+    display: flex; flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: #fff;
+    border: 1px solid rgba(31,138,92,.18);
+    border-radius: 12px;
+    padding: clamp(14px, 1.8vh, 28px) clamp(8px, 1vw, 16px);
+    box-shadow: 0 8px 24px rgba(14,99,64,.08);
+  }
+  .s13 .expert img {
+    width: clamp(72px, 7vw, 130px);
+    height: clamp(72px, 7vw, 130px);
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    margin-bottom: clamp(8px, 1vh, 14px);
+    background: var(--cream-deep);
+  }
+  .s13 .ex-name {
+    font-family: var(--serif);
+    font-size: clamp(15px, 1.25vw, 24px);
+    font-weight: 800;
+    color: var(--brand-darker);
+    letter-spacing: .03em;
+    white-space: nowrap;
+  }
+  .s13 .ex-role {
+    font-size: clamp(11px, 0.88vw, 17px);
+    color: var(--ink-soft);
+    margin-top: clamp(4px, 0.5vh, 8px);
+    letter-spacing: .05em;
+    line-height: 1.4;
+  }
+  .s13 .foot { color: var(--brand-deep); opacity: .82; }
+
+  /* === S12 / S13 直式排版 === */
+  body[data-orient="vertical"] .s12 .headline {
+    font-size: clamp(52px, min(7vw, 7vh), 150px);
+  }
+  body[data-orient="vertical"] .s12 .subhead {
+    font-size: clamp(22px, 2.4vw, 44px); max-width: 100%;
+  }
+  body[data-orient="vertical"] .s12 .claim-num {
+    font-size: clamp(80px, 10vw, 180px);
+  }
+  body[data-orient="vertical"] .s12 .claim-text {
+    font-size: clamp(16px, 1.8vw, 30px);
+  }
+  body[data-orient="vertical"] .s13 .headline {
+    font-size: clamp(44px, min(5.5vw, 6vh), 110px);
+  }
+  body[data-orient="vertical"] .s13 .experts {
+    gap: clamp(14px, 2vw, 32px);
+  }
+  body[data-orient="vertical"] .s13 .expert {
+    flex: 0 0 calc(33% - 20px);     /* 直式 3 per row → 3+3+1 */
+    max-width: none;
+  }
+  body[data-orient="vertical"] .s13 .expert img {
+    width: clamp(110px, 12vw, 200px);
+    height: clamp(110px, 12vw, 200px);
+  }
+  body[data-orient="vertical"] .s13 .ex-name {
+    font-size: clamp(20px, 2vw, 38px);
+  }
+  body[data-orient="vertical"] .s13 .ex-role {
+    font-size: clamp(15px, 1.4vw, 26px);
+  }
+
   /* ╔══════════════════════════════════════════════════════════╗
      ║   📐 版型公版庫(A 是預設 ・ B/C/E 是替代版型)              ║
      ╚══════════════════════════════════════════════════════════╝ */
@@ -1979,6 +2125,78 @@
     </div>
   </section>
 
+  <!-- ============== Slide 12 ・ 智庫總覽(學苑後盾)============== -->
+  <section class="slide s12" data-id="12">
+    <div class="eyebrow">學苑後盾 ・ 專業智庫</div>
+    <h1 class="headline">7 位博士、教授守護<br><span class="gold">每一個孩子的成長承諾</span></h1>
+    <div class="gold-line"></div>
+    <p class="subhead">跨越 <b>醫學 ・ 法律 ・ 教育 ・ 系統工程</b> 的智囊團,確保每一份教育設計都經得起學術與實務的檢驗。</p>
+    <div class="zhiku-claims">
+      <div class="claim">
+        <div class="claim-num">7</div>
+        <div class="claim-text">位博士、教授</div>
+      </div>
+      <div class="claim">
+        <div class="claim-num">4+</div>
+        <div class="claim-text">跨領域守護</div>
+      </div>
+      <div class="claim">
+        <div class="claim-num">20+</div>
+        <div class="claim-text">年實證累積</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span>覺知教育 ・ 不只是口號,是有人擔保的承諾</span>
+    </div>
+  </section>
+
+  <!-- ============== Slide 13 ・ 7 位專家陣容(grid)============== -->
+  <section class="slide s13" data-id="13">
+    <div class="eyebrow">專業智庫 ・ Expert Panel</div>
+    <h1 class="headline">他們,是覺知教育的<span class="gold">幕後設計者</span></h1>
+    <div class="gold-line"></div>
+    <div class="experts">
+      <div class="expert">
+        <img src="https://pic03.eapple.com.tw/zwayedu/team_04.jpg" alt="楊智綸 博士">
+        <div class="ex-name">楊智綸 博士</div>
+        <div class="ex-role">法律倫理守護</div>
+      </div>
+      <div class="expert">
+        <img src="https://pic03.eapple.com.tw/zwayedu/team_05.jpg" alt="杜佩蘭 博士">
+        <div class="ex-name">杜佩蘭 博士</div>
+        <div class="ex-role">職能開發領航</div>
+      </div>
+      <div class="expert">
+        <img src="https://pic03.eapple.com.tw/zwayedu/team_06.jpg" alt="黃英忠 博士">
+        <div class="ex-name">黃英忠 博士</div>
+        <div class="ex-role">學術連結導師</div>
+      </div>
+      <div class="expert">
+        <img src="https://pic03.eapple.com.tw/zwayedu/team_07.jpg" alt="張肇松 博士">
+        <div class="ex-name">張肇松 博士</div>
+        <div class="ex-role">醫學身心照護</div>
+      </div>
+      <div class="expert">
+        <img src="https://pic03.eapple.com.tw/zwayedu/team_08.jpg" alt="張國義 博士">
+        <div class="ex-name">張國義 博士</div>
+        <div class="ex-role">教育系統化</div>
+      </div>
+      <div class="expert">
+        <img src="https://pic03.eapple.com.tw/zwayedu/team_09.jpg" alt="陳維新 博士">
+        <div class="ex-name">陳維新 博士</div>
+        <div class="ex-role">系統工程基石</div>
+      </div>
+      <div class="expert">
+        <img src="https://pic03.eapple.com.tw/zwayedu/team_10.jpg" alt="敬世龍 博士">
+        <div class="ex-name">敬世龍 博士</div>
+        <div class="ex-role">教育治理對話</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span>來自 成功大學 ・ 高雄大學 ・ 東華大學 的跨域陣容</span>
+    </div>
+  </section>
+
 </div>
 
 <div class="progress" id="progress"></div>
@@ -2070,6 +2288,8 @@
       { id: 1, duration: cfg.durations.s1 },                       // 主畫面
       { id: 2, duration: cfg.durations.s2 },                       // 4 班級
       { id: 3, duration: cfg.durations.s3 },                       // 四大覺知系統
+      { id: 12, duration: cfg.durations.s12 || 14000 },            // 智庫總覽
+      { id: 13, duration: cfg.durations.s13 || 15000 },            // 7 位專家陣容
       { id: 8, duration: cfg.durations.s8 || 13000 },              // SEL 5 能力
       { id: 9, duration: cfg.durations.s9 || 12000 },              // 4C 國際素養
       { id: 10, duration: cfg.durations.s10 || 13000 },            // 學習動機 CTA

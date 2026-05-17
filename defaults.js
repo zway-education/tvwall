@@ -52,6 +52,8 @@ window.TVWALL_DEFAULTS = {
     s9: 12000,  // 4C 國際素養
     s10: 13000, // 學習動機 CTA
     s11: 14000, // 社群三合一(FB / IG / LINE)
+    s12: 14000, // 智庫總覽(學苑後盾)
+    s13: 15000, // 7 位專家陣容
   },
 
   testimonyInterval: 4000,

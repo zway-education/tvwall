@@ -2413,12 +2413,36 @@
   function applyPreviewFit() {
     // embedded(EDIT mode iframe)不啟用,iframe 本來就會被限框
     if (new URLSearchParams(location.search).get('embedded') === '1') return;
+    // landing screen 顯示時不啟用,避免跟 landing 的 fixed 全螢幕版面衝突
+    const landing = document.getElementById('landing');
+    const landingShowing = landing && !landing.hidden;
+    const keypad = document.getElementById('keypad-overlay');
+    const keypadShowing = keypad && !keypad.hidden;
+    const editMode = document.getElementById('edit-mode');
+    const editShowing = editMode && !editMode.hidden;
+    if (landingShowing || keypadShowing || editShowing) {
+      document.body.classList.remove('preview-fit');
+      return;
+    }
     // 偵測:寬 > 高 = 橫向螢幕 = 設計師預覽 = 啟用 fit-to-window
     const isLandscape = window.innerWidth > window.innerHeight;
     document.body.classList.toggle('preview-fit', isLandscape);
   }
-  applyPreviewFit();
+  // 延後到 DOM 完全 ready 後再評估(才能正確讀 landing.hidden)
+  setTimeout(applyPreviewFit, 0);
   window.addEventListener('resize', applyPreviewFit);
+  // 監聽 landing / keypad / edit-mode 的 hidden 切換 → 自動重評 preview-fit
+  // (避免在每個 dismiss/show 函數裡逐個打 hook)
+  setTimeout(() => {
+    ['landing', 'keypad-overlay', 'edit-mode'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      new MutationObserver(applyPreviewFit).observe(el, {
+        attributes: true,
+        attributeFilter: ['hidden'],
+      });
+    });
+  }, 0);
 
   // ========== 套用螢幕方向 ・ 直式版鎖死 vertical ==========
   function applyOrientation() {

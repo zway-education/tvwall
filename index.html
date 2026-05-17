@@ -312,8 +312,8 @@
 
   /* ============== Slide 3 - 創辦人故事 (焦黑) ============== */
   .s3 {
-    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-    color: var(--cream);
+    background: linear-gradient(135deg, #f7f3eb 0%, #e6efe9 100%);  /* 淺米白 → 淡綠 */
+    color: var(--brand-deep);
   }
   .s3 .text-col {
     width: 64%;
@@ -375,8 +375,10 @@
     position: relative; z-index: 1;
     text-align: center; line-height: 1.8;
   }
-  .s3 .foot { color: var(--accent); }
-  .s3 .foot strong { color: var(--accent-warm); font-weight: 500; }
+  .s3 .foot { color: var(--brand-deep); }
+  .s3 .foot strong { color: var(--brand); font-weight: 500; }
+  .s3 .eyebrow { color: var(--brand); }
+  .s3 .qr-corner-label { color: var(--ink-soft); }
 
   /* === Slide 3 ・ 四大覺知系統(水平流程,看見→陪伴→賦能→同行)=== */
   .s3 .systems {
@@ -392,10 +394,11 @@
     display: flex; flex-direction: column;
     align-items: flex-start;
     padding: clamp(18px, 2.4vh, 38px) clamp(14px, 1.6vw, 28px);
-    background: rgba(201,169,110,.08);
-    border: 1px solid rgba(201,169,110,.2);
-    border-top: 3px solid var(--accent);
+    background: #fff;
+    border: 1px solid rgba(31,138,92,.18);
+    border-top: 3px solid var(--brand);
     border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(14,99,64,.08);
     opacity: 0;
     transform: translateY(20px);
     animation: rise 0.8s ease forwards;
@@ -408,7 +411,7 @@
     font-family: var(--sans);
     font-size: clamp(13px, 1.1vw, 24px);
     letter-spacing: .35em;
-    color: var(--accent);
+    color: var(--brand);
     font-weight: 500;
     margin-bottom: clamp(8px, 1vh, 16px);
   }
@@ -417,21 +420,21 @@
     font-size: clamp(22px, 2.2vw, 46px);
     font-weight: 800;
     line-height: 1.2;
-    color: var(--cream);
+    color: var(--brand-darker);
     margin-bottom: clamp(12px, 1.6vh, 24px);
   }
   .s3 .sys-tag {
     font-family: var(--sans);
     font-size: clamp(13px, 1.1vw, 22px);
     line-height: 1.7;
-    color: rgba(250,247,242,.78);
-    font-weight: 300;
+    color: var(--ink-soft);
+    font-weight: 400;
   }
   .s3 .sys-arrow {
     align-self: center;
     font-size: clamp(20px, 2.2vw, 44px);
-    color: var(--accent-warm);
-    opacity: .55;
+    color: var(--brand);
+    opacity: .45;
     flex: 0 0 auto;
     padding: 0 clamp(2px, 0.4vw, 8px);
     user-select: none;
@@ -727,6 +730,143 @@
     line-height: 1.7;
     opacity: .9;
   }
+
+  /* ============== Slide 8 ・ SEL 社會情緒學習(5 能力)============== */
+  .s8 {
+    background: linear-gradient(135deg, #e8f0ea 0%, #d4e8dd 100%);  /* 淡薄荷綠 */
+    color: var(--brand-deep);
+  }
+  .s8 .eyebrow { color: var(--brand); }
+  .s8 .headline { color: var(--brand-darker); font-size: clamp(48px, min(5.5vw, 8vh), 110px); font-weight: 800; }
+  .s8 .competencies {
+    display: flex;
+    gap: clamp(10px, 1.1vw, 20px);
+    margin-top: clamp(28px, 3.6vh, 56px);
+    width: 100%;
+  }
+  .s8 .comp {
+    flex: 1;
+    background: #fff;
+    border: 1px solid rgba(31,138,92,.18);
+    border-top: 3px solid var(--brand);
+    border-radius: 8px;
+    padding: clamp(18px, 2.4vh, 38px) clamp(12px, 1.3vw, 24px);
+    box-shadow: 0 4px 16px rgba(14,99,64,.08);
+    opacity: 0; transform: translateY(20px);
+    animation: rise 0.7s ease forwards;
+  }
+  .slide.active .s8 .comp:nth-child(1) { animation-delay: 1.2s; }
+  .slide.active .s8 .comp:nth-child(2) { animation-delay: 1.35s; }
+  .slide.active .s8 .comp:nth-child(3) { animation-delay: 1.5s; }
+  .slide.active .s8 .comp:nth-child(4) { animation-delay: 1.65s; }
+  .slide.active .s8 .comp:nth-child(5) { animation-delay: 1.8s; }
+  .s8 .comp-num {
+    font-family: var(--sans); font-weight: 800;
+    font-size: clamp(14px, 1.2vw, 24px);
+    color: var(--accent); letter-spacing: .15em;
+    margin-bottom: clamp(6px, 0.8vh, 14px);
+  }
+  .s8 .comp-name {
+    font-family: var(--serif); font-weight: 800;
+    font-size: clamp(20px, 2vw, 42px); line-height: 1.2;
+    color: var(--brand-darker);
+    margin-bottom: clamp(4px, 0.6vh, 10px);
+  }
+  .s8 .comp-en {
+    font-family: var(--sans); font-weight: 500;
+    font-size: clamp(11px, 0.85vw, 18px);
+    color: var(--brand); opacity: .85;
+    letter-spacing: .05em;
+    margin-bottom: clamp(10px, 1.4vh, 22px);
+  }
+  .s8 .comp-tag {
+    font-family: var(--sans); font-weight: 400;
+    font-size: clamp(12px, 1vw, 20px); line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .s8 .foot { color: var(--brand-deep); }
+  .s8 .qr-corner-label { color: var(--ink-soft); }
+
+  /* ============== Slide 9 ・ 4C 國際素養 ============== */
+  .s9 {
+    background: linear-gradient(135deg, #f7f3eb 0%, #f0e8d6 100%);  /* 暖米白 → 淺金 */
+    color: var(--brand-deep);
+  }
+  .s9 .eyebrow { color: var(--accent-deep); }
+  .s9 .headline { color: var(--brand-darker); font-size: clamp(48px, min(5.5vw, 8vh), 110px); font-weight: 800; }
+  .s9 .fours {
+    display: flex;
+    gap: clamp(14px, 1.6vw, 30px);
+    margin-top: clamp(28px, 3.6vh, 56px);
+    width: 100%;
+  }
+  .s9 .four {
+    flex: 1;
+    background: #fff;
+    border: 1px solid rgba(201,169,110,.32);
+    border-top: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: clamp(20px, 2.8vh, 40px) clamp(14px, 1.6vw, 28px);
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(138,111,46,.1);
+    opacity: 0; transform: translateY(20px);
+    animation: rise 0.7s ease forwards;
+  }
+  .slide.active .s9 .four:nth-child(1) { animation-delay: 1.2s; }
+  .slide.active .s9 .four:nth-child(2) { animation-delay: 1.4s; }
+  .slide.active .s9 .four:nth-child(3) { animation-delay: 1.6s; }
+  .slide.active .s9 .four:nth-child(4) { animation-delay: 1.8s; }
+  .s9 .four-letter {
+    font-family: var(--serif); font-weight: 900;
+    font-size: clamp(48px, 5vw, 110px); line-height: 1;
+    color: var(--accent);
+    margin-bottom: clamp(10px, 1.4vh, 22px);
+  }
+  .s9 .four-name {
+    font-family: var(--sans); font-weight: 700;
+    font-size: clamp(14px, 1.2vw, 26px);
+    color: var(--brand-deep); letter-spacing: .05em;
+    margin-bottom: clamp(6px, 0.8vh, 14px);
+  }
+  .s9 .four-zh {
+    font-family: var(--serif); font-weight: 800;
+    font-size: clamp(22px, 2.2vw, 46px);
+    color: var(--brand-darker); line-height: 1.2;
+    margin-bottom: clamp(10px, 1.4vh, 22px);
+  }
+  .s9 .four-tag {
+    font-family: var(--sans); font-weight: 400;
+    font-size: clamp(13px, 1.1vw, 22px); line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .s9 .foot { color: var(--brand-deep); }
+  .s9 .qr-corner-label { color: var(--ink-soft); }
+
+  /* ============== Slide 10 ・ 學習動機 CTA ============== */
+  .s10 {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 60%, var(--brand-darker) 100%);
+    color: var(--cream);
+  }
+  .s10::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 75% 30%, rgba(201,169,110,.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .s10 .eyebrow { color: var(--accent); }
+  .s10 .headline {
+    font-size: clamp(64px, min(8vw, 11vh), 180px);
+    font-weight: 900;
+    letter-spacing: .03em;
+  }
+  .s10 .subhead {
+    font-size: clamp(24px, 2.4vw, 50px);
+    max-width: 85%;
+    line-height: 1.7;
+  }
+  .s10 .subhead b { font-weight: 700; }
+  .s10 .foot { color: var(--cream); opacity: 0.85; }
+  .s10 .foot strong { color: var(--accent-warm); font-weight: 500; }
 
   /* ╔══════════════════════════════════════════════════════════╗
      ║   📐 版型公版庫(A 是預設 ・ B/C/E 是替代版型)              ║
@@ -1630,6 +1770,107 @@
     </div>
   </section>
 
+  <!-- ============== Slide 8 ・ SEL 社會情緒學習(5 能力)============== -->
+  <section class="slide s8" data-id="8">
+    <div class="eyebrow">SEL ・ 社會情緒學習</div>
+    <h1 class="headline">5 種一生受用的<br><span class="gold">內在能力</span>。</h1>
+    <div class="gold-line"></div>
+    <div class="competencies">
+      <div class="comp">
+        <div class="comp-num">01</div>
+        <div class="comp-name">自我覺察</div>
+        <div class="comp-en">Self-Awareness</div>
+        <div class="comp-tag">認識自己的<br>情緒與想法</div>
+      </div>
+      <div class="comp">
+        <div class="comp-num">02</div>
+        <div class="comp-name">自我管理</div>
+        <div class="comp-en">Self-Management</div>
+        <div class="comp-tag">管理情緒、<br>做出選擇</div>
+      </div>
+      <div class="comp">
+        <div class="comp-num">03</div>
+        <div class="comp-name">社會覺察</div>
+        <div class="comp-en">Social Awareness</div>
+        <div class="comp-tag">理解他人的<br>感受與處境</div>
+      </div>
+      <div class="comp">
+        <div class="comp-num">04</div>
+        <div class="comp-name">人際技巧</div>
+        <div class="comp-en">Relationship Skills</div>
+        <div class="comp-tag">溝通、合作、<br>面對衝突</div>
+      </div>
+      <div class="comp">
+        <div class="comp-num">05</div>
+        <div class="comp-name">負責任決定</div>
+        <div class="comp-en">Responsible Decision-Making</div>
+        <div class="comp-tag">思考後果<br>再行動</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span>CASEL 國際標準 ・ 從 3 歲開始一生練</span>
+      <div class="qr-corner-wrap">
+        <div class="qr-corner-label">@LINE</div>
+        <div class="qr-corner" data-qr="line-small"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== Slide 9 ・ 4C 國際素養(4 能力)============== -->
+  <section class="slide s9" data-id="9">
+    <div class="eyebrow">21 世紀國際素養 ・ 4C</div>
+    <h1 class="headline">從 SEL 內在,<br>長出 <span class="gold">4C 外在能力</span>。</h1>
+    <div class="gold-line"></div>
+    <div class="fours">
+      <div class="four">
+        <div class="four-letter">C</div>
+        <div class="four-name">Critical Thinking</div>
+        <div class="four-zh">批判思考</div>
+        <div class="four-tag">不被資訊帶風向</div>
+      </div>
+      <div class="four">
+        <div class="four-letter">C</div>
+        <div class="four-name">Creativity</div>
+        <div class="four-zh">創造力</div>
+        <div class="four-tag">從 0 到 1 的能力</div>
+      </div>
+      <div class="four">
+        <div class="four-letter">C</div>
+        <div class="four-name">Communication</div>
+        <div class="four-zh">溝通</div>
+        <div class="four-tag">清楚說 ・ 好好聽</div>
+      </div>
+      <div class="four">
+        <div class="four-letter">C</div>
+        <div class="four-name">Collaboration</div>
+        <div class="four-zh">合作</div>
+        <div class="four-tag">跟人一起把事做大</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span>覺知 SEL → 4C ・ 完整素養成長路徑</span>
+      <div class="qr-corner-wrap">
+        <div class="qr-corner-label">@LINE</div>
+        <div class="qr-corner" data-qr="line-small"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== Slide 10 ・ 學習動機 CTA ============== -->
+  <section class="slide s10" data-id="10">
+    <div class="eyebrow">動機 ・ 從看見孩子開始</div>
+    <h1 class="headline">孩子<span class="gold">不喜歡讀書</span>、<br>沒有<span class="gold">學習動機</span>?</h1>
+    <div class="gold-line"></div>
+    <p class="subhead">您知道,為什麼嗎?<br>找我們談一談,用<b>覺知</b>打開孩子對<b style="color:var(--accent)">人生目標的好奇</b>。</p>
+    <div class="foot">
+      <span>K12覺知素養教育學苑 ・ 高雄鼓山 美術東三路 86 號</span>
+      <div class="qr-corner-wrap">
+        <div class="qr-corner-label">@LINE</div>
+        <div class="qr-corner" data-qr="line-small"></div>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <div class="progress" id="progress"></div>
@@ -1716,13 +1957,17 @@
   let SLIDES = buildSlides(CONFIG);
 
   function buildSlides(cfg) {
+    // 播放順序(不是 HTML 宣告順序):方法論 → 問題 → 證明 → 行動
     const slides = [
-      { id: 1, duration: cfg.durations.s1 },
-      { id: 2, duration: cfg.durations.s2 },
-      { id: 3, duration: cfg.durations.s3 },
-      { id: 4, duration: cfg.durations.s4 },
-      { id: 5, duration: cfg.durations.s5 },
-      { id: 6, duration: cfg.durations.s6 },
+      { id: 1, duration: cfg.durations.s1 },                       // 主畫面
+      { id: 2, duration: cfg.durations.s2 },                       // 4 班級
+      { id: 3, duration: cfg.durations.s3 },                       // 四大覺知系統
+      { id: 8, duration: cfg.durations.s8 || 13000 },              // SEL 5 能力
+      { id: 9, duration: cfg.durations.s9 || 12000 },              // 4C 國際素養
+      { id: 10, duration: cfg.durations.s10 || 13000 },            // 學習動機 CTA
+      { id: 4, duration: cfg.durations.s4 },                       // 真實見證
+      { id: 5, duration: cfg.durations.s5 },                       // 心智光譜 QR
+      { id: 6, duration: cfg.durations.s6 },                       // LINE QR
     ];
     // 只有當有花絮照片才把 Slide 7 加入輪播
     if (Array.isArray(cfg.highlights) && cfg.highlights.length > 0) {

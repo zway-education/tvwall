@@ -682,6 +682,35 @@
     text-align: center;
     margin-top: 4px;
   }
+  /* ====== QR 欄位 inline 上傳列(URL 下方的小工具列)====== */
+  .qr-inline-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    padding: 8px 10px;
+    background: var(--cream);
+    border-radius: 6px;
+  }
+  .qr-inline-actions .btn-small { flex: 0 0 auto; }
+  .qr-inline-status {
+    flex: 1;
+    font-size: .8rem;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .qr-inline-status.has-img { color: var(--brand); font-weight: 600; }
+  .qr-inline-thumb {
+    width: 48px; height: 48px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: #fff;
+    flex: 0 0 auto;
+    overflow: hidden;
+    display: none;
+  }
+  .qr-inline-thumb.show { display: block; }
+  .qr-inline-thumb img { width: 100%; height: 100%; object-fit: contain; }
   .img-info.warn { color: #d63030; }
 
   /* ====== Toast ====== */
@@ -741,24 +770,54 @@
     <h2>❶ QR 連結</h2>
     <p class="desc">電視牆上掃描用的兩個 QR 碼,改了之後 QR 自動重新生成</p>
 
+    <p class="desc" style="background:#fffbe6;padding:8px 12px;border-radius:6px;border-left:3px solid var(--accent)">
+      💡 <strong>兩種做法擇一:</strong>
+      ① 只填網址 → 系統幫你即時生成黑白 QR ・
+      ② <strong>不滿意外觀就點下面「📷 上傳自訂 QR」</strong>,改用你自己的品牌 QR 圖檔(含 LOGO/配色)
+    </p>
+
     <div class="field">
-      <label>LINE 加好友連結 <small>(每張右下角小 QR + Slide 6 大 QR 都用這個)</small></label>
+      <label>LINE 加好友連結 <small>(每張右下角小 QR + Slide 6 大 QR + Slide 11 三合一都用)</small></label>
       <input type="url" id="qr-line" placeholder="https://lin.ee/...">
+      <div class="qr-inline-actions">
+        <button class="btn-small" onclick="document.getElementById('upload-qrImageLine').click()">📷 上傳自訂 QR</button>
+        <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageLine')">✕ 回復內建</button>
+        <div class="qr-inline-thumb" id="inline-thumb-qrImageLine"></div>
+        <div class="qr-inline-status" id="inline-status-qrImageLine">未上傳 → 用上方連結即時生成 QR</div>
+      </div>
     </div>
 
     <div class="field">
       <label>心智光譜測驗連結 <small>(Slide 5 大 QR)</small></label>
       <input type="url" id="qr-mindspectrum" placeholder="https://...">
+      <div class="qr-inline-actions">
+        <button class="btn-small" onclick="document.getElementById('upload-qrImageMindspectrum').click()">📷 上傳自訂 QR</button>
+        <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageMindspectrum')">✕ 回復內建</button>
+        <div class="qr-inline-thumb" id="inline-thumb-qrImageMindspectrum"></div>
+        <div class="qr-inline-status" id="inline-status-qrImageMindspectrum">未上傳 → 用上方連結即時生成 QR</div>
+      </div>
     </div>
 
     <div class="field">
       <label>Facebook 粉專連結 <small>(Slide 11 三合一)</small></label>
       <input type="url" id="qr-facebook" placeholder="https://www.facebook.com/...">
+      <div class="qr-inline-actions">
+        <button class="btn-small" onclick="document.getElementById('upload-qrImageFacebook').click()">📷 上傳自訂 QR</button>
+        <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageFacebook')">✕ 回復內建</button>
+        <div class="qr-inline-thumb" id="inline-thumb-qrImageFacebook"></div>
+        <div class="qr-inline-status" id="inline-status-qrImageFacebook">未上傳 → 用上方連結即時生成 QR</div>
+      </div>
     </div>
 
     <div class="field">
       <label>Instagram 連結 <small>(Slide 11 三合一)</small></label>
       <input type="url" id="qr-instagram" placeholder="https://www.instagram.com/...">
+      <div class="qr-inline-actions">
+        <button class="btn-small" onclick="document.getElementById('upload-qrImageInstagram').click()">📷 上傳自訂 QR</button>
+        <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageInstagram')">✕ 回復內建</button>
+        <div class="qr-inline-thumb" id="inline-thumb-qrImageInstagram"></div>
+        <div class="qr-inline-status" id="inline-status-qrImageInstagram">未上傳 → 用上方連結即時生成 QR</div>
+      </div>
     </div>
   </section>
 
@@ -1347,13 +1406,14 @@
   ];
   function renderImagePreview(stateKey, dataUrl) {
     const box = document.getElementById(`preview-${stateKey}`);
-    if (!box) return;
-    if (dataUrl) {
-      box.innerHTML = `<img src="${dataUrl}" alt="preview">`;
-    } else {
-      const placeholder = (stateKey.startsWith('qr')) ? '使用內建生成'
-                       : (stateKey.startsWith('bg')) ? '用色塊' : '尚未上傳';
-      box.innerHTML = `<span class="img-placeholder">${placeholder}</span>`;
+    if (box) {
+      if (dataUrl) {
+        box.innerHTML = `<img src="${dataUrl}" alt="preview">`;
+      } else {
+        const placeholder = (stateKey.startsWith('qr')) ? '使用內建生成'
+                         : (stateKey.startsWith('bg')) ? '用色塊' : '尚未上傳';
+        box.innerHTML = `<span class="img-placeholder">${placeholder}</span>`;
+      }
     }
     const info = document.getElementById(`info-${stateKey}`);
     if (info) {
@@ -1363,6 +1423,28 @@
         info.classList.toggle('warn', bytes > 35000);
       } else {
         info.textContent = '';
+      }
+    }
+    // ❶ 區塊的 inline 上傳列(QR 4 個欄位才有)・ 同步狀態 + 縮圖
+    const inlineThumb = document.getElementById(`inline-thumb-${stateKey}`);
+    const inlineStatus = document.getElementById(`inline-status-${stateKey}`);
+    if (inlineThumb) {
+      if (dataUrl) {
+        inlineThumb.innerHTML = `<img src="${dataUrl}" alt="QR">`;
+        inlineThumb.classList.add('show');
+      } else {
+        inlineThumb.innerHTML = '';
+        inlineThumb.classList.remove('show');
+      }
+    }
+    if (inlineStatus) {
+      if (dataUrl) {
+        const bytes = Math.round(dataUrl.length * 0.75);
+        inlineStatus.textContent = `✓ 已上傳自訂 QR(${(bytes/1024).toFixed(1)} KB) ・ 電視牆會用這張`;
+        inlineStatus.classList.add('has-img');
+      } else {
+        inlineStatus.textContent = '未上傳 → 用上方連結即時生成 QR';
+        inlineStatus.classList.remove('has-img');
       }
     }
   }

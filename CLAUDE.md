@@ -38,21 +38,54 @@ K12覺知素養教育學苑櫃檯電視牆,**Chrome kiosk + 雲端同步**。
 
 ```
 電視牆/
-├── index.html                    🔧 統一入口 ・ PLAY + EDIT 兩模式 ・ 雙方向 ・ 工程師入口
-├── admin.html                    後台表單 ・ EDIT 模式右側 iframe 嵌入 ・ 也可單獨開
-├── defaults.js                   預設值(含 orientation 欄位)+ 智慧載入
-├── cloud_config.js               Apps Script URL + API Key
-├── manifest.json                 PWA manifest(start_url 指向 index.html)
-├── vertical.html                 ⮕ 轉址到 index.html(直式已整合,保留不破壞舊書籤)
+├── index.html                    🔧 橫式統一入口 ・ PLAY + EDIT 兩模式 ・ 工程師入口
+├── admin.html                    橫式後台 ・ EDIT 模式右側 iframe 嵌入 ・ 也可單獨開
+├── defaults.js                   橫式預設值 + TVWALL_* 智慧載入
+├── cloud_config.js               橫式 Apps Script URL + API Key
+├── manifest.json                 PWA manifest
 ├── edit.html                     ⮕ 轉址到 index.html(EDIT 模式已取代)
+│
+├── vertical.html                 📱 直式專屬 kiosk(獨立設計,不再共用橫式 CSS)
+├── vertical/                     📱 直式專屬資產(獨立後台 + 雲端)
+│   ├── admin.html                直式後台表單
+│   ├── defaults.js               直式預設值 + TVV_* 智慧載入(獨立 namespace)
+│   ├── cloud_config.js           直式 Apps Script URL(獨立 Sheet)
+│   └── cloud_setup/
+│       └── tvwall_api.gs         直式專屬 .gs(API_KEY 末尾 _VERTICAL)
+│
 ├── icon.svg / icon-gen.html       PWA icon 源碼 + 一次性產生工具
 ├── icon-192.png / 512 / 180       PWA icons
 ├── 維護說明.html / 雲端設定步驟.html  使用者指南
 ├── README.md                     Markdown 維護指南
 ├── CLAUDE.md                     本檔
 └── cloud_setup/
-    └── tvwall_api.gs             Apps Script 程式碼(v3 ・ 圖片多格 chunking 儲存)
+    └── tvwall_api.gs             橫式 Apps Script 程式碼(v4 ・ 圖片分塊 + safety net)
 ```
+
+## 橫式 vs 直式(2026-05-17 拆分)
+
+**為何拆分**:之前直式靠 `body[data-orient="vertical"]` 在同一份 index.html 切換,
+設計受限(改一邊容易壞另一邊)。使用者要求獨立。
+
+**獨立程度**:
+- 不同 HTML、不同 CSS、不同 admin、不同雲端 Sheet
+- namespace 隔離:橫式 `window.TVWALL_*` ・ 直式 `window.TVV_*`
+- localStorage key 隔離:橫式 `tvwall_config` ・ 直式 `tvwall_v_config`
+- API_KEY 隔離:橫式 `..._secure_key_v1` ・ 直式 `..._VERTICAL_secure_key_v1`
+
+**直式 SLIDES 結構**(完全不同):
+- `slides[]` 陣列直接存在 cloud config 裡(橫式是寫死 HTML + render 動態資料)
+- 每張 slide: `{ type, eyebrow, headline, subhead, qrKey, qrLabel, foot }`
+- type: 'hero' (純文字) | 'qr' (大 QR + 標題)
+- 後台可加 / 刪 / 改 / 排序 slides
+
+**直式 cloud 設定步驟**:
+1. 建新 Google Sheet「tvwall_v_config」
+2. Apps Script → 貼 `vertical/cloud_setup/tvwall_api.gs` → initialize → 部署
+3. URL 貼進 `vertical/cloud_config.js` 的 url 欄位
+4. push 到 GitHub Pages
+5. URL: `zway-education.github.io/tvwall/vertical.html`
+6. 後台 URL: `zway-education.github.io/tvwall/vertical/admin.html`
 
 ## 雲端架構
 

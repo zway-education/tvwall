@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>直式電視牆後台 ・ K12覺知素養教育學苑</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="cloud_config.js"></script>
+<script src="defaults.js"></script>
+<style>
+  :root {
+    --brand: #1f8a5c;
+    --brand-deep: #0e6340;
+    --accent: #c9a96e;
+    --cream: #faf7f2;
+    --cream-deep: #f0e8d6;
+    --ink: #2a241f;
+    --ink-soft: #5a5048;
+    --border: #d8d2c4;
+    --danger: #c44a3b;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: "Noto Sans TC", sans-serif; background: var(--cream); color: var(--ink); margin: 0; line-height: 1.6; }
+  header {
+    background: var(--brand-deep); color: var(--cream);
+    padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  header h1 { margin: 0; font-size: 1.15rem; }
+  header h1 small { font-weight: 400; font-size: .85rem; opacity: .8; margin-left: 8px; }
+  .cloud-status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(255,255,255,.1); font-size: .85rem;
+  }
+  .cloud-status .dot { width: 8px; height: 8px; border-radius: 50%; background: #888; }
+  .cloud-status.cloud .dot { background: #6fff9a; }
+  .cloud-status.local .dot { background: #ffb84d; }
+  .cloud-status.offline .dot { background: #ff6868; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn {
+    border: none; padding: 9px 16px;
+    border-radius: 8px; cursor: pointer;
+    font-family: inherit; font-size: .9rem; font-weight: 500;
+  }
+  .btn-primary { background: var(--accent); color: #2a241f; }
+  .btn-ghost { background: transparent; color: var(--cream); border: 1px solid rgba(255,255,255,.4); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  main { max-width: 960px; margin: 0 auto; padding: 24px 18px 96px; }
+  section { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,.04); }
+  h2 { font-size: 1.1rem; color: var(--brand-deep); margin-top: 0; }
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: .85rem; font-weight: 500; color: var(--ink-soft); margin-bottom: 6px; }
+  .field input, .field textarea, .field select {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px; padding: 9px 12px;
+    font-family: inherit; font-size: .95rem;
+    background: #fefefe;
+  }
+  .field textarea { min-height: 70px; resize: vertical; }
+  .slide-card {
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; margin-bottom: 12px;
+    background: var(--cream);
+  }
+  .slide-card .card-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .slide-card .idx { font-weight: 700; color: var(--brand-deep); }
+  .slide-card .card-actions button {
+    background: transparent; border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    margin-left: 4px; font-size: .8rem;
+  }
+  .img-upload {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 8px; padding: 8px 10px;
+    background: var(--cream); border-radius: 8px;
+  }
+  .img-upload .thumb {
+    width: 48px; height: 48px;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: #fff; overflow: hidden;
+  }
+  .img-upload .thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .img-upload button { flex: 0 0 auto; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: .82rem; border: none; }
+  .img-upload .btn-up { background: var(--brand); color: #fff; }
+  .img-upload .btn-clear { background: transparent; border: 1px solid var(--border); color: var(--ink-soft); }
+  .img-upload .status { flex: 1; font-size: .8rem; color: var(--ink-soft); }
+  .img-upload .status.has-img { color: var(--brand); font-weight: 600; }
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120%);
+    background: var(--brand-deep); color: #fff;
+    padding: 12px 24px; border-radius: 999px;
+    transition: transform .3s; z-index: 999;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--danger); }
+  footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex; justify-content: flex-end; gap: 12px;
+    z-index: 100;
+  }
+  .theme-picker { display: flex; gap: 10px; flex-wrap: wrap; }
+  .theme-tile {
+    flex: 0 0 auto; padding: 10px 16px;
+    border: 2px solid var(--border); border-radius: 8px;
+    cursor: pointer; background: #fff;
+    font-size: .85rem;
+  }
+  .theme-tile.selected { border-color: var(--brand); background: var(--cream-deep); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>K12覺知素養教育學苑 <small>直 式 電 視 牆 ・ 後 台</small></h1>
+  </div>
+  <div class="actions">
+    <span class="cloud-status" id="cloud-status"><span class="dot"></span><span id="cloud-status-text">檢查中</span></span>
+    <button class="btn btn-ghost" onclick="forceSync()" title="從雲端拉最新版">🔄 重新同步</button>
+    <button class="btn btn-ghost" onclick="window.open('../vertical.html', '_blank')">👁 預覽</button>
+    <button class="btn btn-primary" onclick="saveAll()">💾 儲存</button>
+  </div>
+</header>
+
+<main>
+
+  <section>
+    <h2>❶ QR 連結</h2>
+    <div class="field">
+      <label>LINE 加好友連結</label>
+      <input type="url" id="qr-line" placeholder="https://lin.ee/...">
+      <div class="img-upload">
+        <button type="button" class="btn-up" onclick="document.getElementById('up-qrImageLine').click()">📷 上傳自訂 QR</button>
+        <button type="button" class="btn-clear" onclick="clearImage('qrImageLine')">✕ 移除</button>
+        <input type="file" id="up-qrImageLine" accept="image/*" style="display:none" onchange="handleImg(event, 'qrImageLine', 900)">
+        <div class="thumb" id="th-qrImageLine"></div>
+        <div class="status" id="st-qrImageLine">未上傳 → 用上方連結即時生成</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>心智光譜測驗連結</label>
+      <input type="url" id="qr-mindspectrum" placeholder="https://...">
+      <div class="img-upload">
+        <button type="button" class="btn-up" onclick="document.getElementById('up-qrImageMindspectrum').click()">📷 上傳自訂 QR</button>
+        <button type="button" class="btn-clear" onclick="clearImage('qrImageMindspectrum')">✕ 移除</button>
+        <input type="file" id="up-qrImageMindspectrum" accept="image/*" style="display:none" onchange="handleImg(event, 'qrImageMindspectrum', 900)">
+        <div class="thumb" id="th-qrImageMindspectrum"></div>
+        <div class="status" id="st-qrImageMindspectrum">未上傳 → 用上方連結即時生成</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Facebook 連結</label>
+      <input type="url" id="qr-facebook" placeholder="https://facebook.com/...">
+    </div>
+    <div class="field">
+      <label>Instagram 連結</label>
+      <input type="url" id="qr-instagram" placeholder="https://instagram.com/...">
+    </div>
+  </section>
+
+  <section>
+    <h2>❷ 學苑 LOGO</h2>
+    <div class="img-upload">
+      <button type="button" class="btn-up" onclick="document.getElementById('up-logoImage').click()">📷 上傳 LOGO</button>
+      <button type="button" class="btn-clear" onclick="clearImage('logoImage')">✕ 移除</button>
+      <input type="file" id="up-logoImage" accept="image/*" style="display:none" onchange="handleImg(event, 'logoImage', 800)">
+      <div class="thumb" id="th-logoImage"></div>
+      <div class="status" id="st-logoImage">未上傳</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>❸ 直式 slide(可加 / 刪 / 改 / 排序)</h2>
+    <p style="font-size:.85rem;color:var(--ink-soft);margin-top:-8px">每張 slide:type / eyebrow / headline / subhead / qrKey / qrLabel / foot</p>
+    <div id="slide-list"></div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="btn btn-ghost" style="color:var(--brand-deep);border-color:var(--brand-deep)" onclick="addSlide('hero')">+ 加文字 slide</button>
+      <button class="btn btn-ghost" style="color:var(--brand-deep);border-color:var(--brand-deep)" onclick="addSlide('qr')">+ 加 QR slide</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>❹ 每張 slide 停留秒數</h2>
+    <div id="duration-list"></div>
+  </section>
+
+  <section>
+    <h2>❺ 配色</h2>
+    <div class="theme-picker" id="theme-picker">
+      <div class="theme-tile" data-theme="green" onclick="selectTheme('green')">🌿 翠玉綠</div>
+      <div class="theme-tile" data-theme="amber" onclick="selectTheme('amber')">☕ 暖咖琥珀</div>
+      <div class="theme-tile" data-theme="navy" onclick="selectTheme('navy')">🌊 海洋蔚藍</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <button class="btn btn-danger" onclick="resetAll()">↻ 重置預設</button>
+  <button class="btn btn-primary" onclick="saveAll()">💾 儲存所有變更</button>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let state = window.TVV_loadCached();
+  let cloudInitDone = Promise.resolve();
+  let lastUpdatedAt = '';
+
+  // ====== 渲染 ======
+  function renderAll() {
+    document.getElementById('qr-line').value = state.qr.line || '';
+    document.getElementById('qr-mindspectrum').value = state.qr.mindspectrum || '';
+    document.getElementById('qr-facebook').value = state.qr.facebook || '';
+    document.getElementById('qr-instagram').value = state.qr.instagram || '';
+    renderImg('logoImage', state.logoImage);
+    renderImg('qrImageLine', state.qrImageLine);
+    renderImg('qrImageMindspectrum', state.qrImageMindspectrum);
+    renderSlides();
+    renderDurations();
+    selectTheme(state.theme || 'green', false);
+  }
+
+  function renderSlides() {
+    const list = document.getElementById('slide-list');
+    list.innerHTML = (state.slides || []).map((s, i) => `
+      <div class="slide-card" data-i="${i}">
+        <div class="card-head">
+          <div class="idx">slide ${i + 1} ・ ${s.type === 'qr' ? '🔲 QR' : '📝 文字'}</div>
+          <div class="card-actions">
+            ${i > 0 ? `<button onclick="moveSlide(${i}, -1)">↑</button>` : ''}
+            ${i < state.slides.length - 1 ? `<button onclick="moveSlide(${i}, 1)">↓</button>` : ''}
+            <button onclick="removeSlide(${i})" style="color:var(--danger)">✕</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Eyebrow(小標,在 headline 上)</label>
+          <input type="text" data-i="${i}" data-k="eyebrow" oninput="updSlide(this)">
+        </div>
+        <div class="field">
+          <label>Headline(主標 ・ \\n 換行)</label>
+          <textarea data-i="${i}" data-k="headline" oninput="updSlide(this)"></textarea>
+        </div>
+        <div class="field">
+          <label>Subhead(副標,可空白)</label>
+          <textarea data-i="${i}" data-k="subhead" oninput="updSlide(this)"></textarea>
+        </div>
+        ${s.type === 'qr' ? `
+          <div class="field">
+            <label>QR Key(line-big / mindspectrum / facebook / instagram)</label>
+            <select data-i="${i}" data-k="qrKey" oninput="updSlide(this)">
+              <option value="line-big">LINE</option>
+              <option value="mindspectrum">心智光譜</option>
+              <option value="facebook">Facebook</option>
+              <option value="instagram">Instagram</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>QR 旁邊的標語</label>
+            <input type="text" data-i="${i}" data-k="qrLabel" oninput="updSlide(this)">
+          </div>
+        ` : ''}
+        <div class="field">
+          <label>Foot(底部小字,可空白)</label>
+          <input type="text" data-i="${i}" data-k="foot" oninput="updSlide(this)">
+        </div>
+      </div>
+    `).join('');
+    // Fill values after innerHTML
+    state.slides.forEach((s, i) => {
+      const card = list.querySelector(`[data-i="${i}"]`);
+      if (!card) return;
+      ['eyebrow', 'headline', 'subhead', 'qrKey', 'qrLabel', 'foot'].forEach(k => {
+        const el = card.querySelector(`[data-k="${k}"]`);
+        if (el) el.value = s[k] || '';
+      });
+    });
+  }
+
+  function renderDurations() {
+    const list = document.getElementById('duration-list');
+    list.innerHTML = (state.slides || []).map((s, i) => {
+      const key = 's' + (i + 1);
+      const sec = Math.round((state.durations[key] || 13000) / 1000);
+      return `<div class="field" style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <label style="flex:0 0 auto;margin:0;min-width:80px">slide ${i + 1}</label>
+        <input type="number" min="5" max="60" value="${sec}" style="flex:0 0 100px" data-dkey="${key}" oninput="updDuration(this)">
+        <span style="color:var(--ink-soft);font-size:.85rem">秒</span>
+      </div>`;
+    }).join('');
+  }
+
+  function renderImg(key, dataUrl) {
+    const thumb = document.getElementById('th-' + key);
+    const status = document.getElementById('st-' + key);
+    if (!thumb) return;
+    if (dataUrl) {
+      thumb.innerHTML = `<img src="${dataUrl}">`;
+      if (status) {
+        const bytes = Math.round(dataUrl.length * 0.75);
+        status.textContent = `✓ 已上傳 ${(bytes/1024).toFixed(1)} KB`;
+        status.classList.add('has-img');
+      }
+    } else {
+      thumb.innerHTML = '';
+      if (status) {
+        status.textContent = key.startsWith('qr') ? '未上傳 → 用上方連結即時生成' : '未上傳';
+        status.classList.remove('has-img');
+      }
+    }
+  }
+
+  function updSlide(input) {
+    const i = parseInt(input.dataset.i, 10);
+    state.slides[i][input.dataset.k] = input.value;
+  }
+  function updDuration(input) {
+    const sec = parseInt(input.value, 10);
+    state.durations[input.dataset.dkey] = sec * 1000;
+  }
+  function moveSlide(i, dir) {
+    const j = i + dir;
+    if (j < 0 || j >= state.slides.length) return;
+    [state.slides[i], state.slides[j]] = [state.slides[j], state.slides[i]];
+    renderSlides();
+    renderDurations();
+  }
+  function addSlide(type) {
+    state.slides.push({
+      type: type,
+      eyebrow: '小標',
+      headline: '主標題\n第二行',
+      subhead: '',
+      qrKey: type === 'qr' ? 'line-big' : '',
+      qrLabel: type === 'qr' ? '→ 立即掃描' : '',
+      foot: '',
+    });
+    state.durations['s' + state.slides.length] = 13000;
+    renderSlides();
+    renderDurations();
+  }
+  function removeSlide(i) {
+    if (!confirm(`確定刪除 slide ${i + 1}?`)) return;
+    state.slides.splice(i, 1);
+    renderSlides();
+    renderDurations();
+  }
+
+  // ====== 圖片上傳(壓縮)======
+  const QR_FIELDS = ['qrImageLine', 'qrImageMindspectrum', 'qrImageFacebook', 'qrImageInstagram'];
+
+  async function handleImg(event, key, maxDim) {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      const png = QR_FIELDS.indexOf(key) >= 0;
+      const dataUrl = await compress(file, maxDim || 400, 0.85, png);
+      await cloudInitDone;
+      state[key] = dataUrl;
+      renderImg(key, dataUrl);
+      const bytes = Math.round(dataUrl.length * 0.75);
+      toast(`📷 已上傳 ${(bytes/1024).toFixed(1)} KB ・ 同步中...`);
+      await saveAll();
+    } catch(err) {
+      toast('❌ ' + err.message, true);
+    }
+    event.target.value = '';
+  }
+  async function clearImage(key) {
+    await cloudInitDone;
+    state[key] = '';
+    renderImg(key, '');
+    toast('🗑 已移除 ・ 同步中...');
+    try { await saveAll(); } catch(_) {}
+  }
+  async function compress(file, maxDim, q, png) {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width, h = img.height;
+          const s = Math.min(1, maxDim / Math.max(w, h));
+          w = Math.round(w * s); h = Math.round(h * s);
+          const c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          const ctx = c.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(c.toDataURL(png ? 'image/png' : 'image/jpeg', q));
+        };
+        img.onerror = () => reject(new Error('讀圖失敗'));
+        img.src = e.target.result;
+      };
+      r.onerror = () => reject(new Error('讀檔失敗'));
+      r.readAsDataURL(file);
+    });
+  }
+
+  // ====== 配色 ======
+  function selectTheme(t, save = true) {
+    state.theme = t;
+    document.querySelectorAll('.theme-tile').forEach(el => {
+      el.classList.toggle('selected', el.dataset.theme === t);
+    });
+  }
+
+  // ====== 儲存 ======
+  function gatherFormData() {
+    return {
+      qr: {
+        line: document.getElementById('qr-line').value.trim(),
+        mindspectrum: document.getElementById('qr-mindspectrum').value.trim(),
+        facebook: document.getElementById('qr-facebook').value.trim(),
+        instagram: document.getElementById('qr-instagram').value.trim(),
+      },
+      slides: state.slides,
+      durations: state.durations,
+      logoImage: state.logoImage || '',
+      qrImageLine: state.qrImageLine || '',
+      qrImageMindspectrum: state.qrImageMindspectrum || '',
+      qrImageFacebook: state.qrImageFacebook || '',
+      qrImageInstagram: state.qrImageInstagram || '',
+      theme: state.theme || 'green',
+    };
+  }
+  async function saveAll() {
+    await cloudInitDone;
+    const cfg = gatherFormData();
+    const updatedBy = (function() {
+      let id = localStorage.getItem('tvv_who');
+      if (!id) {
+        id = (navigator.platform || 'unknown') + '_' + Math.random().toString(36).slice(2, 8);
+        localStorage.setItem('tvv_who', id);
+      }
+      return id;
+    })();
+    try {
+      const r = await window.TVV_saveSmart(cfg, updatedBy);
+      state = cfg;
+      if (r.source === 'cloud') {
+        toast('☁️ 已儲存到雲端 ・ 直式電視 30 秒內更新');
+        cloudStatus('cloud');
+      } else {
+        toast('💾 已儲存到本機' + (r.warning ? ' (雲端:' + r.warning + ')' : ''), !!r.warning);
+        cloudStatus('local');
+      }
+    } catch(e) {
+      toast('❌ 儲存失敗:' + e.message, true);
+    }
+  }
+  function resetAll() {
+    if (!confirm('確定要重置為預設?所有自訂會被清掉')) return;
+    state = JSON.parse(JSON.stringify(window.TVV_DEFAULTS));
+    renderAll();
+    toast('🔄 已重置 ・ 記得按儲存');
+  }
+  async function forceSync() {
+    if (!window.TVV_isCloudEnabled()) { toast('⚠ 雲端未設定', true); return; }
+    toast('🔄 拉取雲端最新版...');
+    try {
+      cloudInitDone = (async () => {
+        const r = await window.TVV_loadCloud();
+        state = r.config;
+        lastUpdatedAt = r.updated_at;
+        renderAll();
+        cloudStatus('cloud');
+      })();
+      await cloudInitDone;
+      toast('✓ 已同步');
+    } catch(e) { toast('❌ ' + e.message, true); cloudStatus('offline'); }
+  }
+
+  // ====== UI 工具 ======
+  let toastTimer;
+  function toast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.toggle('error', !!isError);
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function cloudStatus(mode) {
+    const el = document.getElementById('cloud-status');
+    const txt = document.getElementById('cloud-status-text');
+    el.className = 'cloud-status ' + mode;
+    txt.textContent = mode === 'cloud' ? '☁️ 雲端' : mode === 'local' ? '💾 本機' : '⚠ 離線';
+  }
+
+  // ====== 啟動 ======
+  window.addEventListener('load', async () => {
+    renderAll();
+    cloudStatus(window.TVV_isCloudEnabled() ? 'cloud' : 'local');
+    if (window.TVV_isCloudEnabled()) {
+      cloudInitDone = (async () => {
+        try {
+          const r = await window.TVV_loadCloud();
+          state = r.config;
+          lastUpdatedAt = r.updated_at;
+          renderAll();
+          cloudStatus('cloud');
+        } catch(e) {
+          cloudStatus('offline');
+          toast('⚠ 雲端連不上 ・ 用本機資料', true);
+        }
+      })();
+      await cloudInitDone;
+    }
+  });
+</script>
+
+</body>
+</html>

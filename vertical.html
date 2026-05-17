@@ -2,18 +2,465 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<title>導向中… ・ K12覺知素養教育學苑電視牆</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<script>
-  // 統一入口:直式已整合進 index.html(自動偵測螢幕方向)
-  // 保留此檔僅為不破壞舊書籤 / kiosk 設定
-  location.replace('index.html' + location.search);
-</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>K12覺知素養教育學苑 ・ 直式電視牆</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="vertical/cloud_config.js"></script>
+<script src="vertical/defaults.js"></script>
 <style>
-  body { font-family: sans-serif; background: #073920; color: #faf7f2;
-    display: flex; align-items: center; justify-content: center;
-    height: 100vh; margin: 0; }
+  :root {
+    --brand: #1f8a5c;
+    --brand-deep: #0e6340;
+    --brand-darker: #073920;
+    --accent: #c9a96e;
+    --accent-warm: #e0b87e;
+    --accent-deep: #8a6f2e;
+    --cream: #faf7f2;
+    --cream-deep: #f0e8d6;
+    --ink-soft: #5a5048;
+    --serif: "Noto Serif TC", "Source Han Serif TC", serif;
+    --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  }
+  body[data-theme="amber"] {
+    --brand: #6b4423; --brand-deep: #4a2f17; --brand-darker: #2e1a0c;
+    --accent: #d97757; --accent-warm: #e89178; --accent-deep: #a8553b;
+    --cream: #faf3e9; --cream-deep: #ede0c8;
+  }
+  body[data-theme="navy"] {
+    --brand: #1e4d6b; --brand-deep: #163a52; --brand-darker: #0d2638;
+    --accent: #e0a96d; --accent-warm: #f0bf85; --accent-deep: #b8854a;
+    --cream: #f0f6f8; --cream-deep: #d4e0e4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: var(--sans);
+  }
+
+  /* === 直式 ・ kiosk 全螢幕 === */
+  .stage {
+    position: fixed; inset: 0;
+    width: 100vw; height: 100vh;
+  }
+
+  /* === LOGO 浮在右上 === */
+  .logo {
+    position: fixed;
+    top: clamp(28px, 3vh, 56px);
+    right: clamp(28px, 4vw, 60px);
+    width: clamp(110px, 12vw, 200px);
+    height: clamp(110px, 12vw, 200px);
+    z-index: 50;
+    background: rgba(255,255,255,.14);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 50%;
+    padding: clamp(12px, 1.6vw, 24px);
+    opacity: 0;
+    transition: opacity .6s;
+  }
+  .logo.show { opacity: .9; }
+  .logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+  /* === Slide 共通 === */
+  .slide {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    opacity: 0; visibility: hidden;
+    transition: opacity 1.1s cubic-bezier(.4,0,.2,1), visibility 1.1s;
+    padding: 9vh 7vw;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+
+  /* === Eyebrow / Headline / Subhead / Foot === */
+  .eyebrow {
+    font-size: clamp(18px, 2vw, 36px);
+    letter-spacing: .3em;
+    font-weight: 400;
+    opacity: 0;
+    animation: fadeIn 1s ease 0.3s forwards;
+    margin-bottom: clamp(20px, 3vh, 48px);
+  }
+  .headline {
+    font-family: var(--serif);
+    font-size: clamp(52px, min(8vw, 7vh), 150px);
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: .02em;
+    opacity: 0;
+    animation: rise 1.2s ease 0.6s forwards;
+    transform: translateY(20px);
+    white-space: pre-line;       /* 預設讓 \n 變斷行 */
+  }
+  .headline .gold { color: var(--accent); }
+  .gold-line {
+    width: clamp(60px, 8vw, 140px);
+    height: 5px;
+    background: var(--accent);
+    border-radius: 3px;
+    margin-top: clamp(16px, 2.5vh, 36px);
+    opacity: 0;
+    animation: expandLine 0.8s ease 1.1s forwards;
+    transform-origin: left center;
+  }
+  .subhead {
+    font-size: clamp(22px, 2.5vw, 46px);
+    font-weight: 500;
+    line-height: 1.7;
+    margin-top: clamp(24px, 3.5vh, 56px);
+    opacity: 0;
+    animation: rise 1s ease 1.3s forwards;
+    transform: translateY(20px);
+    white-space: pre-line;
+  }
+  .foot {
+    position: absolute;
+    bottom: clamp(24px, 4vh, 60px);
+    left: 7vw; right: 7vw;
+    font-size: clamp(16px, 1.5vw, 28px);
+    letter-spacing: .1em;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.6s forwards;
+    text-align: center;
+  }
+
+  /* === Hero slide(主畫面)=== */
+  .slide[data-type="hero"] {
+    background: linear-gradient(180deg, var(--brand) 0%, var(--brand-deep) 60%, var(--brand-darker) 100%);
+    color: var(--cream);
+    justify-content: center;
+    text-align: left;
+  }
+  .slide[data-type="hero"] .eyebrow { color: var(--accent); }
+
+  /* === QR slide ・ 大 QR 置中,標題上方 === */
+  .slide[data-type="qr"] {
+    background: linear-gradient(180deg, var(--brand-darker) 0%, var(--brand-deep) 100%);
+    color: var(--cream);
+    justify-content: flex-start;
+    text-align: center;
+    align-items: center;
+  }
+  .slide[data-type="qr"] .eyebrow { color: var(--accent); }
+  .slide[data-type="qr"] .headline { text-align: center; }
+  .slide[data-type="qr"] .gold-line {
+    margin-left: auto; margin-right: auto;
+    transform-origin: center;
+  }
+  .slide[data-type="qr"] .qr-big {
+    margin-top: clamp(36px, 5vh, 80px);
+    width: clamp(360px, 60vw, 720px);
+    height: clamp(360px, 60vw, 720px);
+    background: #fff;
+    border-radius: 24px;
+    padding: clamp(20px, 3vw, 40px);
+    box-shadow: 0 24px 80px rgba(0,0,0,.5);
+    opacity: 0;
+    animation: qrPop 0.9s ease 1.5s forwards;
+    transform: scale(.9);
+  }
+  .slide[data-type="qr"] .qr-big canvas,
+  .slide[data-type="qr"] .qr-big img {
+    width: 100%; height: 100%; display: block;
+  }
+  .slide[data-type="qr"] .qr-big.has-custom-img {
+    background: transparent; box-shadow: none; padding: 0;
+  }
+  .slide[data-type="qr"] .qr-label {
+    margin-top: clamp(18px, 2.5vh, 36px);
+    font-size: clamp(20px, 2vw, 38px);
+    letter-spacing: .25em;
+    color: var(--accent);
+    opacity: 0;
+    animation: fadeIn 0.8s ease 2.2s forwards;
+  }
+
+  /* === Animations === */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+  @keyframes expandLine { from { transform: scaleX(0); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
+  @keyframes qrPop { to { opacity: 1; transform: scale(1); } }
+
+  /* === 進度條 === */
+  .progress {
+    position: fixed;
+    bottom: 0; left: 0;
+    height: 4px;
+    background: var(--accent);
+    transition: width linear;
+    z-index: 100;
+  }
+
+  /* === 控制列(滑鼠移近底部才出現)=== */
+  .controls {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    display: flex; gap: 12px;
+    background: rgba(0,0,0,.65);
+    padding: 10px 18px;
+    border-radius: 999px;
+    opacity: 0;
+    transition: opacity .3s;
+    pointer-events: none;
+    backdrop-filter: blur(8px);
+  }
+  body:hover .controls,
+  body.show-controls .controls {
+    opacity: .9;
+    pointer-events: auto;
+  }
+  .controls button {
+    background: transparent; border: 1px solid rgba(255,255,255,.4);
+    color: #fff; padding: 6px 14px; border-radius: 999px;
+    cursor: pointer; font-family: inherit; font-size: .9rem;
+  }
+  .controls button:hover { background: rgba(255,255,255,.18); }
 </style>
 </head>
-<body>導向至電視牆…</body>
+<body>
+
+<div class="stage">
+  <!-- 動態渲染 slides → 由 renderSlides() 注入 -->
+</div>
+
+<div class="logo" id="logo"></div>
+<div class="progress" id="progress"></div>
+
+<div class="controls">
+  <button onclick="prevSlide()">← 上一張</button>
+  <button onclick="nextSlide()">下一張 →</button>
+  <button onclick="togglePause()" id="pauseBtn">⏸ 暫停</button>
+  <button onclick="document.documentElement.requestFullscreen()">⛶ 全螢幕</button>
+  <button onclick="location.href='vertical/admin.html'">🔧 後台</button>
+</div>
+
+<script>
+  // ====== 載入設定 ======
+  let CONFIG = window.TVV_loadCached();
+  let lastUpdatedAt = localStorage.getItem('tvwall_v_updated_at') || '';
+  let lastPullTime = 0;
+  let SLIDES = CONFIG.slides || [];
+
+  // ====== QR URL 對照 ======
+  function buildQrUrls(cfg) {
+    return {
+      'line-big':     cfg.qr.line,
+      'line-small':   cfg.qr.line,
+      'mindspectrum': cfg.qr.mindspectrum,
+      'facebook':     cfg.qr.facebook || '',
+      'instagram':    cfg.qr.instagram || '',
+    };
+  }
+  let QR_URLS = buildQrUrls(CONFIG);
+
+  // ====== 套用配色 ======
+  function applyTheme(t) {
+    const valid = ['green','amber','navy'];
+    document.body.dataset.theme = valid.indexOf(t) >= 0 ? t : 'green';
+  }
+  applyTheme(CONFIG.theme);
+
+  // ====== 渲染 LOGO ======
+  const _renderSigs = new WeakMap();
+  function _sigChanged(el, sig) {
+    if (_renderSigs.get(el) === sig) return false;
+    _renderSigs.set(el, sig);
+    return true;
+  }
+  function _fp(s) {
+    if (!s) return '';
+    if (s.length < 200) return s;
+    return s.length + '|' + s.slice(0, 32) + '|' + s.slice(-32);
+  }
+  function renderLogo() {
+    const el = document.getElementById('logo');
+    const sig = 'logo|' + _fp(CONFIG.logoImage || '');
+    if (!_sigChanged(el, sig)) return;
+    if (CONFIG.logoImage) {
+      el.innerHTML = `<img src="${CONFIG.logoImage}" alt="logo">`;
+      el.classList.add('show');
+    } else {
+      el.innerHTML = '';
+      el.classList.remove('show');
+    }
+  }
+  renderLogo();
+
+  // ====== 渲染 slides ======
+  function renderSlides() {
+    const stage = document.querySelector('.stage');
+    stage.innerHTML = '';
+    SLIDES.forEach((s, i) => {
+      const sec = document.createElement('section');
+      sec.className = 'slide' + (i === 0 ? ' active' : '');
+      sec.dataset.idx = i;
+      sec.dataset.type = s.type || 'hero';
+      let inner = '';
+      if (s.eyebrow)  inner += `<div class="eyebrow">${escapeHTML(s.eyebrow)}</div>`;
+      if (s.headline) inner += `<h1 class="headline">${escapeHTML(s.headline)}</h1>`;
+      inner += `<div class="gold-line"></div>`;
+      if (s.subhead)  inner += `<p class="subhead">${escapeHTML(s.subhead)}</p>`;
+      if (s.type === 'qr' && s.qrKey) {
+        inner += `<div class="qr-big" data-qr="${s.qrKey}"></div>`;
+        if (s.qrLabel) inner += `<div class="qr-label">${escapeHTML(s.qrLabel)}</div>`;
+      }
+      if (s.foot) inner += `<div class="foot">${escapeHTML(s.foot)}</div>`;
+      sec.innerHTML = inner;
+      stage.appendChild(sec);
+    });
+    renderQRs();
+  }
+  function escapeHTML(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // ====== 渲染 QR ======
+  function renderQRs() {
+    document.querySelectorAll('[data-qr]').forEach(el => {
+      const key = el.dataset.qr;
+      const url = QR_URLS[key];
+      let customImg = '';
+      if ((key === 'line-big' || key === 'line-small') && CONFIG.qrImageLine) customImg = CONFIG.qrImageLine;
+      else if (key === 'mindspectrum' && CONFIG.qrImageMindspectrum) customImg = CONFIG.qrImageMindspectrum;
+      else if (key === 'facebook' && CONFIG.qrImageFacebook) customImg = CONFIG.qrImageFacebook;
+      else if (key === 'instagram' && CONFIG.qrImageInstagram) customImg = CONFIG.qrImageInstagram;
+      const sig = `qr|${key}|${_fp(customImg)}|${url || ''}`;
+      if (!_sigChanged(el, sig)) return;
+      el.innerHTML = '';
+      el.classList.remove('has-custom-img');
+      if (customImg) {
+        el.classList.add('has-custom-img');
+        const img = document.createElement('img');
+        img.src = customImg;
+        img.style.borderRadius = '20px';
+        el.appendChild(img);
+        return;
+      }
+      if (!url || !window.QRCode) return;
+      QRCode.toCanvas(url, {
+        errorCorrectionLevel: 'H',
+        margin: 0,
+        color: { dark: '#0e6340', light: '#ffffff' },
+        width: 720,
+      }, (err, canvas) => {
+        if (err) { el.textContent = 'QR'; return; }
+        el.appendChild(canvas);
+      });
+    });
+  }
+
+  // ====== 輪播 ======
+  let current = 0;
+  let timer = null;
+  let progressTimer = null;
+  let paused = false;
+
+  function showSlide(i) {
+    const slides = document.querySelectorAll('.slide');
+    if (!slides.length) return;
+    slides.forEach(s => s.classList.remove('active'));
+    slides[i].classList.add('active');
+    current = i;
+    startProgress();
+  }
+  function nextSlide() {
+    const slides = document.querySelectorAll('.slide');
+    showSlide((current + 1) % slides.length);
+    scheduleNext();
+  }
+  function prevSlide() {
+    const slides = document.querySelectorAll('.slide');
+    showSlide((current - 1 + slides.length) % slides.length);
+    scheduleNext();
+  }
+  function scheduleNext() {
+    clearTimeout(timer);
+    if (paused) return;
+    const dur = getDuration(current);
+    timer = setTimeout(() => {
+      maybePullCloud();
+      const slides = document.querySelectorAll('.slide');
+      showSlide((current + 1) % slides.length);
+      scheduleNext();
+    }, dur);
+  }
+  function getDuration(idx) {
+    const key = 's' + (idx + 1);
+    return (CONFIG.durations && CONFIG.durations[key]) || 13000;
+  }
+  function togglePause() {
+    paused = !paused;
+    document.getElementById('pauseBtn').textContent = paused ? '▶ 播放' : '⏸ 暫停';
+    if (paused) clearTimeout(timer);
+    else scheduleNext();
+  }
+  function startProgress() {
+    const bar = document.getElementById('progress');
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+    requestAnimationFrame(() => {
+      bar.style.transition = `width ${getDuration(current)}ms linear`;
+      bar.style.width = '100%';
+    });
+  }
+
+  // ====== 雲端輪詢 ======
+  async function maybePullCloud() {
+    if (!window.TVV_isCloudEnabled || !window.TVV_isCloudEnabled()) return;
+    const now = Date.now();
+    const interval = (window.TVV_API && window.TVV_API.pollInterval) || 30000;
+    if (now - lastPullTime < interval) return;
+    lastPullTime = now;
+    try {
+      const r = await window.TVV_loadCloud();
+      if (r.updated_at && r.updated_at !== lastUpdatedAt) {
+        lastUpdatedAt = r.updated_at;
+        applyConfig(r.config);
+      }
+    } catch(e) {
+      console.warn('[tvv] 雲端輪詢失敗', e.message);
+    }
+  }
+  function applyConfig(newCfg) {
+    CONFIG = newCfg;
+    SLIDES = CONFIG.slides || [];
+    QR_URLS = buildQrUrls(CONFIG);
+    applyTheme(CONFIG.theme);
+    renderLogo();
+    renderSlides();
+    current = 0;
+    showSlide(0);
+    scheduleNext();
+    console.log('[tvv] 已套用新設定 ・', lastUpdatedAt);
+  }
+
+  // ====== 啟動 ======
+  renderSlides();
+  showSlide(0);
+  scheduleNext();
+
+  // 1 秒後檢查雲端
+  setTimeout(maybePullCloud, 1000);
+
+  // 顯示控制列(滑鼠移動 / 觸控)
+  let ctrlTimer;
+  document.addEventListener('mousemove', () => {
+    document.body.classList.add('show-controls');
+    clearTimeout(ctrlTimer);
+    ctrlTimer = setTimeout(() => document.body.classList.remove('show-controls'), 3000);
+  });
+</script>
+
+</body>
 </html>

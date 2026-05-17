@@ -436,11 +436,18 @@
   }
   .s3 .sys-tag {
     font-family: var(--sans);
-    font-size: clamp(13px, 1.1vw, 22px);
-    line-height: 1.7;
+    font-size: clamp(16px, 1.4vw, 30px);
+    line-height: 1.55;
     color: var(--ink-soft);
-    font-weight: 400;
-    white-space: nowrap;          /* 文案改為單行,跟使用者要求一致 */
+    font-weight: 500;
+    text-align: left;
+    letter-spacing: .04em;
+    /* 最多 3 行,超過自動省略(避免撐爆) */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .s3 .sys-arrow {
     align-self: center;
@@ -792,10 +799,17 @@
     margin-bottom: clamp(10px, 1.4vh, 22px);
   }
   .s8 .comp-tag {
-    font-family: var(--sans); font-weight: 400;
-    font-size: clamp(12px, 1vw, 20px); line-height: 1.6;
+    font-family: var(--sans); font-weight: 500;
+    font-size: clamp(15px, 1.3vw, 28px); line-height: 1.55;
     color: var(--ink-soft);
-    white-space: nowrap;          /* 文案改為單行 */
+    text-align: left;
+    letter-spacing: .04em;
+    /* 最多 3 行 */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .s8 .foot { color: var(--brand-deep); }
   .s8 .qr-corner-label { color: var(--ink-soft); }
@@ -1772,25 +1786,25 @@
       <div class="system">
         <div class="sys-step">看 ・ 見</div>
         <div class="sys-name">覺知全人測評</div>
-        <div class="sys-tag">先看懂孩子,再開始教育。</div>
+        <div class="sys-tag">先看懂孩子,<br>再開始教育。</div>
       </div>
       <div class="sys-arrow">→</div>
       <div class="system">
         <div class="sys-step">陪 ・ 伴</div>
         <div class="sys-name">覺知 SEL 課程</div>
-        <div class="sys-tag">依年齡建立一生受用的能力。</div>
+        <div class="sys-tag">依年齡建立<br>一生受用的能力。</div>
       </div>
       <div class="sys-arrow">→</div>
       <div class="system">
         <div class="sys-step">賦 ・ 能</div>
         <div class="sys-name">覺知 STEAM-R</div>
-        <div class="sys-tag">以內在定力,駕馭科技速度。</div>
+        <div class="sys-tag">以內在定力,<br>駕馭科技速度。</div>
       </div>
       <div class="sys-arrow">→</div>
       <div class="system">
         <div class="sys-step">同 ・ 行</div>
         <div class="sys-name">家長學堂</div>
-        <div class="sys-tag">少一塊,都不完整的成長拼圖。</div>
+        <div class="sys-tag">少一塊,都不<br>完整的成長拼圖。</div>
       </div>
     </div>
     <div class="foot">
@@ -1869,31 +1883,31 @@
         <div class="comp-num">01</div>
         <div class="comp-name">自我覺察</div>
         <div class="comp-en">Self-Awareness</div>
-        <div class="comp-tag">認識自己的情緒與想法</div>
+        <div class="comp-tag">認識自己的<br>情緒與想法</div>
       </div>
       <div class="comp">
         <div class="comp-num">02</div>
         <div class="comp-name">自我管理</div>
         <div class="comp-en">Self-Management</div>
-        <div class="comp-tag">管理情緒、做出選擇</div>
+        <div class="comp-tag">管理情緒、<br>做出選擇</div>
       </div>
       <div class="comp">
         <div class="comp-num">03</div>
         <div class="comp-name">社會覺察</div>
         <div class="comp-en">Social Awareness</div>
-        <div class="comp-tag">理解他人的感受與處境</div>
+        <div class="comp-tag">理解他人的<br>感受與處境</div>
       </div>
       <div class="comp">
         <div class="comp-num">04</div>
         <div class="comp-name">人際技巧</div>
         <div class="comp-en">Relationship Skills</div>
-        <div class="comp-tag">溝通、合作、面對衝突</div>
+        <div class="comp-tag">溝通、合作、<br>面對衝突</div>
       </div>
       <div class="comp">
         <div class="comp-num">05</div>
         <div class="comp-name">負責任決定</div>
         <div class="comp-en">Responsible Decision-Making</div>
-        <div class="comp-tag">思考後果再行動</div>
+        <div class="comp-tag">思考後果<br>再行動</div>
       </div>
     </div>
     <div class="foot">

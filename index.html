@@ -305,14 +305,19 @@
     line-height: 1.1;
   }
   .stage .tag {
-    font-size: clamp(20px, 1.85vw, 42px);
+    font-size: clamp(15px, 1.35vw, 30px);
     margin-top: clamp(12px, 1.6vh, 26px);
     opacity: .9;
-    letter-spacing: .05em;
+    letter-spacing: .04em;
     line-height: 1.55;
     font-weight: 500;
     text-align: left;              /* 長文靠左讀起來順 */
-    /* 文字完整顯示,不再截斷成「...」 */
+    /* 最多 3 行,超過自動隱藏(避免撐爆卡片) */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   /* ============== Slide 3 - 創辦人故事 (焦黑) ============== */
@@ -1351,7 +1356,7 @@
     line-height: 1;
   }
   body[data-orient="vertical"] .s2 .stage .tag {
-    font-size: clamp(20px, 2.6vw, 46px);
+    font-size: clamp(16px, 1.9vw, 34px);
     line-height: 1.5;
     margin-top: clamp(12px, 1.8vh, 28px);
     font-weight: 500;

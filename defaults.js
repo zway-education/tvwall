@@ -53,8 +53,14 @@ window.TVWALL_DEFAULTS = {
     s10: 13000, // 學習動機 CTA
     s11: 14000, // 社群三合一(FB / IG / LINE)
     s12: 14000, // 智庫總覽(學苑後盾)
-    s13: 15000, // 7 位專家陣容
+    s13: 15000, // 8 位專家陣容
+    s14: 14000, // 關鍵提問(精簡主流程首頁)
+    s15: 14000, // CTA-LINE(精簡主流程結尾)
   },
+
+  // 精簡主流程外的 slide 預設藏起來(admin ❾ slide 顯示控制 可勾選顯示)
+  // 預設精簡 5 頁:14 → 12 → 13 → 3 → 15
+  hiddenSlides: [1, 2, 4, 5, 6, 8, 9, 10, 11],
 
   testimonyInterval: 4000,
 
@@ -139,6 +145,7 @@ function _merge(parsed) {
     layout: parsed.layout || 'A',
     theme: parsed.theme || 'green',
     highlights: Array.isArray(parsed.highlights) ? parsed.highlights : [],
+    hiddenSlides: Array.isArray(parsed.hiddenSlides) ? parsed.hiddenSlides : D.hiddenSlides,
   };
 }
 

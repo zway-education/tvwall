@@ -1276,6 +1276,20 @@
     <div id="stage-list"></div>
   </section>
 
+  <!-- ============== ❾ slide 顯示控制 ・ 精簡 5 頁 / 完整 14 頁 ============== -->
+  <section id="sec-9">
+    <h2>❾ slide 顯示控制</h2>
+    <p class="desc" style="background:#fffbe6;padding:8px 12px;border-radius:6px;border-left:3px solid var(--accent)">
+      💡 預設「精簡 5 頁」播放主流程:<strong>關鍵提問 → 智庫總覽 → 8 位專家 → 四大系統 → CTA-LINE</strong>。
+      下面打勾「顯示」就會加進輪播。
+    </p>
+    <div style="margin-bottom:14px;display:flex;gap:10px">
+      <button class="btn btn-secondary" type="button" onclick="presetSlides('minimal')">⚡ 精簡 5 頁</button>
+      <button class="btn btn-secondary" type="button" onclick="presetSlides('full')">📺 完整 14 頁</button>
+    </div>
+    <div id="slide-toggle-list"></div>
+  </section>
+
 </main>
 
 <footer>
@@ -1300,6 +1314,7 @@
   <button type="button" data-target="sec-6"><span class="nav-num">❻</span><span class="nav-label">版型 + 配色</span></button>
   <button type="button" data-target="sec-7"><span class="nav-num">❼</span><span class="nav-label">課程花絮</span></button>
   <button type="button" data-target="sec-8"><span class="nav-num">❽</span><span class="nav-label">班級卡片</span></button>
+  <button type="button" data-target="sec-9"><span class="nav-num">❾</span><span class="nav-label">slide 顯示</span></button>
 </nav>
 
 <div class="toast" id="toast"></div>
@@ -1345,6 +1360,64 @@
     // 課程花絮
     if (!Array.isArray(state.highlights)) state.highlights = [];
     renderHighlightList();
+    // slide 顯示控制
+    if (!Array.isArray(state.hiddenSlides)) state.hiddenSlides = [1,2,4,5,6,8,9,10,11];
+    renderSlideToggleList();
+  }
+
+  // ====== ❾ slide 顯示控制 ======
+  const ALL_SLIDE_META = [
+    { id: 14, label: '關鍵提問',   group: '精簡主流程' },
+    { id: 12, label: '智庫總覽',   group: '精簡主流程' },
+    { id: 13, label: '8 位專家',   group: '精簡主流程' },
+    { id: 3,  label: '四大系統',   group: '精簡主流程' },
+    { id: 15, label: 'CTA-LINE',  group: '精簡主流程' },
+    { id: 1,  label: '主畫面 ・ 先懂心 再懂教',     group: '隱藏 slide' },
+    { id: 2,  label: '4 班級 ・ 啟蒙/開智/智優/全人測評', group: '隱藏 slide' },
+    { id: 4,  label: '真實見證 ・ 家長回饋',         group: '隱藏 slide' },
+    { id: 5,  label: '心智光譜 QR ・ 5 分鐘自測',    group: '隱藏 slide' },
+    { id: 6,  label: 'LINE QR ・ 每週一篇',          group: '隱藏 slide' },
+    { id: 7,  label: '課程花絮(有照片才會播)',      group: '隱藏 slide' },
+    { id: 8,  label: 'SEL 5 能力',                   group: '隱藏 slide' },
+    { id: 9,  label: '4C 國際素養',                  group: '隱藏 slide' },
+    { id: 10, label: '學習動機 CTA',                 group: '隱藏 slide' },
+    { id: 11, label: '社群三合一(FB/IG/LINE)',     group: '隱藏 slide' },
+  ];
+  function renderSlideToggleList() {
+    const list = document.getElementById('slide-toggle-list');
+    if (!list) return;
+    const hidden = state.hiddenSlides || [];
+    const groups = {};
+    ALL_SLIDE_META.forEach(s => { (groups[s.group] = groups[s.group] || []).push(s); });
+    list.innerHTML = Object.keys(groups).map(g => `
+      <div style="margin-bottom:18px">
+        <div style="font-weight:600;color:var(--brand-deep);margin-bottom:8px;font-size:.95rem">${g}</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          ${groups[g].map(s => `
+            <label style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--cream);border-radius:6px;cursor:pointer;font-size:.92rem">
+              <input type="checkbox" data-sid="${s.id}" ${hidden.indexOf(s.id) < 0 ? 'checked' : ''} onchange="toggleSlide(${s.id})">
+              <span style="font-weight:600;color:var(--brand-deep);min-width:60px">slide ${s.id}</span>
+              <span style="color:var(--ink-soft)">${s.label}</span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+  function toggleSlide(id) {
+    if (!Array.isArray(state.hiddenSlides)) state.hiddenSlides = [];
+    const i = state.hiddenSlides.indexOf(id);
+    if (i >= 0) state.hiddenSlides.splice(i, 1);   // 取消 hidden = 顯示
+    else state.hiddenSlides.push(id);              // 加 hidden = 隱藏
+  }
+  function presetSlides(preset) {
+    if (preset === 'minimal') {
+      state.hiddenSlides = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11];
+    } else if (preset === 'full') {
+      state.hiddenSlides = [];
+    }
+    renderSlideToggleList();
+    showToast(preset === 'minimal' ? '⚡ 已套用精簡 5 頁 ・ 記得按儲存' : '📺 已套用完整版 ・ 記得按儲存');
   }
 
   // ====== 方向 + 版型 + 配色 picker ======
@@ -1848,6 +1921,7 @@
       layout: state.layout || 'A',
       theme: state.theme || 'green',
       highlights: state.highlights || [],
+      hiddenSlides: state.hiddenSlides || [],
     };
   }
 

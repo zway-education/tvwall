@@ -2507,8 +2507,8 @@
       { id: 11, duration: cfg.durations.s11 || 14000, label: '三合一' },
       { id: 7,  duration: cfg.durations.s7  || 12000, label: '課程花絮' },
     ];
-    // 預設隱藏:精簡 6 頁以外的舊版 slide(S1 已移出隱藏清單,當收尾頁)
-    const DEFAULT_HIDDEN = [2, 4, 5, 6, 8, 9, 10, 11];
+    // 預設隱藏:S1 主畫面 + 精簡 5 頁以外的舊版 slide
+    const DEFAULT_HIDDEN = [1, 2, 4, 5, 6, 8, 9, 10, 11];
     const hiddenSlides = Array.isArray(cfg.hiddenSlides) ? cfg.hiddenSlides : DEFAULT_HIDDEN;
     // 後台 ❾ 可拖拉設定播放順序;沒設定就用 ALL_SLIDES 預設順序
     const meta = {};

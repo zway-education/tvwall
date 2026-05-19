@@ -61,6 +61,7 @@ window.TVWALL_DEFAULTS = {
   // 精簡主流程外的 slide 預設藏起來(admin ❾ slide 顯示控制 可勾選顯示)
   // 預設精簡 5 頁:14 → 12 → 13 → 3 → 15
   hiddenSlides: [2, 4, 5, 6, 8, 9, 10, 11],   /* S1「先懂心再懂教」當收尾頁,不再隱藏 */
+  slidesOrder: [14, 12, 13, 3, 15, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11],   /* 後台 ❾ 可拖拉調整 */
 
   testimonyInterval: 4000,
 
@@ -146,6 +147,7 @@ function _merge(parsed) {
     theme: parsed.theme || 'green',
     highlights: Array.isArray(parsed.highlights) ? parsed.highlights : [],
     hiddenSlides: Array.isArray(parsed.hiddenSlides) ? parsed.hiddenSlides : D.hiddenSlides,
+    slidesOrder: Array.isArray(parsed.slidesOrder) && parsed.slidesOrder.length > 0 ? parsed.slidesOrder : D.slidesOrder,
   };
 }
 

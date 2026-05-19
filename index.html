@@ -2105,9 +2105,6 @@
         <div class="sys-tag">少一塊,都不完整的成長拼圖。</div>
       </div>
     </div>
-    <div class="foot">
-      <span>看見 → 陪伴 → 賦能 → 同行 → 再看見</span>
-    </div>
   </section>
 
   <!-- ============== Slide 4 ============== -->
@@ -2508,13 +2505,24 @@
       { id: 9,  duration: cfg.durations.s9  || 12000, label: '4C 國際素養' },
       { id: 10, duration: cfg.durations.s10 || 13000, label: '學習動機 CTA' },
       { id: 11, duration: cfg.durations.s11 || 14000, label: '三合一' },
+      { id: 7,  duration: cfg.durations.s7  || 12000, label: '課程花絮' },
     ];
     // 預設隱藏:精簡 6 頁以外的舊版 slide(S1 已移出隱藏清單,當收尾頁)
     const DEFAULT_HIDDEN = [2, 4, 5, 6, 8, 9, 10, 11];
     const hiddenSlides = Array.isArray(cfg.hiddenSlides) ? cfg.hiddenSlides : DEFAULT_HIDDEN;
-    const slides = ALL_SLIDES.filter(s => hiddenSlides.indexOf(s.id) < 0);
-    // 只有當有花絮照片 + s7 沒被 hide 時才把 Slide 7 加入輪播
-    if (Array.isArray(cfg.highlights) && cfg.highlights.length > 0 && hiddenSlides.indexOf(7) < 0) {
+    // 後台 ❾ 可拖拉設定播放順序;沒設定就用 ALL_SLIDES 預設順序
+    const meta = {};
+    ALL_SLIDES.forEach(s => { meta[s.id] = s; });
+    const order = (Array.isArray(cfg.slidesOrder) && cfg.slidesOrder.length > 0)
+      ? cfg.slidesOrder
+      : ALL_SLIDES.map(s => s.id);
+    const slides = order
+      .map(id => meta[id])
+      .filter(Boolean)
+      .filter(s => hiddenSlides.indexOf(s.id) < 0);
+    // S7 課程花絮:只在「有照片 + 沒被 hide + 在 slidesOrder 裡有」才加進輪播
+    if (Array.isArray(cfg.highlights) && cfg.highlights.length > 0 &&
+        hiddenSlides.indexOf(7) < 0 && slides.findIndex(s => s.id === 7) < 0) {
       slides.push({ id: 7, duration: cfg.durations.s7 || 12000, label: '課程花絮' });
     }
     return slides;

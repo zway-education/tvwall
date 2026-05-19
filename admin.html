@@ -349,6 +349,29 @@
   .highlight-form-card .index-tag,
   .stage-card .index-tag { left: 42px; }
 
+  /* ❾ slide 顯示控制 ・ 可拖拉排序的單列項目 */
+  .slide-toggle-row {
+    position: relative;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px 10px 42px;       /* 左側 42px 留給 drag-handle */
+    background: var(--cream);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 6px;
+    font-size: .92rem;
+  }
+  .slide-toggle-row .drag-handle {
+    /* 沿用全域 .drag-handle 樣式,但 row 較矮 */
+    border-radius: 8px 0 0 8px;
+  }
+  .slide-toggle-row.is-hidden { opacity: .55; background: #f0e8da; }
+  .slide-toggle-row .sid-tag {
+    font-weight: 700; color: var(--brand-deep);
+    min-width: 56px; flex: 0 0 56px;
+  }
+  .slide-toggle-row .sid-label { color: var(--ink-soft); flex: 1; }
+  .slide-toggle-row input[type=checkbox] { flex: 0 0 18px; width: 18px; height: 18px; }
+
   /* ====== 班級卡片(Slide 2)・ 沿用見證卡視覺 ====== */
   .stage-card {
     background: #fdfaf3;
@@ -1365,54 +1388,68 @@
     renderSlideToggleList();
   }
 
-  // ====== ❾ slide 顯示控制 ======
-  const ALL_SLIDE_META = [
-    { id: 14, label: '關鍵提問',   group: '精簡主流程' },
-    { id: 12, label: '智庫總覽',   group: '精簡主流程' },
-    { id: 13, label: '8 位專家',   group: '精簡主流程' },
-    { id: 3,  label: '四大系統',   group: '精簡主流程' },
-    { id: 15, label: 'CTA-LINE',  group: '精簡主流程' },
-    { id: 1,  label: '主畫面 ・ 先懂心 再懂教',     group: '隱藏 slide' },
-    { id: 2,  label: '4 班級 ・ 啟蒙/開智/智優/全人測評', group: '隱藏 slide' },
-    { id: 4,  label: '真實見證 ・ 家長回饋',         group: '隱藏 slide' },
-    { id: 5,  label: '心智光譜 QR ・ 5 分鐘自測',    group: '隱藏 slide' },
-    { id: 6,  label: 'LINE QR ・ 每週一篇',          group: '隱藏 slide' },
-    { id: 7,  label: '課程花絮(有照片才會播)',      group: '隱藏 slide' },
-    { id: 8,  label: 'SEL 5 能力',                   group: '隱藏 slide' },
-    { id: 9,  label: '4C 國際素養',                  group: '隱藏 slide' },
-    { id: 10, label: '學習動機 CTA',                 group: '隱藏 slide' },
-    { id: 11, label: '社群三合一(FB/IG/LINE)',     group: '隱藏 slide' },
-  ];
+  // ====== ❾ slide 顯示控制 ・ 可拖拉排序 + 勾選顯示 ======
+  const ALL_SLIDE_META = {
+    1:  '主畫面 ・ 先懂心 再懂教',
+    2:  '4 班級 ・ 啟蒙/開智/智優/全人測評',
+    3:  '四大覺知系統',
+    4:  '真實見證 ・ 家長回饋',
+    5:  '心智光譜 QR ・ 5 分鐘自測',
+    6:  'LINE QR ・ 每週一篇',
+    7:  '課程花絮(有照片才會播)',
+    8:  'SEL 5 能力',
+    9:  '4C 國際素養',
+    10: '學習動機 CTA',
+    11: '社群三合一(FB/IG/LINE)',
+    12: '智庫總覽',
+    13: '8 位專家',
+    14: '關鍵提問',
+    15: 'CTA-LINE',
+  };
+  const ALL_SLIDE_IDS = [14, 12, 13, 3, 15, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11];   /* 預設順序 = 精簡主流程 + 隱藏項 */
+
+  function ensureSlidesOrder() {
+    if (!Array.isArray(state.slidesOrder) || state.slidesOrder.length === 0) {
+      state.slidesOrder = [...ALL_SLIDE_IDS];
+      return;
+    }
+    // 合併:若 ALL_SLIDE_IDS 有新項目而 state.slidesOrder 沒有,補到尾巴
+    ALL_SLIDE_IDS.forEach(id => {
+      if (state.slidesOrder.indexOf(id) < 0) state.slidesOrder.push(id);
+    });
+    // 移除無效的 id
+    state.slidesOrder = state.slidesOrder.filter(id => ALL_SLIDE_IDS.indexOf(id) >= 0);
+  }
+
   function renderSlideToggleList() {
     const list = document.getElementById('slide-toggle-list');
     if (!list) return;
+    ensureSlidesOrder();
     const hidden = state.hiddenSlides || [];
-    const groups = {};
-    ALL_SLIDE_META.forEach(s => { (groups[s.group] = groups[s.group] || []).push(s); });
-    list.innerHTML = Object.keys(groups).map(g => `
-      <div style="margin-bottom:18px">
-        <div style="font-weight:600;color:var(--brand-deep);margin-bottom:8px;font-size:.95rem">${g}</div>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          ${groups[g].map(s => `
-            <label style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--cream);border-radius:6px;cursor:pointer;font-size:.92rem">
-              <input type="checkbox" data-sid="${s.id}" ${hidden.indexOf(s.id) < 0 ? 'checked' : ''} onchange="toggleSlide(${s.id})">
-              <span style="font-weight:600;color:var(--brand-deep);min-width:60px">slide ${s.id}</span>
-              <span style="color:var(--ink-soft)">${s.label}</span>
-            </label>
-          `).join('')}
+    list.innerHTML = state.slidesOrder.map((id, idx) => {
+      const isHidden = hidden.indexOf(id) >= 0;
+      const label = ALL_SLIDE_META[id] || `(unknown slide ${id})`;
+      return `
+        <div class="slide-toggle-row ${isHidden ? 'is-hidden' : ''}" data-i="${idx}">
+          <div class="drag-handle" title="拖拉排序">⋮⋮</div>
+          <input type="checkbox" data-sid="${id}" ${isHidden ? '' : 'checked'} onchange="toggleSlide(${id})" title="勾選=顯示,取消=隱藏">
+          <span class="sid-tag">slide ${id}</span>
+          <span class="sid-label">${label}</span>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
   function toggleSlide(id) {
     if (!Array.isArray(state.hiddenSlides)) state.hiddenSlides = [];
     const i = state.hiddenSlides.indexOf(id);
     if (i >= 0) state.hiddenSlides.splice(i, 1);   // 取消 hidden = 顯示
     else state.hiddenSlides.push(id);              // 加 hidden = 隱藏
+    renderSlideToggleList();                       // 重畫以更新 is-hidden class
   }
   function presetSlides(preset) {
     if (preset === 'minimal') {
-      state.hiddenSlides = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11];
+      state.hiddenSlides = [2, 4, 5, 6, 7, 8, 9, 10, 11];   /* S1 當收尾頁,不再隱藏 */
+      state.slidesOrder = [14, 12, 13, 3, 15, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11];
     } else if (preset === 'full') {
       state.hiddenSlides = [];
     }
@@ -1878,6 +1915,7 @@
     makeSortable(document.getElementById('testimony-list'), () => state.testimonies, renderTestimonies);
     makeSortable(document.getElementById('highlight-list'), () => state.highlights, renderHighlightList);
     makeSortable(document.getElementById('stage-list'), () => state.stages, renderStageCards);
+    makeSortable(document.getElementById('slide-toggle-list'), () => state.slidesOrder, renderSlideToggleList);
   }
 
   function gatherFormData() {
@@ -1922,6 +1960,7 @@
       theme: state.theme || 'green',
       highlights: state.highlights || [],
       hiddenSlides: state.hiddenSlides || [],
+      slidesOrder: state.slidesOrder || [],
     };
   }
 

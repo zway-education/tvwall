@@ -1873,7 +1873,9 @@
     transition: opacity .3s;
     padding: 8px;
   }
-  .controls:hover, body:hover .controls { opacity: 1; }
+  /* 滑鼠移動才顯示(body.idle 由 mousemove 處理) ・ 3 秒無動作 → 自動隱藏 */
+  body:not(.idle) .controls { opacity: 1; }
+  .controls:hover { opacity: 1; }
   .controls button {
     background: rgba(0,0,0,.6);
     color: #fff;
@@ -2146,7 +2148,7 @@
       <div class="eyebrow">在教養的路上,我們伴您</div>
       <h1 class="headline">從日常裡的片刻開始,<br>一步一步<span class="gold">靠近孩子的內心</span>。</h1>
       <div class="gold-line"></div>
-      <p class="subhead">加入 LINE <b style="background:var(--brand-deep);color:var(--cream);padding:4px 16px;border-radius:8px;display:inline-block;letter-spacing:.05em">@931irimh</b><br>隨時獲取覺知教養新知與活動。</p>
+      <p class="subhead">隨時獲取覺知教養新知與活動。</p>
     </div>
     <div class="qr-big" data-qr="line-big"></div>
     <div class="qr-big-label">→ 加為好友</div>
@@ -2274,7 +2276,7 @@
       <div class="social">
         <div class="soc-platform">LINE@</div>
         <div class="soc-qr" data-qr="line-social"></div>
-        <div class="soc-handle">@931irimh</div>
+        <div class="soc-handle">LINE@</div>
       </div>
     </div>
     <div class="foot">
@@ -2307,11 +2309,9 @@
     </div>
   </section>
 
-  <!-- ============== Slide 13 ・ 7 位專家陣容(grid)============== -->
+  <!-- ============== Slide 13 ・ 8 位專家陣容(grid)============== -->
   <section class="slide s13" data-id="13">
     <div class="eyebrow">專業智庫 ・ Expert Panel</div>
-    <h1 class="headline">他們,是覺知教育的<span class="gold">幕後推動者</span></h1>
-    <div class="gold-line"></div>
     <div class="experts">
       <div class="expert">
         <img src="https://pic03.eapple.com.tw/zwayedu/team_03.jpg" alt="李守蕾 老師">
@@ -2354,9 +2354,6 @@
         <div class="ex-bg">大學副教授<br>前台南復興國中校長<br>教育研究院課程諮詢委員</div>
       </div>
     </div>
-    <div class="foot">
-      <span>來自各領域專家學者</span>
-    </div>
   </section>
 
   <!-- ============== Slide 14 ・ 關鍵提問(精簡 5 頁主流程的第 1 頁)============== -->
@@ -2382,7 +2379,7 @@
     </div>
     <div class="qr-col">
       <div class="qr-big-side" data-qr="line-big"></div>
-      <div class="qr-handle">加 LINE <b>@931irimh</b></div>
+      <div class="qr-handle">加 LINE 好友</div>
       <div class="qr-cta">與我們聊一聊</div>
     </div>
   </section>
@@ -2393,7 +2390,7 @@
       <div class="eyebrow">覺知素養教育學苑</div>
       <h1 class="headline"><span class="gold">覺知教育</span><br>是建構引導生命方向的教育系統</h1>
       <div class="gold-line"></div>
-      <p class="subhead">加入 LINE <b style="background:var(--brand-deep);color:var(--cream);padding:4px 16px;border-radius:8px;display:inline-block;letter-spacing:.05em">@931irimh</b><br>從日常裡的片刻開始,一步一步靠近孩子的內心。</p>
+      <p class="subhead">從日常裡的片刻開始,一步一步靠近孩子的內心。</p>
     </div>
     <div class="qr-big" data-qr="line-big"></div>
     <div class="qr-big-label">→ 加為好友</div>
@@ -3088,7 +3085,8 @@
     document.addEventListener('mousemove', reset);
     document.addEventListener('mousedown', reset);
     document.addEventListener('touchstart', reset);
-    reset();
+    // 開始播放就先 idle(隱藏 cursor + 左上角控制列),滑鼠動了再 reset
+    document.body.classList.add('idle');
   })();
 
   // ========== 啟動 ==========

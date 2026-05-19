@@ -371,6 +371,26 @@
   }
   .slide-toggle-row .sid-label { color: var(--ink-soft); flex: 1; }
   .slide-toggle-row input[type=checkbox] { flex: 0 0 18px; width: 18px; height: 18px; }
+  .slide-toggle-row .sid-duration {
+    display: flex; align-items: center; gap: 4px;
+    flex: 0 0 auto;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: .85rem;
+  }
+  .slide-toggle-row .sid-duration input {
+    width: 42px; border: none; background: transparent;
+    text-align: center; font-weight: 600; color: var(--brand-deep);
+    font-family: inherit; font-size: .9rem;
+    -moz-appearance: textfield;
+  }
+  .slide-toggle-row .sid-duration input::-webkit-outer-spin-button,
+  .slide-toggle-row .sid-duration input::-webkit-inner-spin-button {
+    -webkit-appearance: none; margin: 0;
+  }
+  .slide-toggle-row .sid-duration .unit { color: var(--ink-soft); font-size: .75rem; }
 
   /* ====== 班級卡片(Slide 2)・ 沿用見證卡視覺 ====== */
   .stage-card {
@@ -927,43 +947,17 @@
     </div>
   </section>
 
-  <!-- ============== ❸ 停留秒數 ============== -->
-  <section id="sec-3">
+  <!-- ❸ 停留秒數 ・ 已整合到 ❾「slide 全面管理」(2026-05-17 改版) -->
+  <section id="sec-3" style="background:linear-gradient(135deg,#fffbe6,#fff5cc);border-left:4px solid var(--accent)">
     <h2>❸ 每張 slide 停留秒數</h2>
-    <p class="desc">拖滑桿調整 ・ 太短觀眾來不及讀、太長路人會走掉 ・ 建議 10-15 秒</p>
-
-    <div class="duration-grid">
-      <div class="duration-item">
-        <label>Slide 1 主畫面 <span class="seconds" id="d-s1-val">15</span></label>
-        <input type="range" min="5" max="30" id="d-s1" oninput="document.getElementById('d-s1-val').textContent=this.value">
-        <div class="sub-label">先懂心,再懂教</div>
-      </div>
-      <div class="duration-item">
-        <label>Slide 2 ・ 4 班別 <span class="seconds" id="d-s2-val">12</span></label>
-        <input type="range" min="5" max="30" id="d-s2" oninput="document.getElementById('d-s2-val').textContent=this.value">
-        <div class="sub-label">啟蒙班/開智班/智優班/全人測評</div>
-      </div>
-      <div class="duration-item">
-        <label>Slide 3 ・ 創辦人 <span class="seconds" id="d-s3-val">12</span></label>
-        <input type="range" min="5" max="30" id="d-s3" oninput="document.getElementById('d-s3-val').textContent=this.value">
-        <div class="sub-label">守蕾老師故事</div>
-      </div>
-      <div class="duration-item">
-        <label>Slide 4 ・ 見證 <span class="seconds" id="d-s4-val">12</span></label>
-        <input type="range" min="5" max="30" id="d-s4" oninput="document.getElementById('d-s4-val').textContent=this.value">
-        <div class="sub-label">家長真實回饋</div>
-      </div>
-      <div class="duration-item">
-        <label>Slide 5 ・ 心智光譜 <span class="seconds" id="d-s5-val">15</span></label>
-        <input type="range" min="5" max="30" id="d-s5" oninput="document.getElementById('d-s5-val').textContent=this.value">
-        <div class="sub-label">主要 QR 行動</div>
-      </div>
-      <div class="duration-item">
-        <label>Slide 6 ・ 加 LINE <span class="seconds" id="d-s6-val">12</span></label>
-        <input type="range" min="5" max="30" id="d-s6" oninput="document.getElementById('d-s6-val').textContent=this.value">
-        <div class="sub-label">次要 CTA</div>
-      </div>
-    </div>
+    <p class="desc" style="font-size:1.05rem;line-height:1.7;color:var(--brand-deep)">
+      🔀 <strong>已搬家:</strong>每張 slide 的停留秒數現在直接在
+      <a href="#sec-9" style="color:var(--brand);font-weight:700">❾ slide 全面管理</a>
+      那張卡裡改 ・ 更直觀
+    </p>
+    <button class="btn btn-primary" type="button" onclick="document.getElementById('sec-9').scrollIntoView({behavior:'smooth',block:'start'})" style="margin-top:8px">
+      ⏰ 前往調整秒數
+    </button>
   </section>
 
   <!-- ============== ❹ 見證輪換速度 ============== -->
@@ -1299,12 +1293,14 @@
     <div id="stage-list"></div>
   </section>
 
-  <!-- ============== ❾ slide 顯示控制 ・ 精簡 5 頁 / 完整 14 頁 ============== -->
+  <!-- ============== ❾ slide 全面管理 ・ 順序 + 顯示 + 秒數 一站搞定 ============== -->
   <section id="sec-9">
-    <h2>❾ slide 顯示控制</h2>
-    <p class="desc" style="background:#fffbe6;padding:8px 12px;border-radius:6px;border-left:3px solid var(--accent)">
-      💡 預設「精簡 5 頁」播放主流程:<strong>關鍵提問 → 智庫總覽 → 8 位專家 → 四大系統 → CTA-LINE</strong>。
-      下面打勾「顯示」就會加進輪播。
+    <h2>❾ slide 全面管理</h2>
+    <p class="desc" style="background:#fffbe6;padding:10px 14px;border-radius:6px;border-left:3px solid var(--accent);line-height:1.65">
+      💡 <strong>一張卡管一張 slide</strong>:
+      <br>・⋮⋮ <strong>拖拉</strong> 改播放順序
+      <br>・☑ 勾選 <strong>顯示</strong>(灰底=隱藏)
+      <br>・<strong>秒數</strong> 直接改這張停留多久
     </p>
     <div style="margin-bottom:14px;display:flex;gap:10px">
       <button class="btn btn-secondary" type="button" onclick="presetSlides('minimal')">⚡ 精簡 5 頁</button>
@@ -1359,12 +1355,8 @@
     document.getElementById('qr-mindspectrum').value = state.qr.mindspectrum || '';
     document.getElementById('qr-facebook').value = state.qr.facebook || '';
     document.getElementById('qr-instagram').value = state.qr.instagram || '';
-    // Durations
-    ['s1','s2','s3','s4','s5','s6'].forEach(k => {
-      const sec = Math.round((state.durations[k] || 12000) / 1000);
-      document.getElementById(`d-${k}`).value = sec;
-      document.getElementById(`d-${k}-val`).textContent = sec;
-    });
+    // Durations 已搬到 ❾ slide-toggle-list 內,每張卡有獨立 input
+    // (renderSlideToggleList 會處理,不再需要 d-sN 全域 slider)
     // Interval
     const ti = Math.round((state.testimonyInterval || 4000) / 1000);
     document.getElementById('ti').value = ti;
@@ -1429,12 +1421,18 @@
     list.innerHTML = state.slidesOrder.map((id, idx) => {
       const isHidden = hidden.indexOf(id) >= 0;
       const label = ALL_SLIDE_META[id] || `(unknown slide ${id})`;
+      const durKey = 's' + id;
+      const durSec = Math.round((state.durations[durKey] || 12000) / 1000);
       return `
         <div class="slide-toggle-row ${isHidden ? 'is-hidden' : ''}" data-i="${idx}">
           <div class="drag-handle" title="拖拉排序">⋮⋮</div>
           <input type="checkbox" data-sid="${id}" ${isHidden ? '' : 'checked'} onchange="toggleSlide(${id})" title="勾選=顯示,取消=隱藏">
           <span class="sid-tag">slide ${id}</span>
           <span class="sid-label">${label}</span>
+          <label class="sid-duration" title="這張 slide 停留秒數">
+            <input type="number" min="3" max="60" value="${durSec}" data-sid="${id}" oninput="updateSlideDuration(${id}, this.value)">
+            <span class="unit">秒</span>
+          </label>
         </div>
       `;
     }).join('');
@@ -1445,6 +1443,11 @@
     if (i >= 0) state.hiddenSlides.splice(i, 1);   // 取消 hidden = 顯示
     else state.hiddenSlides.push(id);              // 加 hidden = 隱藏
     renderSlideToggleList();                       // 重畫以更新 is-hidden class
+  }
+  function updateSlideDuration(id, secStr) {
+    const sec = Math.max(3, Math.min(60, parseInt(secStr, 10) || 12));
+    if (!state.durations) state.durations = {};
+    state.durations['s' + id] = sec * 1000;
   }
   function presetSlides(preset) {
     if (preset === 'minimal') {
@@ -1928,15 +1931,7 @@
       },
       testimonies: state.testimonies.map(t => ({ text: t.text, who: t.who })),
       stages: (state.stages || []).map(s => ({ age: s.age, name: s.name, tag: s.tag })),
-      durations: {
-        s1: parseInt(document.getElementById('d-s1').value, 10) * 1000,
-        s2: parseInt(document.getElementById('d-s2').value, 10) * 1000,
-        s3: parseInt(document.getElementById('d-s3').value, 10) * 1000,
-        s4: parseInt(document.getElementById('d-s4').value, 10) * 1000,
-        s5: parseInt(document.getElementById('d-s5').value, 10) * 1000,
-        s6: parseInt(document.getElementById('d-s6').value, 10) * 1000,
-        s7: state.durations.s7 || 14000,
-      },
+      durations: state.durations || {},   /* ❾ 每張 slide 自己改秒數,直接抓 state */
       testimonyInterval: parseInt(document.getElementById('ti').value, 10) * 1000,
       portrait: state.portrait || '',
       qrImageLine: state.qrImageLine || '',

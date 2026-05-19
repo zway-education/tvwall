@@ -60,7 +60,7 @@ window.TVWALL_DEFAULTS = {
 
   // 精簡主流程外的 slide 預設藏起來(admin ❾ slide 顯示控制 可勾選顯示)
   // 預設精簡 5 頁:14 → 12 → 13 → 3 → 15
-  hiddenSlides: [1, 2, 4, 5, 6, 8, 9, 10, 11],
+  hiddenSlides: [2, 4, 5, 6, 8, 9, 10, 11],   /* S1「先懂心再懂教」當收尾頁,不再隱藏 */
 
   testimonyInterval: 4000,
 

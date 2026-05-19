@@ -1524,6 +1524,8 @@
     padding: clamp(10px, 1.2vw, 22px);
   }
   .slide-logo.show { opacity: .9; }
+  /* S13 專業智庫 8 張頭像 grid 已經有強烈視覺,右上 LOGO 重疊干擾 → 隱藏 */
+  body[data-active-slide="13"] .slide-logo { opacity: 0 !important; pointer-events: none; }
   .slide-logo img {
     width: 100%; height: 100%;
     object-fit: contain;
@@ -2486,17 +2488,18 @@
   let SLIDES = buildSlides(CONFIG);
 
   function buildSlides(cfg) {
-    // 精簡 5 頁主流程(2026-05-17 改版):
-    // 14 關鍵提問 → 12 智庫總覽 → 13 8 位專家 → 3 四大系統 → 15 CTA-LINE
-    // 其他 slide(1/2/4/5/6/7/8/9/10/11)預設藏起來,在 admin 可勾選加回
+    // 精簡 6 頁主流程(2026-05-17 改版,S1 從首頁挪到尾頁):
+    // 14 關鍵提問 → 12 智庫總覽 → 13 8 位專家 → 3 四大系統 → 15 CTA-LINE → 1 主畫面
+    // S1「先懂心再懂教」當收尾,輪播完一輪後再回到 S14 開頭
+    // 其他 slide(2/4/5/6/8/9/10/11)預設藏起來,在 admin 可勾選加回
     const ALL_SLIDES = [
       { id: 14, duration: cfg.durations.s14 || 14000, label: '關鍵提問' },
       { id: 12, duration: cfg.durations.s12 || 14000, label: '智庫總覽' },
       { id: 13, duration: cfg.durations.s13 || 15000, label: '8 位專家' },
       { id: 3,  duration: cfg.durations.s3,           label: '四大系統' },
       { id: 15, duration: cfg.durations.s15 || 14000, label: 'CTA-LINE' },
+      { id: 1,  duration: cfg.durations.s1,           label: '主畫面(收尾)' },
       // 以下為「完整版」隱藏 slide(預設 hidden,在 admin 可勾選顯示)
-      { id: 1,  duration: cfg.durations.s1,  label: '主畫面' },
       { id: 2,  duration: cfg.durations.s2,  label: '4 班級' },
       { id: 4,  duration: cfg.durations.s4,  label: '真實見證' },
       { id: 5,  duration: cfg.durations.s5,  label: '心智光譜 QR' },
@@ -2506,8 +2509,8 @@
       { id: 10, duration: cfg.durations.s10 || 13000, label: '學習動機 CTA' },
       { id: 11, duration: cfg.durations.s11 || 14000, label: '三合一' },
     ];
-    // 預設隱藏:精簡 5 頁以外的舊版 slide
-    const DEFAULT_HIDDEN = [1, 2, 4, 5, 6, 8, 9, 10, 11];
+    // 預設隱藏:精簡 6 頁以外的舊版 slide(S1 已移出隱藏清單,當收尾頁)
+    const DEFAULT_HIDDEN = [2, 4, 5, 6, 8, 9, 10, 11];
     const hiddenSlides = Array.isArray(cfg.hiddenSlides) ? cfg.hiddenSlides : DEFAULT_HIDDEN;
     const slides = ALL_SLIDES.filter(s => hiddenSlides.indexOf(s.id) < 0);
     // 只有當有花絮照片 + s7 沒被 hide 時才把 Slide 7 加入輪播
@@ -2926,6 +2929,10 @@
     target.classList.add('active');
     current = idx;
     startProgressBar(SLIDES[idx].duration);
+
+    // 把當前 slide id 寫到 body data attr → 給 CSS 選器用
+    // (例:S13 專業智庫不要顯示右上 LOGO)
+    document.body.dataset.activeSlide = slideId;
 
     // Slide 4 內部見證輪換
     if (slideId === 4) startTestimonyRotation();

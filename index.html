@@ -989,26 +989,26 @@
   }
 
   /* ============== Slide 12 ・ 智庫總覽(學苑後盾)============== */
-  /* === S12 ・ AI 時代 / 非認知能力 ・ 視覺主場(電影感版) === */
+  /* === S12 ・ AI 時代 / 非認知能力 ・ 乾淨米白底(2026-05-17 改版)=== */
   .s12 {
     background:
-      radial-gradient(ellipse 80% 50% at 50% 35%, #fff5dc 0%, transparent 60%),
-      radial-gradient(circle at 88% 12%, rgba(31,138,92,.16) 0%, transparent 40%),
-      radial-gradient(circle at 8% 88%, rgba(201,169,110,.22) 0%, transparent 40%),
-      linear-gradient(135deg, #f5ecd6 0%, #ddc9a3 100%);
+      radial-gradient(ellipse 70% 55% at 50% 35%, #ffffff 0%, transparent 60%),
+      var(--cream);
     color: var(--brand-darker);
     justify-content: center;
     align-items: center;
     text-align: center;
   }
-  /* 飄浮幾何裝飾:左上 / 右下 兩個淡圓做出深度 */
+  /* 單一細緻金線當邊框裝飾(不再用多重彩色圓 ・ 避免髒髒的) */
   .s12::after {
     content: '';
     position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle 320px at 18% 28%, rgba(14,99,64,.08) 0%, transparent 65%),
-      radial-gradient(circle 280px at 82% 74%, rgba(138,111,46,.12) 0%, transparent 65%);
+    left: clamp(40px, 5vw, 90px);
+    right: clamp(40px, 5vw, 90px);
+    top: clamp(40px, 5vh, 90px);
+    bottom: clamp(40px, 5vh, 90px);
+    border: 1px solid rgba(201,169,110,.25);
+    border-radius: 4px;
     pointer-events: none;
     z-index: 0;
   }

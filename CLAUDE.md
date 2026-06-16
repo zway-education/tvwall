@@ -225,14 +225,14 @@ K12覺知素養教育學苑櫃檯電視牆,**Chrome kiosk + 雲端同步**。
 
 ## 相關專案 / 素材
 
-- `心智光譜細節維護/` — 心智光譜測驗,Slide 5 QR 連到那裡
-- `覺知SEL櫃檯介紹本及傳單/skill/SKILL.md` — 品牌風格指南
-- `覺知新知與發文建議/_brand_voice.md` — 品牌語氣與禁忌
-- `覺知電話行銷人員/04_守蕾老師對外文宣樣本庫.md` — 創辦人故事原始版本
+- `K12\測評\心智光譜/` — 心智光譜測驗,Slide 5 QR 連到那裡
+- `K12\品牌\介紹/skill/SKILL.md` — 品牌風格指南
+- `K12\行銷\發文/_brand_voice.md` — 品牌語氣與禁忌
+- `K12\行銷\電銷/04_守蕾老師對外文宣樣本庫.md` — 創辦人故事原始版本
 
 ## 設計文件
 
-`覺知SEL櫃檯介紹本及傳單/docs/superpowers/specs/2026-05-13-counter-tvwall-design.md` — brainstorming 階段的完整 spec。
+`K12\品牌\介紹/docs/superpowers/specs/2026-05-13-counter-tvwall-design.md` — brainstorming 階段的完整 spec。
 
 ---
 

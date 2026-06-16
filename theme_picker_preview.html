@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>電視牆 ・ 公版庫預覽</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family:"Noto Sans TC",sans-serif; margin:0; background:#f3ede1; padding:32px 24px 80px; color:#2a2620; }
+  .container { max-width:1200px; margin:0 auto; }
+  h1 { font-family:"Noto Serif TC",serif; color:#0e6340; font-size:1.8rem; margin:0 0 8px; }
+  .lead { color:#5a5048; font-size:1rem; max-width:760px; }
+
+  .themes {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    margin-top:32px;
+  }
+  @media (max-width: 760px) { .themes { grid-template-columns:1fr; } }
+
+  .theme-card {
+    background:#fff;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 8px 32px rgba(0,0,0,.08);
+    border:1px solid #e8ddc8;
+  }
+  .theme-card.current { border:3px solid #c9a96e; }
+
+  .tv {
+    aspect-ratio:16/9;
+    position:relative;
+    overflow:hidden;
+    font-family:"Noto Serif TC",serif;
+  }
+  .tv .inner {
+    padding:7% 9%;
+    height:100%;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .tv .top { position:absolute; top:5%; left:9%; font-family:"Noto Sans TC",sans-serif; font-size:.7rem; letter-spacing:.32em; opacity:.7; }
+  .tv .title { font-size:2rem; font-weight:800; line-height:1.25; }
+  .tv .line { height:3px; width:48px; margin:14px 0; }
+  .tv .sub { font-family:"Noto Sans TC",sans-serif; font-size:.85rem; opacity:.85; font-weight:300; }
+  .tv .bottom { position:absolute; bottom:5%; left:9%; right:9%; display:flex; justify-content:space-between; font-family:"Noto Sans TC",sans-serif; font-size:.65rem; opacity:.75; }
+  .tv .qr { width:42px; height:42px; background:#fff; border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; }
+
+  /* ====== 主題 1 ・ 翠玉綠(現用)====== */
+  .t1 .tv { background:linear-gradient(135deg,#1f8a5c 0%,#157a4f 70%,#0e6340 100%); color:#faf7f2; }
+  .t1 .tv .line { background:#c9a96e; }
+  .t1 .tv .qr { color:#0e6340; }
+  .t1 .palette div { background:linear-gradient(135deg,#1f8a5c,#0e6340); }
+
+  /* ====== 主題 2 ・ 暖咖琥珀 ====== */
+  .t2 .tv { background:linear-gradient(135deg,#6b4423 0%,#5a361b 70%,#3d2410 100%); color:#faf3e9; }
+  .t2 .tv .line { background:#d97757; }
+  .t2 .tv .qr { color:#6b4423; }
+  .t2 .palette div { background:linear-gradient(135deg,#6b4423,#3d2410); }
+
+  /* ====== 主題 3 ・ 米白薄荷 ====== */
+  .t3 .tv { background:linear-gradient(135deg,#f5f0e8 0%,#e8e0d0 100%); color:#4a6b5d; }
+  .t3 .tv .line { background:#d4a373; }
+  .t3 .tv .top { color:#6b9080; }
+  .t3 .tv .qr { color:#4a6b5d; background:#6b9080; color:#fff; }
+  .t3 .palette div { background:linear-gradient(135deg,#6b9080,#d4a373); }
+
+  /* ====== 主題 4 ・ 深焦碳金 ====== */
+  .t4 .tv { background:linear-gradient(135deg,#1a1a1a 0%,#0a0a0a 100%); color:#ebeae8; }
+  .t4 .tv .line { background:#d4af37; }
+  .t4 .tv .top { color:#d4af37; }
+  .t4 .tv .qr { color:#1a1a1a; }
+  .t4 .palette div { background:linear-gradient(135deg,#1a1a1a,#d4af37); }
+
+  /* ====== 主題 5 ・ 復古書房 ====== */
+  .t5 .tv { background:linear-gradient(135deg,#4e342e 0%,#3d271f 70%,#2e1a14 100%); color:#f3e5cd; }
+  .t5 .tv .line { background:#c0392b; }
+  .t5 .tv .qr { color:#4e342e; background:#f3e5cd; }
+  .t5 .palette div { background:linear-gradient(135deg,#4e342e,#c0392b); }
+
+  /* ====== 主題 6 ・ 海洋蔚藍 ====== */
+  .t6 .tv { background:linear-gradient(135deg,#1e4d6b 0%,#163a52 70%,#0d2638 100%); color:#f0f6f8; }
+  .t6 .tv .line { background:#e0a96d; }
+  .t6 .tv .qr { color:#1e4d6b; }
+  .t6 .palette div { background:linear-gradient(135deg,#1e4d6b,#0d2638); }
+
+  .theme-info {
+    padding:18px 22px;
+  }
+  .theme-info h3 {
+    margin:0 0 6px;
+    color:#0e6340;
+    font-size:1.15rem;
+  }
+  .theme-info p {
+    color:#5a5048;
+    font-size:.85rem;
+    margin:0 0 12px;
+    line-height:1.7;
+  }
+  .palette {
+    display:flex;
+    gap:6px;
+    margin-top:10px;
+  }
+  .palette div {
+    height:24px;
+    flex:1;
+    border-radius:4px;
+  }
+  .mood {
+    display:inline-block;
+    background:#fdfaf3;
+    color:#5a5048;
+    padding:3px 10px;
+    border-radius:10px;
+    font-size:.7rem;
+    border:1px solid #e8ddc8;
+    margin-right:6px;
+  }
+  .badge-current {
+    background:#c9a96e;
+    color:#073920;
+    padding:3px 10px;
+    border-radius:10px;
+    font-size:.7rem;
+    font-weight:700;
+    letter-spacing:.1em;
+  }
+
+  .cta {
+    background:#0e6340;
+    color:#fff;
+    padding:24px;
+    border-radius:12px;
+    margin-top:32px;
+    text-align:center;
+  }
+  .cta h2 { color:#fff; margin:0 0 8px; font-size:1.2rem; font-family:"Noto Serif TC",serif; }
+  .cta p { margin:0; opacity:.9; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>🎨 電視牆 ・ 公版庫 6 選</h1>
+<p class="lead">每張都是同樣 6 張 slide 結構,只換配色 / 字型口味 / 線條色 ・ 點選你想要的(可複選),我去實裝。</p>
+
+<div class="themes">
+
+  <!-- ======== 1 ・ 翠玉綠 (現用) ======== -->
+  <div class="theme-card current t1">
+    <div class="tv">
+      <div class="inner">
+        <div class="top">K12 覺知素養教育學苑</div>
+        <div class="title">先懂心,<br>再懂教。</div>
+        <div class="line"></div>
+        <div class="sub">陪孩子把情緒變成理解,把理解變成選擇</div>
+      </div>
+      <div class="bottom"><span>李守蕾老師 ・ 18 年</span><div class="qr">LINE</div></div>
+    </div>
+    <div class="theme-info">
+      <span class="badge-current">★ 目前使用</span>
+      <h3 style="margin-top:8px">🌿 翠玉綠</h3>
+      <p>自然 ・ 信任 ・ SEL 主推 ・ 跟「覺知」品牌名最契合</p>
+      <span class="mood">沉穩</span><span class="mood">天然</span><span class="mood">教育感</span>
+      <div class="palette"><div></div></div>
+    </div>
+  </div>
+
+  <!-- ======== 2 ・ 暖咖琥珀 ======== -->
+  <div class="theme-card t2">
+    <div class="tv">
+      <div class="inner">
+        <div class="top">K12 覺知素養教育學苑</div>
+        <div class="title">先懂心,<br>再懂教。</div>
+        <div class="line"></div>
+        <div class="sub">陪孩子把情緒變成理解,把理解變成選擇</div>
+      </div>
+      <div class="bottom"><span>李守蕾老師 ・ 18 年</span><div class="qr">LINE</div></div>
+    </div>
+    <div class="theme-info">
+      <h3>☕ 暖咖琥珀</h3>
+      <p>書房 ・ 木質 ・ 像在咖啡店聊孩子 ・ 給人「慢慢來」的感覺</p>
+      <span class="mood">溫暖</span><span class="mood">家庭</span><span class="mood">放鬆</span>
+      <div class="palette"><div></div></div>
+    </div>
+  </div>
+
+  <!-- ======== 3 ・ 米白薄荷 ======== -->
+  <div class="theme-card t3">
+    <div class="tv">
+      <div class="inner">
+        <div class="top">K12 覺知素養教育學苑</div>
+        <div class="title">先懂心,<br>再懂教。</div>
+        <div class="line"></div>
+        <div class="sub">陪孩子把情緒變成理解,把理解變成選擇</div>
+      </div>
+      <div class="bottom"><span>李守蕾老師 ・ 18 年</span><div class="qr">LINE</div></div>
+    </div>
+    <div class="theme-info">
+      <h3>🌸 米白薄荷</h3>
+      <p>輕盈 ・ 適合幼兒 ・ 媽媽友善 ・ 適合走「新世代教育」路線</p>
+      <span class="mood">清新</span><span class="mood">柔軟</span><span class="mood">幼兒友善</span>
+      <div class="palette"><div></div></div>
+    </div>
+  </div>
+
+  <!-- ======== 4 ・ 深焦碳金 ======== -->
+  <div class="theme-card t4">
+    <div class="tv">
+      <div class="inner">
+        <div class="top">K12 覺知素養教育學苑</div>
+        <div class="title">先懂心,<br>再懂教。</div>
+        <div class="line"></div>
+        <div class="sub">陪孩子把情緒變成理解,把理解變成選擇</div>
+      </div>
+      <div class="bottom"><span>李守蕾老師 ・ 18 年</span><div class="qr">LINE</div></div>
+    </div>
+    <div class="theme-info">
+      <h3>⚫ 深焦碳金</h3>
+      <p>精品 ・ 質感 ・ 像高端品牌 ・ 適合精緻教育 / 高客單路線</p>
+      <span class="mood">高級</span><span class="mood">夜間</span><span class="mood">權威</span>
+      <div class="palette"><div></div></div>
+    </div>
+  </div>
+
+  <!-- ======== 5 ・ 復古書房 ======== -->
+  <div class="theme-card t5">
+    <div class="tv">
+      <div class="inner">
+        <div class="top">K12 覺知素養教育學苑</div>
+        <div class="title">先懂心,<br>再懂教。</div>
+        <div class="line"></div>
+        <div class="sub">陪孩子把情緒變成理解,把理解變成選擇</div>
+      </div>
+      <div class="bottom"><span>李守蕾老師 ・ 18 年</span><div class="qr">LINE</div></div>
+    </div>
+    <div class="theme-info">
+      <h3>📚 復古書房</h3>
+      <p>學苑感 ・ 知性 ・ 像哈佛教授辦公室 ・ 適合走學術風</p>
+      <span class="mood">學術</span><span class="mood">傳統</span><span class="mood">深沉</span>
+      <div class="palette"><div></div></div>
+    </div>
+  </div>
+
+  <!-- ======== 6 ・ 海洋蔚藍 ======== -->
+  <div class="theme-card t6">
+    <div class="tv">
+      <div class="inner">
+        <div class="top">K12 覺知素養教育學苑</div>
+        <div class="title">先懂心,<br>再懂教。</div>
+        <div class="line"></div>
+        <div class="sub">陪孩子把情緒變成理解,把理解變成選擇</div>
+      </div>
+      <div class="bottom"><span>李守蕾老師 ・ 18 年</span><div class="qr">LINE</div></div>
+    </div>
+    <div class="theme-info">
+      <h3>🌊 海洋蔚藍</h3>
+      <p>清澈 ・ 智慧 ・ 像國際學校品牌 ・ 適合「國際視野」定位</p>
+      <span class="mood">理智</span><span class="mood">寬闊</span><span class="mood">國際感</span>
+      <div class="palette"><div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="cta">
+  <h2>🎯 告訴我你的選擇</h2>
+  <p>
+    全部都想要 → 「全裝」<br>
+    只想要幾個 → 例如「裝 1, 2, 4」(裝指定編號)<br>
+    都不喜歡 → 「想要 OO 風格」我重設計<br>
+    跳過這功能 → 「先不要,繼續 STEP 8」
+  </p>
+</div>
+
+</div>
+
+</body>
+</html>

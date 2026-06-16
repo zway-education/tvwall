@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>電視牆 ・ 版型公版庫</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand: #1f8a5c;
+    --brand-deep: #0e6340;
+    --brand-darker: #073920;
+    --accent: #c9a96e;
+    --cream: #faf7f2;
+    --ink: #2a2620;
+    --ink-soft: #5a5048;
+  }
+  body { font-family:"Noto Sans TC",sans-serif; margin:0; background:#f3ede1; padding:32px 24px 80px; color:var(--ink); }
+  .container { max-width:1280px; margin:0 auto; }
+  h1 { font-family:"Noto Serif TC",serif; color:var(--brand-deep); font-size:1.8rem; margin:0 0 8px; }
+  .lead { color:var(--ink-soft); font-size:1rem; max-width:760px; }
+
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:32px; }
+  @media (max-width: 800px) { .grid { grid-template-columns:1fr; } }
+
+  .card {
+    background:#fff;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 8px 30px rgba(0,0,0,.08);
+    border:1px solid #e8ddc8;
+  }
+  .card.current { border:3px solid var(--accent); }
+
+  /* ===== TV mockup base ===== */
+  .tv {
+    aspect-ratio:16/9;
+    position:relative;
+    overflow:hidden;
+    color:var(--cream);
+    font-family:"Noto Serif TC",serif;
+    background:linear-gradient(135deg, #1f8a5c 0%, #157a4f 70%, #0e6340 100%);
+  }
+  .tv .small { font-family:"Noto Sans TC",sans-serif; font-weight:400; letter-spacing:.3em; font-size:.7rem; opacity:.7; }
+  .tv .gold-line { background:var(--accent); height:3px; }
+  .tv .qr-mini { width:42px; height:42px; background:#fff; color:var(--brand-deep); border-radius:5px; display:flex; align-items:center; justify-content:center; font-family:"Noto Sans TC",sans-serif; font-size:9px; font-weight:700; }
+
+  /* ============== A ・ 標題置左卡片式(現用) ============== */
+  .lA .inner { padding:7% 9%; height:100%; display:flex; flex-direction:column; justify-content:center; }
+  .lA .top { position:absolute; top:5%; left:9%; }
+  .lA .title { font-size:2rem; font-weight:800; line-height:1.25; }
+  .lA .line { width:48px; margin:14px 0; }
+  .lA .sub { font-family:"Noto Sans TC",sans-serif; font-size:.85rem; opacity:.85; font-weight:300; }
+  .lA .bottom { position:absolute; bottom:5%; left:9%; right:9%; display:flex; justify-content:space-between; font-family:"Noto Sans TC",sans-serif; font-size:.65rem; opacity:.75; }
+
+  /* ============== B ・ 極簡留白派(置中,大字)============== */
+  .lB { display:flex; align-items:center; justify-content:center; }
+  .lB .center {
+    text-align:center; padding:8% 12%;
+    width:100%;
+  }
+  .lB .top { margin-bottom:24px; }
+  .lB .title { font-size:3.2rem; font-weight:900; line-height:1.15; letter-spacing:.05em; }
+  .lB .line { margin:18px auto; width:36px; }
+  .lB .sub { font-family:"Noto Sans TC",sans-serif; font-size:.8rem; opacity:.7; font-weight:300; margin-top:14px; letter-spacing:.1em; }
+  .lB .qr-mini { position:absolute; bottom:5%; right:5%; }
+
+  /* ============== C ・ 雜誌封面派(標題巨型 + 多元素拼貼)============== */
+  .lC .inner { padding:0; height:100%; position:relative; }
+  .lC .megablock {
+    position:absolute; top:0; left:0; bottom:0; width:62%;
+    background:var(--brand-darker);
+    padding:8% 6%;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .lC .megatitle {
+    font-size:3.5rem; font-weight:900; line-height:.95; letter-spacing:.02em;
+    color:var(--cream);
+  }
+  .lC .megatitle .accent { color:var(--accent); }
+  .lC .sideblock {
+    position:absolute; top:0; right:0; bottom:0; width:38%;
+    padding:6% 5%;
+    display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .lC .tag { font-family:"Noto Sans TC",sans-serif; font-size:.55rem; letter-spacing:.4em; opacity:.7; }
+  .lC .sub-block { font-family:"Noto Sans TC",sans-serif; font-size:.8rem; line-height:1.7; }
+  .lC .qr-mini { align-self:flex-end; }
+
+  /* ============== D ・ 沉浸全屏派(大背景 SVG + 文字浮起)============== */
+  .lD { background:linear-gradient(135deg, #0e6340 0%, #1f8a5c 50%, #0e2a1c 100%); }
+  .lD::before {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(201,169,110,.15) 0%, transparent 40%),
+      radial-gradient(circle at 75% 70%, rgba(255,255,255,.05) 0%, transparent 30%);
+  }
+  .lD .inner { padding:8% 10%; height:100%; display:flex; flex-direction:column; justify-content:flex-end; position:relative; z-index:2; }
+  .lD .top { position:absolute; top:6%; left:10%; }
+  .lD .title { font-size:2.8rem; font-weight:900; line-height:1.1; text-shadow:0 4px 20px rgba(0,0,0,.3); }
+  .lD .line { width:48px; margin:14px 0; }
+  .lD .sub { font-family:"Noto Sans TC",sans-serif; font-size:.85rem; opacity:.9; max-width:60%; }
+  .lD .bottom { position:absolute; bottom:6%; right:10%; display:flex; align-items:center; gap:10px; font-family:"Noto Sans TC",sans-serif; font-size:.65rem; opacity:.85; }
+
+  /* ============== E ・ 對話氣泡派(像 chat 訊息)============== */
+  .lE { background:linear-gradient(135deg, #f5f0e8 0%, #ebe5da 100%); color:var(--brand-deep); }
+  .lE .inner { padding:5% 7%; height:100%; display:flex; flex-direction:column; justify-content:center; position:relative; }
+  .lE .top { color:var(--brand); margin-bottom:14px; }
+  .lE .bubble {
+    background:var(--brand);
+    color:var(--cream);
+    padding:18px 22px;
+    border-radius:18px 18px 18px 4px;
+    display:inline-block;
+    max-width:65%;
+    font-size:1.9rem;
+    font-weight:800;
+    line-height:1.25;
+    box-shadow:0 6px 20px rgba(14,99,64,.2);
+  }
+  .lE .speaker { font-family:"Noto Sans TC",sans-serif; font-size:.75rem; color:var(--ink-soft); margin-top:10px; }
+  .lE .sub { font-family:"Noto Sans TC",sans-serif; font-size:.85rem; color:var(--ink-soft); margin-top:24px; max-width:60%; }
+  .lE .bottom { position:absolute; bottom:5%; left:7%; right:7%; display:flex; justify-content:space-between; align-items:flex-end; font-family:"Noto Sans TC",sans-serif; font-size:.65rem; color:var(--brand-deep); }
+  .lE .qr-mini { background:var(--brand); color:#fff; }
+
+  .info { padding:18px 22px; }
+  .info h3 { margin:0 0 6px; color:var(--brand-deep); font-size:1.05rem; font-family:"Noto Serif TC",serif; }
+  .info p { color:var(--ink-soft); font-size:.85rem; margin:0 0 12px; line-height:1.7; }
+  .badge-current { background:var(--accent); color:var(--brand-darker); padding:3px 10px; border-radius:10px; font-size:.7rem; font-weight:700; letter-spacing:.1em; margin-bottom:6px; display:inline-block; }
+  .mood { display:inline-block; background:#fdfaf3; color:var(--ink-soft); padding:3px 10px; border-radius:10px; font-size:.7rem; border:1px solid #e8ddc8; margin-right:6px; }
+
+  .cta {
+    background:var(--brand-deep); color:#fff;
+    padding:24px; border-radius:12px; margin-top:32px; text-align:center;
+  }
+  .cta h2 { color:#fff; margin:0 0 8px; font-size:1.2rem; font-family:"Noto Serif TC",serif; }
+  .cta p { margin:0; opacity:.9; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h1>📐 電視牆 ・ 版型公版庫</h1>
+<p class="lead">同一句「先懂心,再懂教」用 5 種版型呈現。挑你最有感的那種,我把整套 6 張 slide 都改成那個版型。</p>
+
+<div class="grid">
+
+  <!-- A ・ 現用 -->
+  <div class="card current">
+    <div class="tv lA">
+      <div class="inner">
+        <div class="small top">K12 覺知素養教育學苑</div>
+        <div class="title">先懂心,<br>再懂教。</div>
+        <div class="line gold-line"></div>
+        <div class="sub">陪孩子把情緒變成理解,把理解變成選擇</div>
+      </div>
+      <div class="bottom"><span>李守蕾老師 ・ 18 年</span><div class="qr-mini">LINE</div></div>
+    </div>
+    <div class="info">
+      <span class="badge-current">★ 目前使用</span>
+      <h3 style="margin-top:8px">A ・ 標題置左卡片式</h3>
+      <p>結構清楚 ・ 元素分區明確 ・ 像書籍封面 ・ 大部分高級教育品牌愛用</p>
+      <span class="mood">穩重</span><span class="mood">結構</span><span class="mood">經典</span>
+    </div>
+  </div>
+
+  <!-- B ・ 極簡置中 -->
+  <div class="card">
+    <div class="tv lB">
+      <div class="center">
+        <div class="small top">K12 覺知素養教育學苑</div>
+        <div class="title">先懂心,<br>再懂教。</div>
+        <div class="line gold-line"></div>
+        <div class="sub">陪孩子把情緒變成理解,<br>把理解變成選擇</div>
+      </div>
+      <div class="qr-mini">LINE</div>
+    </div>
+    <div class="info">
+      <h3>B ・ 極簡留白派</h3>
+      <p>大字置中 ・ 大量留白 ・ 像精品店招牌 ・ 路人 1 秒被「主張」打到</p>
+      <span class="mood">極簡</span><span class="mood">大字</span><span class="mood">震撼</span>
+    </div>
+  </div>
+
+  <!-- C ・ 雜誌封面 -->
+  <div class="card">
+    <div class="tv lC">
+      <div class="inner">
+        <div class="megablock">
+          <div class="megatitle">先懂心,<br><span class="accent">再懂教。</span></div>
+        </div>
+        <div class="sideblock">
+          <div class="tag">K12 覺知素養教育學苑</div>
+          <div class="sub-block">陪孩子把情緒變成理解,把理解變成選擇</div>
+          <div>
+            <div style="font-family:'Noto Sans TC';font-size:.6rem;opacity:.7;margin-bottom:4px">QR</div>
+            <div class="qr-mini">LINE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="info">
+      <h3>C ・ 雜誌封面派</h3>
+      <p>標題佔半畫面巨型字 ・ 旁邊用小區塊放副資訊 ・ 像時尚雜誌 ・ 視覺最豐富</p>
+      <span class="mood">巨型字</span><span class="mood">編輯感</span><span class="mood">時尚</span>
+    </div>
+  </div>
+
+  <!-- D ・ 沉浸全屏 -->
+  <div class="card">
+    <div class="tv lD">
+      <div class="inner">
+        <div class="small top">K12 覺知素養教育學苑</div>
+        <div class="title">先懂心,<br>再懂教。</div>
+        <div class="line gold-line"></div>
+        <div class="sub">陪孩子把情緒變成理解,把理解變成選擇</div>
+      </div>
+      <div class="bottom"><span>李守蕾老師 ・ 18 年</span><div class="qr-mini">LINE</div></div>
+    </div>
+    <div class="info">
+      <h3>D ・ 沉浸全屏派</h3>
+      <p>大背景漸層 + 光暈點綴 ・ 文字浮起來像電影海報 ・ 情緒感最強</p>
+      <span class="mood">電影感</span><span class="mood">氛圍</span><span class="mood">浮動</span>
+    </div>
+  </div>
+
+  <!-- E ・ 對話氣泡 -->
+  <div class="card">
+    <div class="tv lE">
+      <div class="inner">
+        <div class="small top">老師對家長說 ─</div>
+        <div class="bubble">先懂心,再懂教。</div>
+        <div class="speaker">— 李守蕾 ・ 覺知教育創辦人</div>
+        <div class="sub">陪孩子把情緒變成理解,把理解變成選擇</div>
+      </div>
+      <div class="bottom">
+        <span>K12 覺知素養教育學苑</span>
+        <div class="qr-mini">LINE</div>
+      </div>
+    </div>
+    <div class="info">
+      <h3>E ・ 對話氣泡派</h3>
+      <p>標題像 chat 氣泡 ・ 親切感拉滿 ・ 像在跟家長聊天 ・ 不像招生看板</p>
+      <span class="mood">親切</span><span class="mood">對話</span><span class="mood">媽媽友善</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="cta">
+  <h2>🎯 挑你最有感的</h2>
+  <p>跟我說 <b>A / B / C / D / E</b> 任一個,我把整套 6 張 slide 都重做成那個版型。<br>
+  或說「都不行,想要 OO」我重新設計;或「先這樣就好」跳過。</p>
+</div>
+
+</div>
+
+</body>
+</html>

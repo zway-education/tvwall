@@ -2756,6 +2756,8 @@
       if (e.data.type === 'tvwall-preview-show' && e.data.slideId != null) {
         try {
           paused = true; clearTimeout(timer);
+          if (typeof stopTestimonyRotation === 'function') stopTestimonyRotation();
+          if (typeof stopHighlightRotation === 'function') stopHighlightRotation();
           const i = (typeof SLIDES !== 'undefined') ? SLIDES.findIndex(s => String(s.id) === String(e.data.slideId)) : -1;
           if (i >= 0 && typeof showSlide === 'function') { showSlide(i); }
           else {
@@ -2887,6 +2889,9 @@
     }
   }
 
+  // 純文字欄位轉義(使用者打入 < & 等字元不會破版/注入)
+  function escHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
   // ========== 動態渲染見證(從 CONFIG.testimonies)==========
   function renderTestimonies() {
     const wrap = document.getElementById('testimony-wrap');
@@ -2894,8 +2899,8 @@
     if (!wrap || !dotsBox) return;
     wrap.innerHTML = CONFIG.testimonies.map((t, i) => `
       <div class="testimony${i === 0 ? ' show' : ''}" data-i="${i}">
-        <div class="text">${t.text}</div>
-        <div class="who">${t.who}</div>
+        <div class="text">${t.text || ''}</div>
+        <div class="who">${escHtml(t.who)}</div>
       </div>
     `).join('');
     dotsBox.innerHTML = CONFIG.testimonies.map((_, i) =>
@@ -2908,11 +2913,11 @@
     const wrap = document.getElementById('stages-wrap');
     if (!wrap) return;
     const stages = Array.isArray(CONFIG.stages) ? CONFIG.stages : [];
-    wrap.innerHTML = stages.map(s => `
+    wrap.innerHTML = stages.slice(0, 4).map(s => `
       <div class="stage">
-        <div class="age">${s.age || ''}</div>
-        <div class="name">${s.name || ''}</div>
-        <div class="tag">${(s.tag || '').replace(/\n/g, '<br>')}</div>
+        <div class="age">${escHtml(s.age)}</div>
+        <div class="name">${escHtml(s.name)}</div>
+        <div class="tag">${escHtml(s.tag).replace(/\n/g, '<br>')}</div>
       </div>
     `).join('');
   }
@@ -3169,12 +3174,12 @@
     wrap.innerHTML = items.map((h, i) => `
       <div class="highlight${i === 0 ? ' show' : ''}" data-i="${i}">
         <div class="img-area">
-          ${h.image ? `<img src="${h.image}" alt="${(h.title || '').replace(/"/g, '&quot;')}">` : '<div class="placeholder">(尚未上傳照片)</div>'}
+          ${(h.image && /^(data:image\/|https?:)/.test(h.image)) ? `<img src="${h.image}" alt="${escHtml(h.title)}">` : '<div class="placeholder">(尚未上傳照片)</div>'}
         </div>
         <div class="caption">
-          ${h.date ? `<div class="h-date">${h.date}</div>` : ''}
-          <div class="h-title">${h.title || ''}</div>
-          ${h.desc ? `<div class="h-desc">${h.desc}</div>` : ''}
+          ${h.date ? `<div class="h-date">${escHtml(h.date)}</div>` : ''}
+          <div class="h-title">${escHtml(h.title)}</div>
+          ${h.desc ? `<div class="h-desc">${escHtml(h.desc)}</div>` : ''}
         </div>
       </div>
     `).join('');
@@ -3242,8 +3247,8 @@
     renderLogo();
     renderStageImages();
     renderSlideBackgrounds();
-    startProgressBar(SLIDES[0].duration);
-    scheduleNext();
+    if (IS_EMBEDDED) { paused = true; }   // 後台預覽:不自動輪播,只顯示被指定的那張
+    else { startProgressBar(SLIDES[0].duration); scheduleNext(); }
 
     // 2. 從本機 IndexedDB 載入正式設定(首次自動從舊 localStorage 搬遷)
     try {
@@ -3258,6 +3263,7 @@
     try {
       const bc = new BroadcastChannel('tvwall');
       bc.onmessage = async (ev) => {
+        if (IS_EMBEDDED) return;   // 預覽 iframe 由父視窗 postMessage 更新,避免重複套用
         if (ev && ev.data && ev.data.type === 'config-updated') {
           try {
             const c = await window.TVWALL_store.loadConfig();

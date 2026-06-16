@@ -20,7 +20,7 @@ window.TVWALL_API = {
 
   // 🌐 Apps Script Web App URL(直式專屬,別跟橫式共用)
   //   未填 = 本機模式
-  url: "PASTE_VERTICAL_APPS_SCRIPT_URL_HERE",
+  url: "",   // 2026-06-16 改本機 IndexedDB 單機模式,雲端(Apps Script)已停用
 
   // 🔐 API 密鑰(直式專屬,別跟橫式共用)
   //   跟 vertical/cloud_setup/tvwall_api.gs 內 API_KEY 對齊

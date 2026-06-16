@@ -357,11 +357,14 @@ function fieldCard(f, id){
         <button onclick="changeTi(-1)">−</button><input id="ti-in" value="${Math.round((state.testimonyInterval||6000)/1000)}" readonly><button onclick="changeTi(1)">+</button></span></div>
       <div id="testi-box"></div>
       <button class="btn ghost" onclick="addTestimony()" style="margin-top:4px">＋ 新增見證</button></div>`;
-  if (f==='highlights') return `<div class="card"><h3><span class="k"></span>花絮照片</h3><div id="hl-box"></div>
+  if (f==='highlights') return `<div class="card"><h3><span class="k"></span>花絮照片</h3>
+      ${(state.highlights||[]).length===0?'<div class="note" style="margin-bottom:10px">⚠️ 目前沒有照片,這張在電視牆上會自動跳過。加一張才會播。</div>':''}
+      <div id="hl-box"></div>
       <button class="btn ghost" onclick="addHighlight()" style="margin-top:4px">＋ 新增花絮</button></div>`;
   if (f.startsWith('qr-')){
     const d = QR_DEF[f];
     return `<div class="card"><h3><span class="k"></span>QR:${d.label}</h3>
+      <div class="note" style="margin-bottom:10px">ℹ️ 這個 QR 全站共用,改一處,所有用到它的畫面都會一起換。</div>
       <div class="fld"><label class="f">連結網址 <small>(填網址會自動生成 QR)</small></label>
         <input class="inp" value="${esc(state.qr[d.urlKey]||'')}" oninput="state.qr['${d.urlKey}']=this.value.trim();scheduleSave()"></div>
       ${imageRow('或上傳自己的 QR 圖(選填,蓋過上面網址)', d.imgKey, 'qr')}
@@ -429,7 +432,10 @@ function renderStagesBox(){
 }
 function addStage(){ if(state.stages.length>=4){toast('班別卡最多 4 張');return;} state.stages.push({age:'',name:'新班別',tag:''}); renderStagesBox(); scheduleSave(); }
 function removeStage(i){ if(!confirm('刪除這個班別?'))return; state.stages.splice(i,1); renderStagesBox(); scheduleSave(); }
-function moveStage(i,d){ const j=i+d; if(j<0||j>=state.stages.length)return; [state.stages[i],state.stages[j]]=[state.stages[j],state.stages[i]]; renderStagesBox(); scheduleSave(); }
+function moveStage(i,d){ const j=i+d; if(j<0||j>=state.stages.length)return;
+  [state.stages[i],state.stages[j]]=[state.stages[j],state.stages[i]];
+  const ki='stage'+(i+1)+'Image', kj='stage'+(j+1)+'Image'; const tmp=state[ki]; state[ki]=state[kj]; state[kj]=tmp;
+  renderStagesBox(); scheduleSave(); }
 
 /* ── 見證 testimonies ── */
 function renderTestimoniesEditor(asContent){
@@ -490,6 +496,7 @@ function renderHlBox(){
 }
 async function uploadHl(ev,i){
   const file=ev.target.files[0]; if(!file)return;
+  if(file.size>10*1024*1024){ toast('圖片太大(超過 10MB)','err'); ev.target.value=''; return; }
   try{ const d=await compressImage(file,IMG_MAXDIM.highlight,0.82); state.highlights[i].image=d; renderHlBox(); scheduleSave(); toast('📷 已上傳 ・ 自動存'); }
   catch(e){ toast('處理失敗:'+e.message,'err'); }
   ev.target.value='';
@@ -507,14 +514,17 @@ function renderSettings(){
     <div class="card"><h3><span class="k"></span>螢幕方向</h3>
       <select class="sel" onchange="state.orientation=this.value;previewStyle();scheduleSave()">
         <option value="auto" ${orient==='auto'?'selected':''}>自動</option>
-        <option value="landscape" ${orient==='landscape'?'selected':''}>橫式</option>
-        <option value="portrait" ${orient==='portrait'?'selected':''}>直式</option>
+        <option value="horizontal" ${orient==='horizontal'?'selected':''}>橫式</option>
+        <option value="vertical" ${orient==='vertical'?'selected':''}>直式</option>
       </select></div>
     <div class="card"><h3><span class="k"></span>配色主題</h3>
-      <input class="inp" value="${esc(theme)}" oninput="state.theme=this.value.trim();previewStyle();scheduleSave()">
-      <div class="note" style="margin-top:8px">預設 green(翠玉綠)。如果你之前有設定其他主題名稱,維持原樣即可。</div></div>
+      <select class="sel" onchange="state.theme=this.value;previewStyle();scheduleSave()">
+        ${['green','amber','mint','gold','leather','navy'].map(t=>`<option value="${t}" ${theme===t?'selected':''}>${({green:'翠玉綠',amber:'琥珀',mint:'薄荷',gold:'金',leather:'皮革棕',navy:'深藍'})[t]}</option>`).join('')}
+      </select></div>
     <div class="card"><h3><span class="k"></span>版型</h3>
-      <input class="inp" value="${esc(layout)}" oninput="state.layout=this.value.trim();previewStyle();scheduleSave()"></div>
+      <select class="sel" onchange="state.layout=this.value;previewStyle();scheduleSave()">
+        ${['A','B','C','E'].map(l=>`<option value="${l}" ${layout===l?'selected':''}>版型 ${l}</option>`).join('')}
+      </select></div>
     ${imageCard('右下角 LOGO','電視牆右下角的小 LOGO 圖','logoImage','logo')}`;
 }
 
@@ -554,20 +564,37 @@ async function doImport(ev){
 }
 
 /* ── 自動存 + 即時同步 ── */
-let saveTimer=null;
+let saveTimer=null, saveChain=Promise.resolve();
 function scheduleSave(){
+  state._savedAt = Date.now();
   setStatus('saving');
   clearTimeout(saveTimer);
-  saveTimer=setTimeout(doSave,500);
+  saveTimer=setTimeout(()=>{ saveTimer=null; doSave(); }, 350);
 }
-async function doSave(){
-  try{
-    await TVWALL_store.saveConfig(state);
-    TVWALL_store.notifyUpdated();   // → 真正的電視牆(其他分頁/視窗)
-    pingPreview();                   // → 右邊預覽 iframe
-    setStatus('saved');
-  }catch(e){ setStatus('error','儲存失敗:'+(e&&e.message)); }
+function doSave(){
+  const snap = JSON.parse(JSON.stringify(state));   // 快照,避免存到一半又被改
+  saveChain = saveChain.then(async ()=>{
+    try{
+      await TVWALL_store.saveConfig(snap);
+      TVWALL_store.notifyUpdated();   // → 真正的電視牆(其他分頁/視窗)
+      pingPreview();                   // → 右邊預覽 iframe
+      setStatus('saved');
+    }catch(e){
+      setStatus('error','儲存失敗,請重試:'+(e&&e.message));
+      toast('⚠ 儲存失敗:'+(e&&e.message),'err');
+    }
+  });
+  return saveChain;
 }
+// 關視窗 / 切走前:把還沒寫進 IndexedDB 的變更保住(localStorage 同步寫 + 盡力寫 IDB)
+function flushSaveSync(){
+  if(saveTimer){ clearTimeout(saveTimer); saveTimer=null; }
+  if(!state) return;
+  try{ state._savedAt = Date.now(); localStorage.setItem('tvwall_config', JSON.stringify(state)); }catch(e){}
+  try{ TVWALL_store.saveConfig(JSON.parse(JSON.stringify(state))); TVWALL_store.notifyUpdated(); }catch(e){}
+}
+window.addEventListener('pagehide', flushSaveSync);
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) flushSaveSync(); });
 function pingPreview(){
   const f=document.getElementById('pv');
   if(f&&f.contentWindow){

@@ -56,11 +56,17 @@
     // ── 匯出 / 匯入備份 ──
     exportAll: async () => {
       const cfg = await window.TVWALL_store.loadConfig();
-      const out = cfg || window.TVWALL_emptyConfigV2();
+      const out = cfg || (window.TVWALL_merge ? window.TVWALL_merge({}) : {});
       return new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' });
     },
     importAll: async (jsonText) => {
-      const cfg = JSON.parse(jsonText);
+      const parsed = JSON.parse(jsonText);
+      // 擋掉明顯不對的檔案(v2 殼或缺核心欄位),避免覆蓋掉好資料
+      if (!parsed || typeof parsed !== 'object' || parsed.version === 2 ||
+          (parsed.qr === undefined && parsed.testimonies === undefined && parsed.durations === undefined)) {
+        throw new Error('這不是電視牆的備份檔');
+      }
+      const cfg = window.TVWALL_merge ? window.TVWALL_merge(parsed) : parsed;
       await window.TVWALL_store.saveConfig(cfg);
       return cfg;
     },
@@ -68,15 +74,19 @@
     // ── 載入(首次自動從舊 localStorage v1 搬遷),回傳經 defaults 合併的完整設定 ──
     loadOrMigrate: async () => {
       let raw = await window.TVWALL_store.loadConfig();
+      let ls = null;
+      try { const s = localStorage.getItem('tvwall_config'); if (s) ls = JSON.parse(s); } catch (e) {}
       if (!raw) {
-        try {
-          const old = localStorage.getItem('tvwall_config');
-          if (old) {
-            localStorage.setItem('tvwall_config_backup_v1', old); // 搬遷前先備份舊資料
-            raw = JSON.parse(old);
-            await window.TVWALL_store.saveConfig(raw);             // 種進 IndexedDB
-          }
-        } catch (e) { console.warn('[tvwall] 從 localStorage 搬遷失敗', e); }
+        // 首次:從舊 localStorage 搬遷(備份 + 種進 IndexedDB)
+        if (ls) {
+          try { localStorage.setItem('tvwall_config_backup_v1', JSON.stringify(ls)); } catch (e) {}
+          raw = ls;
+          try { await window.TVWALL_store.saveConfig(raw); } catch (e) {}
+        }
+      } else if (ls && (ls._savedAt || 0) > (raw._savedAt || 0)) {
+        // localStorage 比 IndexedDB 新(後台在 IDB 寫完前就關了)→ 採用並補寫
+        raw = ls;
+        try { await window.TVWALL_store.saveConfig(raw); } catch (e) {}
       }
       return window.TVWALL_merge ? window.TVWALL_merge(raw || {}) : (raw || null);
     },

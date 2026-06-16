@@ -2752,6 +2752,25 @@
         if (e.data.theme)       { CONFIG.theme = e.data.theme; applyTheme(CONFIG.theme); }
         if (e.data.orientation) { CONFIG.orientation = e.data.orientation; applyOrientation(); }
       }
+      // 新後台預覽:跳到指定 slide(被隱藏的也強制顯示供預覽)
+      if (e.data.type === 'tvwall-preview-show' && e.data.slideId != null) {
+        try {
+          paused = true; clearTimeout(timer);
+          const i = (typeof SLIDES !== 'undefined') ? SLIDES.findIndex(s => String(s.id) === String(e.data.slideId)) : -1;
+          if (i >= 0 && typeof showSlide === 'function') { showSlide(i); }
+          else {
+            document.querySelectorAll('.slide').forEach(el => el.classList.remove('active'));
+            const el = document.querySelector('.slide[data-id="' + e.data.slideId + '"]');
+            if (el) el.classList.add('active');
+          }
+        } catch(err) {}
+      }
+      // 後台存檔後要求重載(BroadcastChannel 為主,這是備援)
+      if (e.data.type === 'tvwall-reload-config') {
+        (async () => {
+          try { const c = await window.TVWALL_store.loadConfig(); if (c) applyConfig(window.TVWALL_merge ? window.TVWALL_merge(c) : c); } catch(err) {}
+        })();
+      }
     } else {
       // 我是 EDIT 主控 → admin iframe 來的訊息
       if (e.data.type === 'tvwall-edit-activity') resetIdleTimer();

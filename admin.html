@@ -2,2231 +2,647 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>電視牆 ・ 後台管理</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1f8a5c">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="電視牆後台">
-<link rel="apple-touch-icon" href="icon-180.png">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
-<script src="cloud_config.js"></script>
-<script src="defaults.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>電視牆後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --brand: #1f8a5c;
-    --brand-deep: #0e6340;
-    --brand-darker: #073920;
-    --accent: #c9a96e;
-    --accent-hover: #b89055;
-    --cream: #faf7f2;
-    --cream-deep: #f3ede1;
-    --ink: #2a2620;
-    --ink-soft: #5a5048;
-    --border: #e8ddc8;
-    --danger: #d63030;
-    --success: #2E8B5A;
+  :root{
+    --green:#1f8a5c; --green-d:#176b47; --cream:#faf7f2; --ink:#23201c;
+    --gold:#b8924a; --line:#e6e0d6; --panel:#fff; --muted:#8a8377;
+    --ok:#1f8a5c; --warn:#c8861a; --danger:#c0392b; --shadow:0 2px 10px rgba(0,0,0,.06);
   }
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0;
-    background: var(--cream);
-    color: var(--ink);
-    font-family: "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
-    line-height: 1.7;
-  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    background:var(--cream);color:var(--ink);height:100vh;overflow:hidden}
+  h1,h2,h3{font-family:"Noto Serif TC",serif}
+  button{font-family:inherit}
+  .btn{border:0;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:700;cursor:pointer}
+  .btn.primary{background:var(--green);color:#fff}
+  .btn.ghost{background:#f1ede5;color:var(--ink)}
+  .btn.danger{background:#fbe9e7;color:var(--danger)}
+  .btn:hover{filter:brightness(1.04)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
 
-  /* ====== 頂部 sticky 工具列 ====== */
-  header {
-    position: sticky;
-    top: 0;
-    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
-    color: var(--cream);
-    padding: 16px 32px;
-    z-index: 100;
-    box-shadow: 0 4px 16px rgba(14,99,64,.15);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  header h1 {
-    font-family: "Noto Serif TC", serif;
-    font-weight: 700;
-    font-size: 1.4rem;
-    margin: 0;
-    letter-spacing: .02em;
-  }
-  header h1 small {
-    display: block;
-    font-size: .75rem;
-    opacity: .8;
-    letter-spacing: .25em;
-    margin-top: 2px;
-    font-family: "Noto Sans TC", sans-serif;
-    font-weight: 400;
-  }
-  /* ====== 右側浮動跳轉導航(避免長頁滾死人)====== */
-  .section-nav {
-    position: fixed;
-    top: 50%;
-    right: 18px;
-    transform: translateY(-50%);
-    z-index: 500;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    background: rgba(255,255,255,.92);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 10px 8px;
-    border-radius: 14px;
-    box-shadow: 0 8px 32px rgba(0,0,0,.18);
-    border: 1px solid rgba(31,138,92,.18);
-  }
-  .section-nav button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 7px 12px 7px 8px;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: .85rem;
-    color: var(--ink-soft);
-    transition: background .15s, color .15s;
-    text-align: left;
-    white-space: nowrap;
-  }
-  .section-nav button:hover {
-    background: rgba(31,138,92,.08);
-    color: var(--brand-deep);
-  }
-  .section-nav button.active {
-    background: var(--brand);
-    color: #fff;
-    font-weight: 600;
-  }
-  .section-nav .nav-num {
-    display: inline-flex;
-    align-items: center; justify-content: center;
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    background: var(--cream-deep);
-    color: var(--brand-deep);
-    font-size: .8rem;
-    font-weight: 700;
-    flex: 0 0 22px;
-  }
-  .section-nav button.active .nav-num {
-    background: rgba(255,255,255,.25);
-    color: #fff;
-  }
-  /* 1100px 以下螢幕收成迷你 dot rail(只顯示數字) */
-  @media (max-width: 1100px) {
-    .section-nav button { padding: 6px; gap: 0; }
-    .section-nav .nav-label { display: none; }
-  }
-  @media (max-width: 700px) {
-    .section-nav { right: 8px; padding: 6px 4px; }
-  }
+  /* ===== 密碼鎖 ===== */
+  #lock{position:fixed;inset:0;background:linear-gradient(135deg,#1f8a5c,#0e1a14);
+    display:grid;place-items:center;z-index:100}
+  .lockbox{background:#fff;border-radius:18px;padding:34px 30px;width:300px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+  .lockbox h2{font-size:20px;margin-bottom:6px}
+  .lockbox p{font-size:13px;color:var(--muted);margin-bottom:18px}
+  .lockbox input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:18px;
+    text-align:center;letter-spacing:6px;margin-bottom:12px;font-family:inherit}
+  .lockerr{color:var(--danger);font-size:13px;height:16px;margin-bottom:6px}
 
-  .cloud-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 14px;
-    font-size: .8rem;
-    font-weight: 500;
-    background: rgba(255,255,255,.15);
-    color: var(--cream);
-    margin-right: 8px;
-  }
-  .cloud-status .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: #aaa;
-  }
-  .cloud-status.cloud .dot { background: #6fff9a; box-shadow: 0 0 8px #6fff9a; }
-  .cloud-status.local .dot { background: #ffb84d; box-shadow: 0 0 8px #ffb84d; }
-  .cloud-status.offline .dot { background: #ff6868; box-shadow: 0 0 8px #ff6868; }
-  .cloud-meta {
-    font-size: .72rem;
-    opacity: .7;
-    margin-top: 4px;
-    color: var(--cream);
-  }
-  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
-  .btn {
-    padding: 9px 18px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: .95rem;
-    font-weight: 500;
-    transition: all .15s;
-    letter-spacing: .04em;
-  }
-  .btn-primary {
-    background: var(--accent);
-    color: var(--brand-darker);
-    font-weight: 700;
-  }
-  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-  .btn-ghost {
-    background: rgba(255,255,255,.15);
-    color: var(--cream);
-    border: 1px solid rgba(255,255,255,.3);
-  }
-  .btn-ghost:hover { background: rgba(255,255,255,.25); }
+  /* ===== 上列 ===== */
+  .topbar{height:58px;background:var(--panel);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:14px;padding:0 18px;box-shadow:var(--shadow);position:relative;z-index:5}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px}
+  .brand .dot{width:30px;height:30px;border-radius:9px;background:var(--green);color:#fff;display:grid;place-items:center}
+  .status{margin-left:auto;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
+    font-size:13.5px;font-weight:700;border:1px solid #cfe8da;background:#eef7f1;color:var(--green-d)}
+  .status.saving{background:#fdf4e3;border-color:#f0dcb0;color:var(--warn)}
+  .status.error{background:#fbe9e7;border-color:#f1c3bd;color:var(--danger)}
+  .status .pulse{width:9px;height:9px;border-radius:50%;background:currentColor}
 
-  /* ====== 主容器 ====== */
-  main {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 32px 20px 120px;
-  }
-  @media (max-width: 640px) {
-    main { padding: 20px 12px 140px; }
-    header { padding: 12px 16px; }
-    header h1 { font-size: 1.15rem; }
-    header h1 small { font-size: .65rem; }
-    .actions { width: 100%; }
-    .actions .btn { flex: 1; padding: 8px 10px; font-size: .85rem; }
-    section { padding: 20px 18px; }
-    section h2 { font-size: 1.15rem; padding-left: 10px; }
-    section .desc { padding-left: 14px; font-size: .85rem; }
-    .duration-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-    footer { padding: 10px 14px; }
-    footer .btn { padding: 8px 12px; font-size: .85rem; }
-  }
+  /* ===== 版面 ===== */
+  .wrap{display:grid;grid-template-columns:262px 1fr 380px;height:calc(100vh - 58px)}
+  .side{background:#fbf9f5;border-right:1px solid var(--line);overflow-y:auto;padding:12px 10px}
+  .grp{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.8px;margin:14px 8px 6px}
+  .nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:9px;cursor:pointer;font-size:14.5px;color:#3b372f}
+  .nav-item:hover{background:#f0ece3}
+  .nav-item.active{background:var(--green);color:#fff;font-weight:700}
+  .nav-item .ico{width:20px;text-align:center}
+  .addbtn{width:100%;border:1px dashed #c3bcae;background:#fff;border-radius:10px;padding:10px;margin-top:6px;
+    cursor:pointer;color:var(--green-d);font-weight:700;font-size:14px}
+  .addbtn:hover{border-color:var(--green);background:#f4faf6}
+  .slide-row{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:9px;cursor:pointer;font-size:13.5px}
+  .slide-row:hover{background:#f0ece3}
+  .slide-row.active{background:var(--green);color:#fff;font-weight:700}
+  .slide-row .num{width:22px;height:22px;border-radius:6px;background:#ece7dd;display:grid;place-items:center;
+    font-size:11px;font-weight:800;color:#6b6456;flex:none}
+  .slide-row.active .num{background:rgba(255,255,255,.25);color:#fff}
+  .slide-row .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .slide-row .ord{display:flex;flex-direction:column;line-height:.7}
+  .slide-row .ord button{border:0;background:transparent;cursor:pointer;font-size:11px;color:inherit;opacity:.55;padding:1px}
+  .slide-row .ord button:hover{opacity:1}
+  .eye{font-size:14px;cursor:pointer;opacity:.4;flex:none}
+  .eye.on{opacity:1}
 
-  /* ====== 區塊 ====== */
-  section {
-    background: #fff;
-    border-radius: 14px;
-    padding: 28px 32px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 16px rgba(14,99,64,.06), 0 1px 3px rgba(14,99,64,.04);
-    border: 1px solid var(--border);
-  }
-  section h2 {
-    font-family: "Noto Serif TC", serif;
-    color: var(--brand-deep);
-    font-size: 1.35rem;
-    margin: 0 0 6px;
-    padding-left: 14px;
-    border-left: 4px solid var(--accent);
-  }
-  section .desc {
-    color: var(--ink-soft);
-    font-size: .9rem;
-    margin: 0 0 24px;
-    padding-left: 18px;
-  }
+  .editor{overflow-y:auto;padding:24px 30px}
+  .ed-head{display:flex;align-items:center;gap:11px;margin-bottom:3px}
+  .ed-head .badge{background:#ece7dd;color:#6b6456;font-size:12px;font-weight:800;padding:4px 10px;border-radius:7px}
+  .ed-head h2{font-size:22px}
+  .ed-sub{color:var(--muted);font-size:13px;margin:4px 0 20px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:15px;box-shadow:var(--shadow)}
+  .card h3{font-size:14.5px;margin-bottom:13px;display:flex;align-items:center;gap:8px}
+  .card h3 .k{width:6px;height:17px;background:var(--green);border-radius:3px;display:inline-block}
+  label.f{display:block;font-size:13px;font-weight:700;color:#5a554b;margin:0 0 6px}
+  label.f small{font-weight:400;color:var(--muted)}
+  .inp,textarea.inp{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;background:#fff}
+  textarea.inp{resize:vertical;min-height:64px;line-height:1.6}
+  .inp:focus,textarea.inp:focus{outline:0;border-color:var(--green);box-shadow:0 0 0 3px #e0f0e8}
+  .fld{margin-bottom:14px}.fld:last-child{margin-bottom:0}
+  .note{background:#f6f2ea;border-radius:10px;padding:11px 13px;font-size:13px;color:#6b6456;line-height:1.6}
 
-  /* ====== 輸入框 ====== */
-  .field {
-    margin-bottom: 18px;
-  }
-  .field label {
-    display: block;
-    font-weight: 500;
-    color: var(--brand-deep);
-    margin-bottom: 6px;
-    font-size: .95rem;
-  }
-  .field label small {
-    color: var(--ink-soft);
-    font-weight: 400;
-    margin-left: 8px;
-  }
-  .field input[type=text],
-  .field input[type=url],
-  .field input[type=number],
-  .field textarea {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 7px;
-    font-family: inherit;
-    font-size: .95rem;
-    color: var(--ink);
-    background: #fdfaf3;
-    transition: border-color .15s, background .15s;
-  }
-  .field input:focus,
-  .field textarea:focus {
-    outline: none;
-    border-color: var(--brand);
-    background: #fff;
-  }
-  .field textarea { min-height: 80px; resize: vertical; line-height: 1.7; }
-  .field input[type=number] { max-width: 120px; }
+  /* image dropzone */
+  .drop{border:2px dashed #d6cfc1;border-radius:12px;padding:14px;background:#fbf9f5;display:flex;gap:14px;align-items:center}
+  .drop .thumb{width:78px;height:78px;border-radius:10px;flex:none;background:#eef3f0;display:grid;place-items:center;
+    color:var(--green-d);font-size:24px;overflow:hidden;border:1px solid var(--line)}
+  .drop .thumb img{width:100%;height:100%;object-fit:cover}
+  .drop .dz{flex:1}
+  .drop .dz b{font-size:14px}
+  .drop .dz .meta{font-size:12px;color:var(--muted);margin-top:3px}
+  .drop .acts{display:flex;gap:7px;margin-top:9px}
+  .file-btn{position:relative;overflow:hidden;display:inline-block}
+  .file-btn input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
 
-  /* ====== 見證卡 ====== */
-  .testimony-card {
-    background: #fdfaf3;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 20px;
-    margin-bottom: 14px;
-    position: relative;
-  }
-  .testimony-card .index-tag {
-    position: absolute;
-    top: -10px;
-    left: 18px;
-    background: var(--accent);
-    color: var(--brand-darker);
-    font-size: .75rem;
-    padding: 2px 10px;
-    border-radius: 10px;
-    font-weight: 700;
-    letter-spacing: .1em;
-  }
-  .testimony-card .card-actions {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    display: flex;
-    gap: 6px;
-  }
-  .icon-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    width: 30px; height: 30px;
-    border-radius: 6px;
-    cursor: pointer;
-    color: var(--ink-soft);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: .9rem;
-    transition: all .15s;
-  }
-  .icon-btn:hover {
-    border-color: var(--brand);
-    color: var(--brand);
-    background: #fff;
-  }
-  .icon-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
-  .testimony-card textarea { background: #fff; }
-  .testimony-card input { background: #fff; }
+  .inline-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#f6f2ea;border-radius:10px;padding:12px 14px}
+  .seg{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;color:#5a554b}
+  .stepper{display:flex;align-items:center;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}
+  .stepper button{border:0;background:#fff;width:30px;height:32px;font-size:16px;cursor:pointer;color:var(--green)}
+  .stepper input{width:44px;border:0;text-align:center;font-size:14px;font-weight:700;font-family:inherit}
+  .switch{position:relative;width:44px;height:25px;background:#cfc8ba;border-radius:999px;cursor:pointer;transition:.2s;flex:none}
+  .switch.on{background:var(--green)}
+  .switch::after{content:"";position:absolute;top:2.5px;left:2.5px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s}
+  .switch.on::after{left:21.5px}
+  .sel{border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:14px;font-family:inherit;background:#fff}
+  .item-card{border:1px solid var(--line);border-radius:11px;padding:14px;margin-bottom:11px;position:relative;background:#fff}
+  .item-card .hd{display:flex;align-items:center;margin-bottom:10px}
+  .item-card .hd .t{font-weight:800;font-size:13px;color:#6b6456}
+  .item-card .hd .a{margin-left:auto;display:flex;gap:5px}
+  .icon-btn{border:1px solid var(--line);background:#fff;border-radius:7px;width:30px;height:30px;cursor:pointer;font-size:14px}
+  .icon-btn.danger{color:var(--danger)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 
-  /* ====== 拖拉排序 ・ 把手 + 拖曳狀態(觸控 + 滑鼠通用)====== */
-  .drag-handle {
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 30px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: grab;
-    touch-action: none;             /* 觸控拖拉時不捲動頁面 */
-    user-select: none; -webkit-user-select: none;
-    color: var(--ink-soft);
-    font-size: 1.15rem; letter-spacing: -3px;
-    background: #f3ebda;
-    border-right: 1px solid var(--border);
-    border-radius: 9px 0 0 9px;
-    transition: background .15s, color .15s;
-  }
-  .drag-handle:hover { background: var(--accent); color: var(--brand-darker); }
-  .drag-handle:active { cursor: grabbing; }
-  .sortable-dragging {
-    position: relative; z-index: 20;
-    opacity: .96;
-    box-shadow: 0 14px 36px rgba(0,0,0,.28);
-  }
-  /* 三個清單的卡片都讓出左邊空間給把手 + index-tag 右移避開把手 */
-  .testimony-card, .highlight-form-card, .stage-card { padding-left: 42px; }
-  .testimony-card .index-tag,
-  .highlight-form-card .index-tag,
-  .stage-card .index-tag { left: 42px; }
-
-  /* ❾ slide 顯示控制 ・ 可拖拉排序的單列項目 */
-  .slide-toggle-row {
-    position: relative;
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 14px 10px 42px;       /* 左側 42px 留給 drag-handle */
-    background: var(--cream);
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    margin-bottom: 6px;
-    font-size: .92rem;
-  }
-  .slide-toggle-row .drag-handle {
-    /* 沿用全域 .drag-handle 樣式,但 row 較矮 */
-    border-radius: 8px 0 0 8px;
-  }
-  .slide-toggle-row.is-hidden { opacity: .55; background: #f0e8da; }
-  .slide-toggle-row .sid-tag {
-    font-weight: 700; color: var(--brand-deep);
-    min-width: 56px; flex: 0 0 56px;
-  }
-  .slide-toggle-row .sid-label { color: var(--ink-soft); flex: 1; }
-  .slide-toggle-row input[type=checkbox] { flex: 0 0 18px; width: 18px; height: 18px; }
-  .slide-toggle-row .sid-duration {
-    display: flex; align-items: center; gap: 4px;
-    flex: 0 0 auto;
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 3px 8px;
-    font-size: .85rem;
-  }
-  .slide-toggle-row .sid-duration input {
-    width: 42px; border: none; background: transparent;
-    text-align: center; font-weight: 600; color: var(--brand-deep);
-    font-family: inherit; font-size: .9rem;
-    -moz-appearance: textfield;
-  }
-  .slide-toggle-row .sid-duration input::-webkit-outer-spin-button,
-  .slide-toggle-row .sid-duration input::-webkit-inner-spin-button {
-    -webkit-appearance: none; margin: 0;
-  }
-  .slide-toggle-row .sid-duration .unit { color: var(--ink-soft); font-size: .75rem; }
-
-  /* ====== 班級卡片(Slide 2)・ 沿用見證卡視覺 ====== */
-  .stage-card {
-    background: #fdfaf3;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 20px 18px 42px;
-    margin-bottom: 14px;
-    position: relative;
-  }
-  .stage-card .index-tag {
-    position: absolute; top: -10px;
-    background: var(--accent); color: var(--brand-darker);
-    font-size: .75rem; padding: 2px 10px; border-radius: 10px;
-    font-weight: 700; letter-spacing: .1em;
-  }
-  .stage-card input, .stage-card textarea { background: #fff; }
-  .preview-box {
-    background: #f0e8d6;
-    border-left: 3px solid var(--accent);
-    padding: 12px 16px;
-    margin-top: 12px;
-    border-radius: 0 6px 6px 0;
-    font-size: .9rem;
-    color: var(--brand-deep);
-    line-height: 1.7;
-  }
-  .preview-box b {
-    background: linear-gradient(180deg, transparent 65%, rgba(201,169,110,.5) 65%);
-    color: var(--brand-deep);
-    font-weight: 700;
-  }
-  .preview-label {
-    font-size: .7rem;
-    letter-spacing: .2em;
-    color: var(--ink-soft);
-    margin-bottom: 4px;
-  }
-
-  .add-btn {
-    background: transparent;
-    border: 2px dashed var(--accent);
-    color: var(--brand);
-    padding: 14px 24px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: 500;
-    width: 100%;
-    transition: all .15s;
-  }
-  .add-btn:hover {
-    background: #fdfaf3;
-    border-color: var(--brand);
-    color: var(--brand-deep);
-  }
-
-  /* ====== 時間滑桿 ====== */
-  .duration-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-  }
-  .duration-item {
-    background: #fdfaf3;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 18px;
-  }
-  .duration-item label {
-    color: var(--brand-deep);
-    font-weight: 500;
-    font-size: .9rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
-  .duration-item .seconds {
-    color: var(--brand);
-    font-size: 1.2rem;
-    font-weight: 700;
-  }
-  .duration-item input[type=range] {
-    width: 100%;
-    margin-top: 10px;
-    accent-color: var(--brand);
-  }
-  .duration-item .sub-label {
-    font-size: .75rem;
-    color: var(--ink-soft);
-    margin-top: 4px;
-  }
-
-  /* ====== Footer 動作列 ====== */
-  footer {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: #fff;
-    border-top: 1px solid var(--border);
-    padding: 14px 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 -4px 16px rgba(14,99,64,.06);
-    z-index: 100;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  footer .btn-secondary {
-    background: transparent;
-    border: 1.5px solid var(--border);
-    color: var(--ink-soft);
-  }
-  footer .btn-secondary:hover {
-    border-color: var(--brand);
-    color: var(--brand);
-    background: #fdfaf3;
-  }
-  footer .btn-danger {
-    background: transparent;
-    border: 1.5px solid var(--danger);
-    color: var(--danger);
-  }
-  footer .btn-danger:hover { background: var(--danger); color: #fff; }
-
-  .subhead-h3 {
-    color: var(--brand-deep);
-    font-size: 1rem;
-    margin: 0 0 8px;
-    padding-left: 14px;
-    border-left: 3px solid var(--brand);
-  }
-  .desc-sm {
-    color: var(--ink-soft);
-    font-size: .85rem;
-    margin: 0 0 16px;
-    padding-left: 17px;
-  }
-
-  /* ====== 版型 + 配色 picker ====== */
-  .picker-step { margin-bottom: 24px; }
-  /* 螢幕方向 picker */
-  .orient-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-  }
-  .orient-tile {
-    background: #fdfaf3;
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 10px;
-    cursor: pointer;
-    transition: all .15s;
-    text-align: center;
-  }
-  .orient-tile:hover { border-color: var(--brand); }
-  .orient-tile.selected {
-    border-color: var(--accent);
-    background: #fef9e6;
-    box-shadow: 0 4px 16px rgba(201,169,110,.25);
-  }
-  .ot-icon { font-size: 1.8rem; margin-bottom: 6px; }
-  .ot-name { font-size: .9rem; color: var(--brand-deep); font-weight: 500; }
-  .ot-name small { display: block; font-weight: 400; color: var(--ink-soft); font-size: .72rem; margin-top: 3px; line-height: 1.4; }
-  .step-label {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 12px;
-    font-weight: 500;
-    color: var(--brand-deep);
-  }
-  .step-num {
-    background: var(--accent);
-    color: var(--brand-darker);
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-weight: 700;
-    font-size: .95rem;
-  }
-  .layout-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-  }
-  .layout-tile, .theme-tile {
-    background: #fdfaf3;
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    padding: 10px;
-    cursor: pointer;
-    transition: all .15s;
-  }
-  .layout-tile:hover, .theme-tile:hover { border-color: var(--brand); }
-  .layout-tile.selected, .theme-tile.selected {
-    border-color: var(--accent);
-    background: #fef9e6;
-    box-shadow: 0 4px 16px rgba(201,169,110,.25);
-  }
-  .lt-mini {
-    aspect-ratio: 16/9;
-    background: linear-gradient(135deg, var(--brand), var(--brand-deep));
-    border-radius: 6px;
-    padding: 8% 9%;
-    color: #faf7f2;
-    overflow: hidden;
-    position: relative;
-    margin-bottom: 8px;
-    font-family: "Noto Serif TC", serif;
-  }
-  .lt-A .lt-eb { font-size: 6px; opacity: .7; margin-bottom: 6px; }
-  .lt-A .lt-title { font-size: 14px; font-weight: 800; line-height: 1.2; }
-  .lt-A .lt-line { width: 16px; height: 1.5px; background: var(--accent); margin: 4px 0; }
-  .lt-A .lt-sub { font-size: 6px; opacity: .8; height: 3px; background: rgba(255,255,255,.3); width: 60%; margin-top: 4px; }
-  .lt-B { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-  .lt-B .lt-eb { font-size: 5px; opacity: .7; margin-bottom: 6px; }
-  .lt-B .lt-title { font-size: 18px; font-weight: 900; line-height: 1.1; }
-  .lt-B .lt-line { width: 12px; height: 1.5px; background: var(--accent); margin: 6px auto; }
-  .lt-C { display: grid; grid-template-columns: 60% 40%; padding: 0; }
-  .lt-C .lt-mega { background: var(--brand-darker); padding: 8% 6%; font-size: 16px; font-weight: 900; line-height: 1; align-self: center; }
-  .lt-C .lt-side { padding: 8% 6%; }
-  .lt-C .lt-eb { font-size: 5px; opacity: .7; height: 3px; background: rgba(255,255,255,.3); width: 70%; }
-  .lt-C .lt-sub { margin-top: 6px; height: 3px; background: rgba(255,255,255,.3); width: 80%; }
-  .lt-E .lt-eb { font-size: 5px; opacity: .7; margin-bottom: 6px; height: 3px; background: rgba(255,255,255,.3); width: 30%; }
-  .lt-E .lt-bubble {
-    display: inline-block;
-    background: var(--brand-darker);
-    color: var(--accent-warm);
-    padding: 6px 10px;
-    border-radius: 8px 8px 8px 2px;
-    font-size: 11px;
-    font-weight: 800;
-  }
-  .lt-E .lt-sub { margin-top: 8px; height: 3px; background: rgba(255,255,255,.3); width: 50%; }
-  .lt-name {
-    text-align: center;
-    font-size: .85rem;
-    color: var(--brand-deep);
-    font-weight: 500;
-  }
-  .lt-name small { font-weight: 400; color: var(--accent); }
-
-  .theme-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 10px;
-  }
-  .tt-swatch {
-    aspect-ratio: 16/9;
-    border-radius: 6px;
-    margin-bottom: 8px;
-  }
-  .tt-green { background: linear-gradient(135deg, #1f8a5c, #0e6340 60%, #c9a96e); }
-  .tt-amber { background: linear-gradient(135deg, #6b4423, #4a2f17 60%, #d97757); }
-  .tt-mint  { background: linear-gradient(135deg, #6b9080, #4a6b5d 60%, #d4a373); }
-  .tt-gold  { background: linear-gradient(135deg, #1a1a1a, #0a0a0a 60%, #d4af37); }
-  .tt-leather { background: linear-gradient(135deg, #4e342e, #2e1a14 60%, #c0392b); }
-  .tt-navy  { background: linear-gradient(135deg, #1e4d6b, #163a52 60%, #e0a96d); }
-  .tt-name {
-    text-align: center;
-    font-size: .82rem;
-    color: var(--brand-deep);
-    font-weight: 500;
-  }
-  .tt-name small { font-weight: 400; color: var(--accent); }
-
-  .combo-preview {
-    background: var(--brand-deep);
-    color: var(--cream);
-    padding: 16px 20px;
-    border-radius: 8px;
-    margin-top: 8px;
-    text-align: center;
-    font-size: .92rem;
-  }
-  .combo-preview .btn-primary {
-    background: var(--accent);
-    color: var(--brand-darker);
-    font-weight: 700;
-  }
-  .combo-preview .btn-primary:hover { background: var(--accent-warm); }
-
-  /* ====== 課程花絮卡片 ====== */
-  .highlight-form-card {
-    background: #fdfaf3;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 18px;
-    margin-bottom: 14px;
-    position: relative;
-  }
-  .highlight-form-card .index-tag {
-    position: absolute;
-    top: -10px;
-    left: 16px;
-    background: var(--accent);
-    color: var(--brand-darker);
-    font-size: .7rem;
-    padding: 2px 10px;
-    border-radius: 10px;
-    font-weight: 700;
-    letter-spacing: .1em;
-  }
-  .highlight-form-card .card-actions {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    display: flex;
-    gap: 6px;
-  }
-  .highlight-form-card .h-preview {
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: #fff;
-    border: 1.5px dashed var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-    margin: 18px 0 10px;
-  }
-  .highlight-form-card .h-preview img { width: 100%; height: 100%; object-fit: cover; }
-  .highlight-form-card .img-row { display: flex; gap: 6px; margin-bottom: 10px; }
-
-  /* ====== 圖片上傳卡 ====== */
-  .image-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-  }
-  .image-card {
-    background: #fdfaf3;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 18px;
-  }
-  .image-card h3 {
-    color: var(--brand-deep);
-    margin: 0 0 4px;
-    font-size: .98rem;
-  }
-  .image-card .img-desc {
-    color: var(--ink-soft);
-    font-size: .8rem;
-    margin: 0 0 12px;
-  }
-  .img-preview {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    background: #fff;
-    border: 1.5px dashed var(--border);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    margin-bottom: 10px;
-  }
-  .img-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-  .img-placeholder {
-    color: var(--ink-soft);
-    font-size: .85rem;
-  }
-  .img-actions {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 6px;
-  }
-  .btn-small {
-    flex: 1;
-    background: var(--brand);
-    color: #fff;
-    border: none;
-    padding: 7px 10px;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: .82rem;
-    cursor: pointer;
-    transition: background .15s;
-  }
-  .btn-small:hover { background: var(--brand-deep); }
-  .btn-danger-sm {
-    background: transparent;
-    color: var(--ink-soft);
-    border: 1px solid var(--border);
-  }
-  .btn-danger-sm:hover {
-    background: var(--danger);
-    color: #fff;
-    border-color: var(--danger);
-  }
-  .img-info {
-    font-size: .72rem;
-    color: var(--ink-soft);
-    text-align: center;
-    margin-top: 4px;
-  }
-  /* ====== QR 欄位 inline 上傳列(URL 下方的小工具列)====== */
-  .qr-inline-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 6px;
-    padding: 8px 10px;
-    background: var(--cream);
-    border-radius: 6px;
-  }
-  .qr-inline-actions .btn-small { flex: 0 0 auto; }
-  .qr-inline-status {
-    flex: 1;
-    font-size: .8rem;
-    color: var(--ink-soft);
-    line-height: 1.4;
-  }
-  .qr-inline-status.has-img { color: var(--brand); font-weight: 600; }
-  .qr-inline-thumb {
-    width: 48px; height: 48px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: #fff;
-    flex: 0 0 auto;
-    overflow: hidden;
-    display: none;
-  }
-  .qr-inline-thumb.show { display: block; }
-  .qr-inline-thumb img { width: 100%; height: 100%; object-fit: contain; }
-  .img-info.warn { color: #d63030; }
-
-  /* ====== Toast ====== */
-  .toast {
-    position: fixed;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--brand);
-    color: #fff;
-    padding: 14px 28px;
-    border-radius: 28px;
-    font-weight: 500;
-    box-shadow: 0 8px 30px rgba(14,99,64,.3);
-    opacity: 0;
-    transition: all .3s;
-    z-index: 200;
-    pointer-events: none;
-  }
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-  .toast.error { background: var(--danger); }
-
-  /* ====== 提示注意 ====== */
-  .note {
-    background: #fef9e6;
-    border-left: 4px solid var(--accent);
-    padding: 12px 18px;
-    border-radius: 0 6px 6px 0;
-    color: var(--ink-soft);
-    font-size: .9rem;
-    margin: 16px 0;
-  }
-  .note strong { color: var(--brand-deep); }
+  /* preview */
+  .preview{background:#f3efe8;border-left:1px solid var(--line);padding:16px 14px;display:flex;flex-direction:column;gap:11px;overflow-y:auto}
+  .pv-title{font-size:12px;font-weight:800;letter-spacing:.8px;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .pv-live{display:inline-flex;align-items:center;gap:5px;color:var(--green-d);background:#e3f1e9;padding:2px 8px;border-radius:6px;font-size:11px}
+  .screenwrap{background:#0e1a14;border-radius:12px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.18);aspect-ratio:16/9;position:relative}
+  .screenwrap iframe{position:absolute;top:0;left:0;width:1920px;height:1080px;border:0;transform-origin:top left}
+  .pv-hint{font-size:12px;color:var(--muted);text-align:center;line-height:1.5}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--green-d);color:#fff;
+    padding:11px 20px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.3s;
+    box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:50}
+  .toast.show{opacity:1;bottom:30px}
+  .toast.err{background:var(--danger)}
 </style>
 </head>
 <body>
 
-<header>
-  <div>
-    <h1>K12覺知素養教育學苑<small>櫃 檯 電 視 牆 ・ 後 台 管 理</small></h1>
-    <div class="cloud-meta" id="cloud-meta">載入中...</div>
+<!-- ===== 密碼鎖 ===== -->
+<div id="lock">
+  <div class="lockbox">
+    <div style="font-size:34px">🔒</div>
+    <h2>電視牆後台</h2>
+    <p>請輸入密碼進入</p>
+    <input id="lock-input" type="password" inputmode="numeric" maxlength="12" placeholder="••••" autofocus>
+    <div class="lockerr" id="lock-err"></div>
+    <button class="btn primary" style="width:100%" onclick="tryUnlock()">進入</button>
   </div>
-  <div class="actions">
-    <span class="cloud-status" id="cloud-status"><span class="dot"></span><span id="cloud-status-text">檢查中</span></span>
-    <button class="btn btn-ghost" onclick="forceCloudSync()" title="從雲端拉取最新版,蓋掉本機未儲存的編輯">🔄 重新同步</button>
-    <button class="btn btn-ghost" onclick="openPreview()">👁 預覽電視牆</button>
-    <button class="btn btn-primary" onclick="saveAll()">💾 儲存所有變更</button>
+</div>
+
+<!-- ===== 主畫面(解鎖後顯示)===== -->
+<div id="app" hidden>
+  <div class="topbar">
+    <div class="brand"><span class="dot">電</span>電視牆後台</div>
+    <div class="status" id="status"><span class="pulse"></span> <span id="status-txt">已儲存 ・ 電視牆已同步</span></div>
+    <button class="btn ghost" onclick="window.open('index.html','_blank')">🖥 開電視牆</button>
   </div>
-</header>
 
-<main>
+  <div class="wrap">
+    <aside class="side">
+      <div class="grp">⭐ 常用內容</div>
+      <div class="nav-item" data-nav="content:highlights" onclick="selectNav('content:highlights')"><span class="ico">📸</span>課程花絮照片</div>
+      <div class="nav-item" data-nav="content:testimony" onclick="selectNav('content:testimony')"><span class="ico">💬</span>真實見證</div>
 
-  <!-- ============== ❶ QR 連結 ============== -->
-  <section id="sec-1">
-    <h2>❶ QR 連結</h2>
-    <p class="desc">電視牆上掃描用的兩個 QR 碼,改了之後 QR 自動重新生成</p>
+      <div class="grp">🖼 每張電視畫面</div>
+      <div id="slide-list"></div>
 
-    <p class="desc" style="background:#fffbe6;padding:8px 12px;border-radius:6px;border-left:3px solid var(--accent)">
-      💡 <strong>兩種做法擇一:</strong>
-      ① 只填網址 → 系統幫你即時生成黑白 QR ・
-      ② <strong>不滿意外觀就點下面「📷 上傳自訂 QR」</strong>,改用你自己的品牌 QR 圖檔(含 LOGO/配色)
-    </p>
+      <div class="grp">⚙ 整體設定(很少動)</div>
+      <div class="nav-item" data-nav="settings" onclick="selectNav('settings')"><span class="ico">🎨</span>配色 / 版型 / 方向 / LOGO</div>
 
-    <div class="field">
-      <label>LINE 加好友連結 <small>(每張右下角小 QR + Slide 6 大 QR + Slide 11 三合一都用)</small></label>
-      <input type="url" id="qr-line" placeholder="https://lin.ee/...">
-      <div class="qr-inline-actions">
-        <button class="btn-small" onclick="document.getElementById('upload-qrImageLine').click()">📷 上傳自訂 QR</button>
-        <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageLine')">✕ 回復內建</button>
-        <div class="qr-inline-thumb" id="inline-thumb-qrImageLine"></div>
-        <div class="qr-inline-status" id="inline-status-qrImageLine">未上傳 → 用上方連結即時生成 QR</div>
+      <div class="grp">💾 備份</div>
+      <div class="nav-item" data-nav="backup" onclick="selectNav('backup')"><span class="ico">📦</span>匯出 / 匯入備份</div>
+    </aside>
+
+    <main class="editor" id="editor"></main>
+
+    <aside class="preview">
+      <div class="pv-title">即時預覽 <span class="pv-live">● LIVE</span></div>
+      <div class="screenwrap" id="screenwrap">
+        <iframe id="pv" src="index.html?embedded=1" title="電視牆預覽"></iframe>
       </div>
-    </div>
-
-    <div class="field">
-      <label>心智光譜測驗連結 <small>(Slide 5 大 QR)</small></label>
-      <input type="url" id="qr-mindspectrum" placeholder="https://...">
-      <div class="qr-inline-actions">
-        <button class="btn-small" onclick="document.getElementById('upload-qrImageMindspectrum').click()">📷 上傳自訂 QR</button>
-        <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageMindspectrum')">✕ 回復內建</button>
-        <div class="qr-inline-thumb" id="inline-thumb-qrImageMindspectrum"></div>
-        <div class="qr-inline-status" id="inline-status-qrImageMindspectrum">未上傳 → 用上方連結即時生成 QR</div>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Facebook 粉專連結 <small>(Slide 11 三合一)</small></label>
-      <input type="url" id="qr-facebook" placeholder="https://www.facebook.com/...">
-      <div class="qr-inline-actions">
-        <button class="btn-small" onclick="document.getElementById('upload-qrImageFacebook').click()">📷 上傳自訂 QR</button>
-        <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageFacebook')">✕ 回復內建</button>
-        <div class="qr-inline-thumb" id="inline-thumb-qrImageFacebook"></div>
-        <div class="qr-inline-status" id="inline-status-qrImageFacebook">未上傳 → 用上方連結即時生成 QR</div>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Instagram 連結 <small>(Slide 11 三合一)</small></label>
-      <input type="url" id="qr-instagram" placeholder="https://www.instagram.com/...">
-      <div class="qr-inline-actions">
-        <button class="btn-small" onclick="document.getElementById('upload-qrImageInstagram').click()">📷 上傳自訂 QR</button>
-        <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageInstagram')">✕ 回復內建</button>
-        <div class="qr-inline-thumb" id="inline-thumb-qrImageInstagram"></div>
-        <div class="qr-inline-status" id="inline-status-qrImageInstagram">未上傳 → 用上方連結即時生成 QR</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============== ❷ 真實見證 ============== -->
-  <section id="sec-2">
-    <h2>❷ 真實見證</h2>
-    <p class="desc">Slide 4 輪播的見證,可加可減。<strong>建議 3-5 條,每月換 1 條最理想</strong></p>
-
-    <div id="testimony-list"></div>
-
-    <button class="add-btn" onclick="addTestimony()">+ 新增一條見證</button>
-
-    <div class="note">
-      <strong>寫作提示:</strong>用 <code>&lt;b&gt;</code> 包重點字會自動加金色底線。<br>
-      化名規則「— 班別 ・ 化名(城市)」,不寫真實姓名。
-    </div>
-  </section>
-
-  <!-- ❸ 停留秒數 ・ 已整合到 ❾「slide 全面管理」(2026-05-17 改版) -->
-  <section id="sec-3" style="background:linear-gradient(135deg,#fffbe6,#fff5cc);border-left:4px solid var(--accent)">
-    <h2>❸ 每張 slide 停留秒數</h2>
-    <p class="desc" style="font-size:1.05rem;line-height:1.7;color:var(--brand-deep)">
-      🔀 <strong>已搬家:</strong>每張 slide 的停留秒數現在直接在
-      <a href="#sec-9" style="color:var(--brand);font-weight:700">❾ slide 全面管理</a>
-      那張卡裡改 ・ 更直觀
-    </p>
-    <button class="btn btn-primary" type="button" onclick="document.getElementById('sec-9').scrollIntoView({behavior:'smooth',block:'start'})" style="margin-top:8px">
-      ⏰ 前往調整秒數
-    </button>
-  </section>
-
-  <!-- ============== ❹ 見證輪換速度 ============== -->
-  <section id="sec-4">
-    <h2>❹ 見證輪換速度</h2>
-    <p class="desc">Slide 4 內部多條見證的切換速度</p>
-    <div class="duration-item" style="max-width: 320px">
-      <label>每幾秒換下一條 <span class="seconds" id="ti-val">4</span></label>
-      <input type="range" min="2" max="10" id="ti" oninput="document.getElementById('ti-val').textContent=this.value">
-      <div class="sub-label">建議 3-5 秒</div>
-    </div>
-  </section>
-
-  <!-- ============== ❺ 圖片上傳(主要 + 4 班別 + 背景圖)============== -->
-  <section id="sec-5">
-    <h2>❺ 圖片上傳</h2>
-    <p class="desc">所有圖片自動壓縮至 ~30KB ・ 每張圖獨立存,不會撞到雲端容量上限</p>
-
-    <h3 class="subhead-h3">🎯 主要圖片</h3>
-    <div class="image-grid">
-
-      <div class="image-card">
-        <h3>🏷 學苑 Logo</h3>
-        <p class="img-desc">顯示在每張 slide 角落 ・ 建議透明底 PNG</p>
-        <div class="img-preview" id="preview-logoImage"><span class="img-placeholder">尚未上傳</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-logoImage').click()">📷 選圖片</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('logoImage')">✕ 移除</button>
-          <input type="file" id="upload-logoImage" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'logoImage', 800)">
-        </div>
-        <div class="img-info" id="info-logoImage"></div>
-      </div>
-
-      <div class="image-card">
-        <h3>👩‍🏫 守蕾老師現場照</h3>
-        <p class="img-desc">Slide 3 右側 ・ 上課/演講照,不是大頭照</p>
-        <div class="img-preview" id="preview-portrait"><span class="img-placeholder">尚未上傳</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-portrait').click()">📷 選圖片</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('portrait')">✕ 移除</button>
-          <input type="file" id="upload-portrait" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'portrait', 1000)">
-        </div>
-        <div class="img-info" id="info-portrait"></div>
-      </div>
-
-      <div class="image-card">
-        <h3>📱 自訂 QR ・ LINE</h3>
-        <p class="img-desc">不上傳 = 用內建 QR</p>
-        <div class="img-preview" id="preview-qrImageLine"><span class="img-placeholder">使用內建生成</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-qrImageLine').click()">📷 選圖片</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageLine')">✕ 回復內建</button>
-          <input type="file" id="upload-qrImageLine" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'qrImageLine', 900)">
-        </div>
-        <div class="img-info" id="info-qrImageLine"></div>
-      </div>
-
-      <div class="image-card">
-        <h3>🌈 自訂 QR ・ 心智光譜</h3>
-        <p class="img-desc">不上傳 = 用內建 QR</p>
-        <div class="img-preview" id="preview-qrImageMindspectrum"><span class="img-placeholder">使用內建生成</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-qrImageMindspectrum').click()">📷 選圖片</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageMindspectrum')">✕ 回復內建</button>
-          <input type="file" id="upload-qrImageMindspectrum" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'qrImageMindspectrum', 900)">
-        </div>
-        <div class="img-info" id="info-qrImageMindspectrum"></div>
-      </div>
-
-      <div class="image-card">
-        <h3>📘 自訂 QR ・ Facebook</h3>
-        <p class="img-desc">不上傳 = 用上方 FB 連結即時生成</p>
-        <div class="img-preview" id="preview-qrImageFacebook"><span class="img-placeholder">使用內建生成</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-qrImageFacebook').click()">📷 選圖片</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageFacebook')">✕ 回復內建</button>
-          <input type="file" id="upload-qrImageFacebook" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'qrImageFacebook', 900)">
-        </div>
-        <div class="img-info" id="info-qrImageFacebook"></div>
-      </div>
-
-      <div class="image-card">
-        <h3>📷 自訂 QR ・ Instagram</h3>
-        <p class="img-desc">不上傳 = 用上方 IG 連結即時生成</p>
-        <div class="img-preview" id="preview-qrImageInstagram"><span class="img-placeholder">使用內建生成</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-qrImageInstagram').click()">📷 選圖片</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('qrImageInstagram')">✕ 回復內建</button>
-          <input type="file" id="upload-qrImageInstagram" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'qrImageInstagram', 900)">
-        </div>
-        <div class="img-info" id="info-qrImageInstagram"></div>
-      </div>
-
-    </div>
-
-    <h3 class="subhead-h3" style="margin-top:32px">🎓 4 班別配圖(Slide 2)</h3>
-    <p class="desc-sm">每個班放一張代表照片 ・ Slide 2 卡片會用該圖當背景</p>
-    <div class="image-grid">
-
-      <div class="image-card">
-        <h3>啟蒙班(3-6 歲)</h3>
-        <div class="img-preview" id="preview-stage1Image"><span class="img-placeholder">尚未上傳</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-stage1Image').click()">📷</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('stage1Image')">✕</button>
-          <input type="file" id="upload-stage1Image" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'stage1Image', 700)">
-        </div>
-        <div class="img-info" id="info-stage1Image"></div>
-      </div>
-
-      <div class="image-card">
-        <h3>開智班(7-12 歲)</h3>
-        <div class="img-preview" id="preview-stage2Image"><span class="img-placeholder">尚未上傳</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-stage2Image').click()">📷</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('stage2Image')">✕</button>
-          <input type="file" id="upload-stage2Image" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'stage2Image', 700)">
-        </div>
-        <div class="img-info" id="info-stage2Image"></div>
-      </div>
-
-      <div class="image-card">
-        <h3>智優班(13-15 歲)</h3>
-        <div class="img-preview" id="preview-stage3Image"><span class="img-placeholder">尚未上傳</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-stage3Image').click()">📷</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('stage3Image')">✕</button>
-          <input type="file" id="upload-stage3Image" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'stage3Image', 700)">
-        </div>
-        <div class="img-info" id="info-stage3Image"></div>
-      </div>
-
-      <div class="image-card">
-        <h3>全人測評(全齡適用)</h3>
-        <div class="img-preview" id="preview-stage4Image"><span class="img-placeholder">尚未上傳</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-stage4Image').click()">📷</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('stage4Image')">✕</button>
-          <input type="file" id="upload-stage4Image" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'stage4Image', 700)">
-        </div>
-        <div class="img-info" id="info-stage4Image"></div>
-      </div>
-
-    </div>
-
-    <h3 class="subhead-h3" style="margin-top:32px">🖼 Slide 背景圖(各 slide 可選)</h3>
-    <p class="desc-sm">每張 slide 可上傳一張背景圖 ・ 不上傳 = 用現有色塊 ・ 上傳會自動加深色覆蓋讓字看得到</p>
-    <div class="image-grid">
-
-      <div class="image-card">
-        <h3>S1 主畫面</h3>
-        <div class="img-preview" id="preview-bgImageS1"><span class="img-placeholder">用色塊</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-bgImageS1').click()">📷</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS1')">✕</button>
-          <input type="file" id="upload-bgImageS1" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS1', 1600)">
-        </div>
-      </div>
-      <div class="image-card">
-        <h3>S2 4 班別</h3>
-        <div class="img-preview" id="preview-bgImageS2"><span class="img-placeholder">用色塊</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-bgImageS2').click()">📷</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS2')">✕</button>
-          <input type="file" id="upload-bgImageS2" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS2', 1600)">
-        </div>
-      </div>
-      <div class="image-card">
-        <h3>S3 創辦人</h3>
-        <div class="img-preview" id="preview-bgImageS3"><span class="img-placeholder">用色塊</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-bgImageS3').click()">📷</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS3')">✕</button>
-          <input type="file" id="upload-bgImageS3" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS3', 1600)">
-        </div>
-      </div>
-      <div class="image-card">
-        <h3>S4 見證</h3>
-        <div class="img-preview" id="preview-bgImageS4"><span class="img-placeholder">用色塊</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-bgImageS4').click()">📷</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS4')">✕</button>
-          <input type="file" id="upload-bgImageS4" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS4', 1600)">
-        </div>
-      </div>
-      <div class="image-card">
-        <h3>S5 心智光譜</h3>
-        <div class="img-preview" id="preview-bgImageS5"><span class="img-placeholder">用色塊</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-bgImageS5').click()">📷</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS5')">✕</button>
-          <input type="file" id="upload-bgImageS5" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS5', 1600)">
-        </div>
-      </div>
-      <div class="image-card">
-        <h3>S6 加 LINE</h3>
-        <div class="img-preview" id="preview-bgImageS6"><span class="img-placeholder">用色塊</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-bgImageS6').click()">📷</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS6')">✕</button>
-          <input type="file" id="upload-bgImageS6" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS6', 1600)">
-        </div>
-      </div>
-      <div class="image-card">
-        <h3>S7 課程花絮</h3>
-        <div class="img-preview" id="preview-bgImageS7"><span class="img-placeholder">用色塊</span></div>
-        <div class="img-actions">
-          <button class="btn-small" onclick="document.getElementById('upload-bgImageS7').click()">📷</button>
-          <button class="btn-small btn-danger-sm" onclick="clearImage('bgImageS7')">✕</button>
-          <input type="file" id="upload-bgImageS7" accept="image/*" style="display:none" onchange="handleImageUpload(event, 'bgImageS7', 1600)">
-        </div>
-      </div>
-
-    </div>
-
-    <div class="note" style="background:#fef9e6;border-left:4px solid #c9a96e;padding:12px 16px;border-radius:0 6px 6px 0;margin-top:16px;color:#5a5048;font-size:.85rem">
-      <strong>💡 自訂 QR 提醒</strong>:上傳的 QR 必須是<u>真正可掃的 QR Code</u>。可加 logo、變色,但編碼結構不能破壞。<br>
-      <strong>💡 背景圖建議</strong>:橫式 1920×1080 以上 ・ 文字會浮在上面,選不會搶過文字的素淨照片。
-    </div>
-  </section>
-
-  <!-- ============== ❻ 版型 + 配色 ============== -->
-  <section id="sec-6">
-    <h2>❻ 方向 + 版型 + 配色</h2>
-    <p class="desc">先定螢幕方向,再挑版型(slide 內怎麼排),最後挑配色(底色與重點色)</p>
-
-    <div class="picker-step">
-      <div class="step-label"><span class="step-num">1</span> 螢幕方向</div>
-      <div class="orient-grid" id="orient-grid">
-        <div class="orient-tile" data-orient="auto" onclick="selectOrient('auto')">
-          <div class="ot-icon">🔄</div>
-          <div class="ot-name">自動偵測<small>橫螢幕→橫式<br>直螢幕→直式</small></div>
-        </div>
-        <div class="orient-tile" data-orient="horizontal" onclick="selectOrient('horizontal')">
-          <div class="ot-icon">📺</div>
-          <div class="ot-name">強制橫式<small>16:9</small></div>
-        </div>
-        <div class="orient-tile" data-orient="vertical" onclick="selectOrient('vertical')">
-          <div class="ot-icon">📱</div>
-          <div class="ot-name">強制直式<small>9:16</small></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="picker-step">
-      <div class="step-label"><span class="step-num">2</span> 挑版型</div>
-      <div class="layout-grid" id="layout-grid">
-        <div class="layout-tile" data-layout="A" onclick="selectLayout('A')">
-          <div class="lt-mini lt-A">
-            <div class="lt-eb"></div>
-            <div class="lt-title">先懂心,<br>再懂教。</div>
-            <div class="lt-line"></div>
-            <div class="lt-sub"></div>
-          </div>
-          <div class="lt-name">A ・ 標題置左卡片式 <small>★ 經典</small></div>
-        </div>
-        <div class="layout-tile" data-layout="B" onclick="selectLayout('B')">
-          <div class="lt-mini lt-B">
-            <div class="lt-eb"></div>
-            <div class="lt-title">先懂心,<br>再懂教。</div>
-            <div class="lt-line"></div>
-          </div>
-          <div class="lt-name">B ・ 極簡留白派</div>
-        </div>
-        <div class="layout-tile" data-layout="C" onclick="selectLayout('C')">
-          <div class="lt-mini lt-C">
-            <div class="lt-mega">先懂心,<br>再懂教。</div>
-            <div class="lt-side"><div class="lt-eb"></div><div class="lt-sub"></div></div>
-          </div>
-          <div class="lt-name">C ・ 雜誌封面派</div>
-        </div>
-        <div class="layout-tile" data-layout="E" onclick="selectLayout('E')">
-          <div class="lt-mini lt-E">
-            <div class="lt-eb"></div>
-            <div class="lt-bubble">先懂心,再懂教。</div>
-            <div class="lt-sub"></div>
-          </div>
-          <div class="lt-name">E ・ 對話氣泡派</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="picker-step">
-      <div class="step-label"><span class="step-num">3</span> 挑配色</div>
-      <div class="theme-grid" id="theme-grid">
-        <div class="theme-tile" data-theme="green" onclick="selectTheme('green')">
-          <div class="tt-swatch tt-green"></div>
-          <div class="tt-name">🌿 翠玉綠 <small>★ 預設</small></div>
-        </div>
-        <div class="theme-tile" data-theme="amber" onclick="selectTheme('amber')">
-          <div class="tt-swatch tt-amber"></div>
-          <div class="tt-name">☕ 暖咖琥珀</div>
-        </div>
-        <div class="theme-tile" data-theme="mint" onclick="selectTheme('mint')">
-          <div class="tt-swatch tt-mint"></div>
-          <div class="tt-name">🌸 米白薄荷</div>
-        </div>
-        <div class="theme-tile" data-theme="gold" onclick="selectTheme('gold')">
-          <div class="tt-swatch tt-gold"></div>
-          <div class="tt-name">⚫ 深焦碳金</div>
-        </div>
-        <div class="theme-tile" data-theme="leather" onclick="selectTheme('leather')">
-          <div class="tt-swatch tt-leather"></div>
-          <div class="tt-name">📚 復古書房</div>
-        </div>
-        <div class="theme-tile" data-theme="navy" onclick="selectTheme('navy')">
-          <div class="tt-swatch tt-navy"></div>
-          <div class="tt-name">🌊 海洋蔚藍</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="combo-preview" id="combo-preview">
-      <div><strong>目前選擇:</strong> <span id="combo-text">A 版型 + 翠玉綠</span></div>
-      <button class="btn btn-primary" onclick="saveAll()" style="margin-top:10px">✨ 套用此風格(立即儲存)</button>
-    </div>
-  </section>
-
-  <!-- ============== ❼ 課程花絮 (Slide 7) ============== -->
-  <section id="sec-7">
-    <h2>❼ 課程花絮 (Slide 7)</h2>
-    <p class="desc">學苑日常照片輪播 ・ 沒有照片時 Slide 7 整張自動跳過 ・ 建議 3-5 張 ・ 每張自動壓縮至 ~30KB ・ 拖拉 ⋮⋮ 把手調順序</p>
-
-    <div id="highlight-list"></div>
-    <button class="add-btn" onclick="addHighlight()">+ 新增一張花絮</button>
-  </section>
-
-  <!-- ============== ❽ 班級卡片 (Slide 2) ============== -->
-  <section id="sec-8">
-    <h2>❽ 班級卡片 ・ Slide 2</h2>
-    <p class="desc">Slide 2 的 4 張班級卡片 ・ 年齡 / 名稱 / 標語都可改 ・ 拖拉左側 ⋮⋮ 把手調順序</p>
-
-    <div id="stage-list"></div>
-  </section>
-
-  <!-- ============== ❾ slide 全面管理 ・ 順序 + 顯示 + 秒數 一站搞定 ============== -->
-  <section id="sec-9">
-    <h2>❾ slide 全面管理</h2>
-    <p class="desc" style="background:#fffbe6;padding:10px 14px;border-radius:6px;border-left:3px solid var(--accent);line-height:1.65">
-      💡 <strong>一張卡管一張 slide</strong>:
-      <br>・⋮⋮ <strong>拖拉</strong> 改播放順序
-      <br>・☑ 勾選 <strong>顯示</strong>(灰底=隱藏)
-      <br>・<strong>秒數</strong> 直接改這張停留多久
-    </p>
-    <div style="margin-bottom:14px;display:flex;gap:10px">
-      <button class="btn btn-secondary" type="button" onclick="presetSlides('minimal')">⚡ 精簡 5 頁</button>
-      <button class="btn btn-secondary" type="button" onclick="presetSlides('full')">📺 完整 14 頁</button>
-    </div>
-    <div id="slide-toggle-list"></div>
-  </section>
-
-</main>
-
-<footer>
-  <div>
-    <button class="btn btn-secondary" onclick="exportJSON()">📤 匯出設定備份</button>
-    <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📥 匯入設定</button>
-    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+      <div class="pv-hint">改任何東西會自動存,這個預覽和真正的電視牆會一起更新。<br>點左邊不同畫面,這裡會跳到那一張。</div>
+    </aside>
   </div>
-  <div>
-    <button class="btn btn-danger" onclick="resetAll()">↻ 重置為預設</button>
-    <button class="btn btn-primary" onclick="saveAll()" style="margin-left:12px">💾 儲存所有變更</button>
-  </div>
-</footer>
-
-<!-- 右側浮動跳轉導航(避免長頁滾死人) -->
-<nav class="section-nav" id="section-nav" aria-label="跳到區段">
-  <button type="button" data-target="sec-1"><span class="nav-num">❶</span><span class="nav-label">QR 連結</span></button>
-  <button type="button" data-target="sec-2"><span class="nav-num">❷</span><span class="nav-label">真實見證</span></button>
-  <button type="button" data-target="sec-3"><span class="nav-num">❸</span><span class="nav-label">停留秒數</span></button>
-  <button type="button" data-target="sec-4"><span class="nav-num">❹</span><span class="nav-label">輪換速度</span></button>
-  <button type="button" data-target="sec-5"><span class="nav-num">❺</span><span class="nav-label">圖片上傳</span></button>
-  <button type="button" data-target="sec-6"><span class="nav-num">❻</span><span class="nav-label">版型 + 配色</span></button>
-  <button type="button" data-target="sec-7"><span class="nav-num">❼</span><span class="nav-label">課程花絮</span></button>
-  <button type="button" data-target="sec-8"><span class="nav-num">❽</span><span class="nav-label">班級卡片</span></button>
-  <button type="button" data-target="sec-9"><span class="nav-num">❾</span><span class="nav-label">slide 顯示</span></button>
-</nav>
+</div>
 
 <div class="toast" id="toast"></div>
 
+<script src="defaults.js"></script>
+<script src="js/schema.js"></script>
+<script src="js/store.js"></script>
 <script>
-  // ====== 狀態 ======
-  let state = window.TVWALL_loadCached();
-  let cloudMode = false;
-  let lastUpdatedAt = '';
-  let lastUpdatedBy = '';
-  // 任何 save 都要等這個 promise resolve 後才能寫雲端
-  // (避免雲端初始載入還沒完成就 save → 用空的 state 把雲端蓋掉)
-  let cloudInitDone = Promise.resolve();
+/* ════════════════════════════════════════════════════════════
+   電視牆後台 v2 ・ 本機 IndexedDB ・ 即時預覽 ・ 自動存
+   ════════════════════════════════════════════════════════════ */
 
-  // ====== 渲染 ======
-  function renderAll() {
-    // QR
-    document.getElementById('qr-line').value = state.qr.line || '';
-    document.getElementById('qr-mindspectrum').value = state.qr.mindspectrum || '';
-    document.getElementById('qr-facebook').value = state.qr.facebook || '';
-    document.getElementById('qr-instagram').value = state.qr.instagram || '';
-    // Durations 已搬到 ❾ slide-toggle-list 內,每張卡有獨立 input
-    // (renderSlideToggleList 會處理,不再需要 d-sN 全域 slider)
-    // Interval
-    const ti = Math.round((state.testimonyInterval || 4000) / 1000);
-    document.getElementById('ti').value = ti;
-    document.getElementById('ti-val').textContent = ti;
-    // Testimonies
-    renderTestimonies();
-    // 班級卡片(Slide 2)
-    if (!Array.isArray(state.stages)) state.stages = [];
-    renderStageCards();
-    // Images (通用迴圈)
-    IMAGE_FIELDS.forEach(f => renderImagePreview(f, state[f] || ''));
-    // 方向 + 版型 + 配色
-    selectOrient(state.orientation || 'auto', false);
-    selectLayout(state.layout || 'A', false);
-    selectTheme(state.theme || 'green', false);
-    // 課程花絮
-    if (!Array.isArray(state.highlights)) state.highlights = [];
-    renderHighlightList();
-    // slide 顯示控制
-    if (!Array.isArray(state.hiddenSlides)) state.hiddenSlides = [1,2,4,5,6,8,9,10,11];
-    renderSlideToggleList();
+// ── 密碼(client-side gate;非高安全,僅擋非操作者。app 公開於 Vercel)──
+const ADMIN_PASS = '63811';
+function tryUnlock(){
+  const v = document.getElementById('lock-input').value.trim();
+  if (v === ADMIN_PASS){
+    sessionStorage.setItem('tvwall_admin_ok','1');
+    document.getElementById('lock').style.display='none';
+    document.getElementById('app').hidden=false;
+    initApp();
+  } else {
+    document.getElementById('lock-err').textContent='密碼不對,再試一次';
+    document.getElementById('lock-input').value='';
   }
+}
+document.getElementById('lock-input').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
+if (sessionStorage.getItem('tvwall_admin_ok')==='1'){
+  document.getElementById('lock').style.display='none';
+  document.getElementById('app').hidden=false;
+}
 
-  // ====== ❾ slide 顯示控制 ・ 可拖拉排序 + 勾選顯示 ======
-  const ALL_SLIDE_META = {
-    1:  '主畫面 ・ 先懂心 再懂教',
-    2:  '4 班級 ・ 啟蒙/開智/智優/全人測評',
-    3:  '四大覺知系統',
-    4:  '真實見證 ・ 家長回饋',
-    5:  '心智光譜 QR ・ 5 分鐘自測',
-    6:  'LINE QR ・ 每週一篇',
-    7:  '課程花絮(有照片才會播)',
-    8:  'SEL 5 能力',
-    9:  '4C 國際素養',
-    10: '學習動機 CTA',
-    11: '社群三合一(FB/IG/LINE)',
-    12: '智庫總覽',
-    13: '8 位專家',
-    14: '關鍵提問',
-    15: 'CTA-LINE',
-  };
-  const ALL_SLIDE_IDS = [14, 12, 13, 3, 15, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11];   /* 預設順序 = 精簡主流程 + 隱藏項 */
+// ── 每張畫面的可編輯欄位定義 ──
+const SLIDE_META = [
+  {id:1, name:'主視覺 ・ 先懂心再懂教', fields:['bg']},
+  {id:2, name:'班級卡片(4 班別)',     fields:['stages','bg']},
+  {id:3, name:'四大覺知系統',          fields:['bg'], note:'這張是固定設計,可換背景圖 + 調顯示/秒數/排序。'},
+  {id:4, name:'真實見證',              fields:['testimonies','bg']},
+  {id:5, name:'心智光譜 QR',           fields:['qr-mindspectrum','bg']},
+  {id:6, name:'加 LINE',               fields:['qr-line','bg']},
+  {id:7, name:'課程花絮',              fields:['highlights','bg']},
+  {id:8, name:'SEL ・ 五大能力',       fields:[], note:'固定設計畫面。可調顯示/秒數/排序。'},
+  {id:9, name:'4C ・ 國際素養',        fields:[], note:'固定設計畫面。可調顯示/秒數/排序。'},
+  {id:10,name:'學習動機 ・ CTA',       fields:[], note:'固定設計畫面。可調顯示/秒數/排序。'},
+  {id:11,name:'社群三合一(FB/IG/LINE)',fields:['qr-facebook','qr-instagram','qr-line']},
+  {id:12,name:'AI 時代 ・ 非認知能力', fields:[], note:'固定設計畫面。可調顯示/秒數/排序。'},
+  {id:13,name:'8 位智庫專家',          fields:[], note:'固定設計畫面(專家照片內建)。可調顯示/秒數/排序。'},
+  {id:14,name:'關鍵提問',              fields:['qr-line']},
+  {id:15,name:'CTA ・ 加 LINE',        fields:['qr-line']},
+];
+const QR_DEF = {
+  'qr-line':        {urlKey:'line',        imgKey:'qrImageLine',        label:'加 LINE 好友'},
+  'qr-mindspectrum':{urlKey:'mindspectrum',imgKey:'qrImageMindspectrum',label:'心智光譜測驗'},
+  'qr-facebook':    {urlKey:'facebook',    imgKey:'qrImageFacebook',    label:'Facebook'},
+  'qr-instagram':   {urlKey:'instagram',   imgKey:'qrImageInstagram',   label:'Instagram'},
+};
+const IMG_MAXDIM = { bg:1600, stage:700, highlight:500, qr:900, logo:800 };
 
-  function ensureSlidesOrder() {
-    if (!Array.isArray(state.slidesOrder) || state.slidesOrder.length === 0) {
-      state.slidesOrder = [...ALL_SLIDE_IDS];
-      return;
-    }
-    // 合併:若 ALL_SLIDE_IDS 有新項目而 state.slidesOrder 沒有,補到尾巴
-    ALL_SLIDE_IDS.forEach(id => {
-      if (state.slidesOrder.indexOf(id) < 0) state.slidesOrder.push(id);
-    });
-    // 移除無效的 id
-    state.slidesOrder = state.slidesOrder.filter(id => ALL_SLIDE_IDS.indexOf(id) >= 0);
-  }
+let state = null;          // 設定(v1 shape)
+let curNav = null;
+let curSlideId = null;
 
-  function renderSlideToggleList() {
-    const list = document.getElementById('slide-toggle-list');
-    if (!list) return;
-    ensureSlidesOrder();
-    const hidden = state.hiddenSlides || [];
-    list.innerHTML = state.slidesOrder.map((id, idx) => {
-      const isHidden = hidden.indexOf(id) >= 0;
-      const label = ALL_SLIDE_META[id] || `(unknown slide ${id})`;
-      const durKey = 's' + id;
-      const durSec = Math.round((state.durations[durKey] || 12000) / 1000);
-      return `
-        <div class="slide-toggle-row ${isHidden ? 'is-hidden' : ''}" data-i="${idx}">
-          <div class="drag-handle" title="拖拉排序">⋮⋮</div>
-          <input type="checkbox" data-sid="${id}" ${isHidden ? '' : 'checked'} onchange="toggleSlide(${id})" title="勾選=顯示,取消=隱藏">
-          <span class="sid-tag">slide ${id}</span>
-          <span class="sid-label">${label}</span>
-          <label class="sid-duration" title="這張 slide 停留秒數">
-            <input type="number" min="3" max="60" value="${durSec}" data-sid="${id}" oninput="updateSlideDuration(${id}, this.value)">
-            <span class="unit">秒</span>
-          </label>
-        </div>
-      `;
-    }).join('');
+/* ── 啟動 ── */
+async function initApp(){
+  try {
+    state = await TVWALL_store.loadOrMigrate();
+    if (!state) state = TVWALL_merge ? TVWALL_merge({}) : {};
+  } catch(e){
+    setStatus('error','讀取失敗:'+(e&&e.message));
+    state = TVWALL_merge ? TVWALL_merge({}) : {};
   }
-  function toggleSlide(id) {
-    if (!Array.isArray(state.hiddenSlides)) state.hiddenSlides = [];
-    const i = state.hiddenSlides.indexOf(id);
-    if (i >= 0) state.hiddenSlides.splice(i, 1);   // 取消 hidden = 顯示
-    else state.hiddenSlides.push(id);              // 加 hidden = 隱藏
-    renderSlideToggleList();                       // 重畫以更新 is-hidden class
-  }
-  function updateSlideDuration(id, secStr) {
-    const sec = Math.max(3, Math.min(60, parseInt(secStr, 10) || 12));
-    if (!state.durations) state.durations = {};
-    state.durations['s' + id] = sec * 1000;
-  }
-  function presetSlides(preset) {
-    if (preset === 'minimal') {
-      state.hiddenSlides = [1, 2, 4, 5, 6, 7, 8, 9, 10, 11];   /* S1 主畫面也藏 */
-      state.slidesOrder = [14, 12, 13, 3, 15, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11];
-    } else if (preset === 'full') {
-      state.hiddenSlides = [];
-    }
-    renderSlideToggleList();
-    showToast(preset === 'minimal' ? '⚡ 已套用精簡 5 頁 ・ 記得按儲存' : '📺 已套用完整版 ・ 記得按儲存');
-  }
+  ensureShape();
+  renderSlideList();
+  // 預設開第一張在播的畫面
+  const firstId = effectiveOrder()[0] || 1;
+  selectNav('slide:'+firstId);
+  // iframe 載入完成 → 跳到目前畫面
+  document.getElementById('pv').addEventListener('load', ()=> previewShow(curSlideId));
+}
 
-  // ====== 方向 + 版型 + 配色 picker ======
-  // 被 index.html 以 iframe 嵌入時,把當前風格即時廣播給父層 → 左側預覽即時套用
-  function broadcastStylePreview() {
-    if (window.parent === window) return; // 非嵌入,略過
-    window.parent.postMessage({
-      type: 'tvwall-preview-style',
-      layout: state.layout,
-      theme: state.theme,
-      orientation: state.orientation,
-    }, '*');
-  }
-  function selectOrient(orient, save = true) {
-    state.orientation = orient;
-    document.querySelectorAll('.orient-tile').forEach(el => {
-      el.classList.toggle('selected', el.dataset.orient === orient);
-    });
-    if (save) {
-      const label = { auto: '自動偵測', horizontal: '強制橫式', vertical: '強制直式' }[orient] || orient;
-      showToast('🖥 已選「' + label + '」・ 別忘了按儲存');
-      broadcastStylePreview();
-    }
-  }
-  function selectLayout(layout, save = true) {
-    state.layout = layout;
-    document.querySelectorAll('.layout-tile').forEach(el => {
-      el.classList.toggle('selected', el.dataset.layout === layout);
-    });
-    updateComboText();
-    if (save) {
-      showToast('🎨 已選 ' + layout + ' 版型 ・ 別忘了按儲存');
-      broadcastStylePreview();
-    }
-  }
-  function selectTheme(theme, save = true) {
-    state.theme = theme;
-    document.querySelectorAll('.theme-tile').forEach(el => {
-      el.classList.toggle('selected', el.dataset.theme === theme);
-    });
-    updateComboText();
-    if (save) {
-      showToast('🎨 已選 ' + theme + ' 配色 ・ 別忘了按儲存');
-      broadcastStylePreview();
-    }
-  }
-  function updateComboText() {
-    const layouts = { A: 'A 標題置左', B: 'B 極簡留白', C: 'C 雜誌封面', E: 'E 對話氣泡' };
-    const themes = { green: '翠玉綠', amber: '暖咖琥珀', mint: '米白薄荷', gold: '深焦碳金', leather: '復古書房', navy: '海洋蔚藍' };
-    const t = document.getElementById('combo-text');
-    if (t) t.textContent = `${layouts[state.layout] || 'A'} + ${themes[state.theme] || '翠玉綠'}`;
-  }
+function ensureShape(){
+  state.qr = state.qr || {line:'',mindspectrum:'',facebook:'',instagram:''};
+  state.testimonies = state.testimonies || [];
+  state.stages = state.stages || [];
+  state.durations = state.durations || {};
+  state.highlights = state.highlights || [];
+  state.hiddenSlides = Array.isArray(state.hiddenSlides) ? state.hiddenSlides : [];
+  state.slidesOrder = Array.isArray(state.slidesOrder) ? state.slidesOrder : [];
+}
 
-  // ====== 課程花絮 ======
-  function renderHighlightList() {
-    const list = document.getElementById('highlight-list');
-    if (!list) return;
-    list.innerHTML = state.highlights.map((h, i) => `
-      <div class="highlight-form-card" data-i="${i}">
-        <div class="drag-handle" title="拖拉排序">⋮⋮</div>
-        <div class="index-tag">花絮 ${i + 1}</div>
-        <div class="card-actions">
-          ${i > 0 ? `<button class="icon-btn" onclick="moveHighlight(${i}, -1)" title="往上">↑</button>` : ''}
-          ${i < state.highlights.length - 1 ? `<button class="icon-btn" onclick="moveHighlight(${i}, 1)" title="往下">↓</button>` : ''}
-          <button class="icon-btn danger" onclick="removeHighlight(${i})" title="刪除">✕</button>
-        </div>
-        <div class="h-preview" id="h-prev-${i}">
-          ${h.image ? `<img src="${h.image}">` : '<span style="color:#5a5048;font-size:.85rem">尚未上傳照片</span>'}
-        </div>
-        <div class="img-row">
-          <button class="btn-small" onclick="document.getElementById('h-up-${i}').click()">📷 選照片</button>
-          <input type="file" id="h-up-${i}" accept="image/*" style="display:none" onchange="handleHighlightImage(event, ${i})">
-        </div>
-        <div class="field">
-          <label>標題 <small>例:春季戶外活動</small></label>
-          <input type="text" data-key="title" data-idx="${i}" oninput="updateHighlight(this)">
-        </div>
-        <div class="field">
-          <label>日期 <small>例:2026.04.15</small></label>
-          <input type="text" data-key="date" data-idx="${i}" oninput="updateHighlight(this)">
-        </div>
-        <div class="field">
-          <label>說明 <small>1-2 句,可空白</small></label>
-          <textarea data-key="desc" data-idx="${i}" rows="2" oninput="updateHighlight(this)"></textarea>
-        </div>
+// 有效排序:用 slidesOrder,補上任何遺漏的 id,確保 1..15 都在
+function effectiveOrder(){
+  const all = SLIDE_META.map(s=>s.id);
+  const ord = (state.slidesOrder||[]).filter(id=>all.includes(id));
+  all.forEach(id=>{ if(!ord.includes(id)) ord.push(id); });
+  return ord;
+}
+function isShown(id){ return !(state.hiddenSlides||[]).includes(id); }
+function durOf(id){ return Math.round((state.durations['s'+id]||8000)/1000); }
+
+/* ── 左欄 slide 清單 ── */
+function renderSlideList(){
+  const ord = effectiveOrder();
+  document.getElementById('slide-list').innerHTML = ord.map((id,i)=>{
+    const m = SLIDE_META.find(s=>s.id===id);
+    return `<div class="slide-row ${curNav==='slide:'+id?'active':''}" data-nav="slide:${id}" onclick="selectNav('slide:${id}')">
+      <span class="ord">
+        <button title="往上" onclick="event.stopPropagation();moveSlide(${i},-1)">▲</button>
+        <button title="往下" onclick="event.stopPropagation();moveSlide(${i},1)">▼</button>
+      </span>
+      <span class="num">${id}</span>
+      <span class="nm">${m?m.name:('Slide '+id)}</span>
+      <span class="eye ${isShown(id)?'on':''}" title="顯示/隱藏" onclick="event.stopPropagation();toggleShow(${id})">${isShown(id)?'👁':'🚫'}</span>
+    </div>`;
+  }).join('');
+}
+function moveSlide(i,dir){
+  const ord = effectiveOrder();
+  const j = i+dir; if(j<0||j>=ord.length) return;
+  [ord[i],ord[j]]=[ord[j],ord[i]];
+  state.slidesOrder = ord;
+  renderSlideList(); scheduleSave();
+}
+function toggleShow(id){
+  const h = state.hiddenSlides||[];
+  const k = h.indexOf(id);
+  if(k>=0) h.splice(k,1); else h.push(id);
+  state.hiddenSlides = h;
+  renderSlideList(); scheduleSave();
+}
+
+/* ── 導覽選擇 ── */
+function selectNav(nav){
+  curNav = nav;
+  document.querySelectorAll('.nav-item,.slide-row').forEach(x=>x.classList.toggle('active', x.dataset.nav===nav));
+  renderSlideList();
+  if (nav.startsWith('slide:')){ curSlideId = +nav.split(':')[1]; renderSlideEditor(curSlideId); previewShow(curSlideId); }
+  else if (nav==='content:highlights'){ curSlideId=7; renderHighlightsEditor(true); previewShow(7); }
+  else if (nav==='content:testimony'){ curSlideId=4; renderTestimoniesEditor(true); previewShow(4); }
+  else if (nav==='settings'){ renderSettings(); }
+  else if (nav==='backup'){ renderBackup(); }
+}
+
+/* ── 每張 slide 編輯器 ── */
+function renderSlideEditor(id){
+  const m = SLIDE_META.find(s=>s.id===id);
+  let html = `<div class="ed-head"><span class="badge">畫面 ${id}</span><h2>${m.name}</h2></div>
+    <div class="ed-sub">這一張的所有設定都在這裡。改完自動存,右邊預覽會跟著變。</div>`;
+  // 播放控制(每張都有)
+  html += `<div class="card"><h3><span class="k"></span>這張怎麼播</h3>
+    <div class="inline-controls">
+      <span class="seg">在電視上顯示 <span class="switch ${isShown(id)?'on':''}" onclick="toggleShow(${id});renderSlideEditor(${id})"></span></span>
+      <span style="width:1px;height:24px;background:var(--line)"></span>
+      <span class="seg">停留秒數 <span class="stepper">
+        <button onclick="changeDur(${id},-1)">−</button><input id="dur-in" value="${durOf(id)}" readonly><button onclick="changeDur(${id},1)">+</button></span></span>
+    </div></div>`;
+  if (m.note) html += `<div class="card"><div class="note">ℹ️ ${m.note}</div></div>`;
+  (m.fields||[]).forEach(f=>{ html += fieldCard(f, id); });
+  document.getElementById('editor').innerHTML = html;
+  if (m.fields.includes('stages')) bindStages();
+  if (m.fields.includes('testimonies')) bindTestimonies();
+  if (m.fields.includes('highlights')) bindHighlights();
+}
+function changeDur(id,d){
+  const s = Math.max(1, durOf(id)+d);
+  state.durations['s'+id] = s*1000;
+  const el=document.getElementById('dur-in'); if(el) el.value=s;
+  scheduleSave();
+}
+
+/* ── 各欄位卡片 ── */
+function fieldCard(f, id){
+  if (f==='bg') return imageCard('背景圖', '這張畫面的背景照片(留空就用內建色塊)', 'bgImageS'+id, 'bg');
+  if (f==='stages') return `<div class="card"><h3><span class="k"></span>4 個班別卡片</h3><div id="stages-box"></div>
+      <button class="btn ghost" onclick="addStage()" style="margin-top:4px">＋ 新增班別</button></div>`;
+  if (f==='testimonies') return `<div class="card"><h3><span class="k"></span>見證內容</h3>
+      <div class="fld"><label class="f">每則停留秒數</label><span class="stepper">
+        <button onclick="changeTi(-1)">−</button><input id="ti-in" value="${Math.round((state.testimonyInterval||6000)/1000)}" readonly><button onclick="changeTi(1)">+</button></span></div>
+      <div id="testi-box"></div>
+      <button class="btn ghost" onclick="addTestimony()" style="margin-top:4px">＋ 新增見證</button></div>`;
+  if (f==='highlights') return `<div class="card"><h3><span class="k"></span>花絮照片</h3><div id="hl-box"></div>
+      <button class="btn ghost" onclick="addHighlight()" style="margin-top:4px">＋ 新增花絮</button></div>`;
+  if (f.startsWith('qr-')){
+    const d = QR_DEF[f];
+    return `<div class="card"><h3><span class="k"></span>QR:${d.label}</h3>
+      <div class="fld"><label class="f">連結網址 <small>(填網址會自動生成 QR)</small></label>
+        <input class="inp" value="${esc(state.qr[d.urlKey]||'')}" oninput="state.qr['${d.urlKey}']=this.value.trim();scheduleSave()"></div>
+      ${imageRow('或上傳自己的 QR 圖(選填,蓋過上面網址)', d.imgKey, 'qr')}
+    </div>`;
+  }
+  return '';
+}
+
+/* ── 圖片卡 / 列 ── */
+function imageCard(title, sub, key, kind){
+  return `<div class="card"><h3><span class="k"></span>${title}</h3>${imageRow(sub, key, kind)}</div>`;
+}
+function imageRow(sub, key, kind){
+  const v = state[key]||'';
+  const kb = v ? (Math.round(v.length*0.75/1024).toFixed(0)+' KB') : '';
+  return `<div class="drop">
+    <div class="thumb" id="thumb-${key}">${v?`<img src="${v}">`:'🖼'}</div>
+    <div class="dz"><b>${sub}</b><div class="meta" id="meta-${key}">${v?('已上傳 ・ '+kb):'尚未上傳'}</div>
+      <div class="acts">
+        <label class="btn primary file-btn">選圖片<input type="file" accept="image/*" onchange="uploadImg(event,'${key}','${kind}')"></label>
+        ${v?`<button class="btn danger" onclick="clearImg('${key}')">移除</button>`:''}
       </div>
-    `).join('');
-    state.highlights.forEach((h, i) => {
-      const card = list.querySelector(`[data-i="${i}"]`);
-      if (!card) return;
-      card.querySelector('[data-key="title"]').value = h.title || '';
-      card.querySelector('[data-key="date"]').value = h.date || '';
-      card.querySelector('[data-key="desc"]').value = h.desc || '';
-    });
-  }
-  function updateHighlight(input) {
-    const i = parseInt(input.dataset.idx, 10);
-    const key = input.dataset.key;
-    state.highlights[i][key] = input.value;
-  }
-  function addHighlight() {
-    state.highlights.push({ image: '', title: '活動標題', date: '', desc: '' });
-    renderHighlightList();
-    setTimeout(() => {
-      const cards = document.querySelectorAll('.highlight-form-card');
-      if (cards.length) cards[cards.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 50);
-  }
-  function removeHighlight(i) {
-    if (!confirm(`確定刪除花絮 ${i + 1}?`)) return;
-    state.highlights.splice(i, 1);
-    renderHighlightList();
-  }
-  function moveHighlight(i, dir) {
-    const target = i + dir;
-    if (target < 0 || target >= state.highlights.length) return;
-    [state.highlights[i], state.highlights[target]] = [state.highlights[target], state.highlights[i]];
-    renderHighlightList();
-  }
-  async function handleHighlightImage(event, idx) {
-    const file = event.target.files[0];
-    if (!file) return;
-    try {
-      const dataUrl = await compressImage(file, 500, 0.82);
-      state.highlights[idx].image = dataUrl;
-      renderHighlightList();
-      const bytes = Math.round(dataUrl.length * 0.75);
-      showToast(`📷 已上傳 ${(bytes/1024).toFixed(1)} KB ・ 別忘了按儲存`);
-    } catch(err) {
-      showToast('❌ 處理失敗:' + err.message, 'error');
-    }
-    event.target.value = '';
-  }
+    </div></div>`;
+}
+async function uploadImg(ev, key, kind){
+  const file = ev.target.files[0]; if(!file) return;
+  if (file.size > 10*1024*1024){ toast('圖片太大(超過 10MB)','err'); return; }
+  try{
+    const preferPng = (kind==='qr');
+    const dim = IMG_MAXDIM[kind] || 800;
+    const dataUrl = await compressImage(file, dim, 0.85, preferPng);
+    state[key] = dataUrl;
+    refreshImg(key);
+    scheduleSave();
+    toast('📷 已上傳 ・ 自動存');
+  }catch(e){ toast('處理失敗:'+e.message,'err'); }
+  ev.target.value='';
+}
+function clearImg(key){ state[key]=''; refreshImg(key); scheduleSave(); }
+function refreshImg(key){
+  const v=state[key]||'';
+  const t=document.getElementById('thumb-'+key); if(t) t.innerHTML = v?`<img src="${v}">`:'🖼';
+  const m=document.getElementById('meta-'+key); if(m) m.textContent = v?('已上傳 ・ '+(Math.round(v.length*0.75/1024))+' KB'):'尚未上傳';
+  // 若按鈕區要顯示/隱藏「移除」,重繪整個編輯器最簡單
+  if (curNav && curNav.startsWith('slide:')) renderSlideEditor(curSlideId);
+}
 
-  // ====== 圖片上傳/壓縮(通用版 ・ stateKey 直接當 element ID)======
-  const IMAGE_FIELDS = [
-    'portrait', 'qrImageLine', 'qrImageMindspectrum',
-    'qrImageFacebook', 'qrImageInstagram',
-    'logoImage',
-    'stage1Image', 'stage2Image', 'stage3Image', 'stage4Image',
-    'bgImageS1', 'bgImageS2', 'bgImageS3', 'bgImageS4', 'bgImageS5', 'bgImageS6', 'bgImageS7'
-  ];
-  function renderImagePreview(stateKey, dataUrl) {
-    const box = document.getElementById(`preview-${stateKey}`);
-    if (box) {
-      if (dataUrl) {
-        box.innerHTML = `<img src="${dataUrl}" alt="preview">`;
-      } else {
-        const placeholder = (stateKey.startsWith('qr')) ? '使用內建生成'
-                         : (stateKey.startsWith('bg')) ? '用色塊' : '尚未上傳';
-        box.innerHTML = `<span class="img-placeholder">${placeholder}</span>`;
-      }
-    }
-    const info = document.getElementById(`info-${stateKey}`);
-    if (info) {
-      if (dataUrl) {
-        const bytes = Math.round(dataUrl.length * 0.75);
-        info.textContent = `已壓縮 ${(bytes/1024).toFixed(1)} KB`;
-        info.classList.toggle('warn', bytes > 35000);
-      } else {
-        info.textContent = '';
-      }
-    }
-    // ❶ 區塊的 inline 上傳列(QR 4 個欄位才有)・ 同步狀態 + 縮圖
-    const inlineThumb = document.getElementById(`inline-thumb-${stateKey}`);
-    const inlineStatus = document.getElementById(`inline-status-${stateKey}`);
-    if (inlineThumb) {
-      if (dataUrl) {
-        inlineThumb.innerHTML = `<img src="${dataUrl}" alt="QR">`;
-        inlineThumb.classList.add('show');
-      } else {
-        inlineThumb.innerHTML = '';
-        inlineThumb.classList.remove('show');
-      }
-    }
-    if (inlineStatus) {
-      if (dataUrl) {
-        const bytes = Math.round(dataUrl.length * 0.75);
-        inlineStatus.textContent = `✓ 已上傳自訂 QR(${(bytes/1024).toFixed(1)} KB) ・ 電視牆會用這張`;
-        inlineStatus.classList.add('has-img');
-      } else {
-        inlineStatus.textContent = '未上傳 → 用上方連結即時生成 QR';
-        inlineStatus.classList.remove('has-img');
-      }
-    }
+/* ── 班別 stages ── */
+function bindStages(){ renderStagesBox(); }
+function renderStagesBox(){
+  const box=document.getElementById('stages-box'); if(!box) return;
+  box.innerHTML = (state.stages||[]).map((s,i)=>`
+    <div class="item-card">
+      <div class="hd"><span class="t">班別 ${i+1}</span><span class="a">
+        <button class="icon-btn" onclick="moveStage(${i},-1)">↑</button>
+        <button class="icon-btn" onclick="moveStage(${i},1)">↓</button>
+        <button class="icon-btn danger" onclick="removeStage(${i})">✕</button></span></div>
+      <div class="row2">
+        <div class="fld"><label class="f">年齡</label><input class="inp" value="${esc(s.age||'')}" oninput="state.stages[${i}].age=this.value;scheduleSave()"></div>
+        <div class="fld"><label class="f">班名</label><input class="inp" value="${esc(s.name||'')}" oninput="state.stages[${i}].name=this.value;scheduleSave()"></div>
+      </div>
+      <div class="fld"><label class="f">標語</label><input class="inp" value="${esc(s.tag||'')}" oninput="state.stages[${i}].tag=this.value;scheduleSave()"></div>
+      ${imageRow('班別卡背景圖(選填)', 'stage'+(i+1)+'Image', 'stage')}
+    </div>`).join('');
+}
+function addStage(){ if(state.stages.length>=4){toast('班別卡最多 4 張');return;} state.stages.push({age:'',name:'新班別',tag:''}); renderStagesBox(); scheduleSave(); }
+function removeStage(i){ if(!confirm('刪除這個班別?'))return; state.stages.splice(i,1); renderStagesBox(); scheduleSave(); }
+function moveStage(i,d){ const j=i+d; if(j<0||j>=state.stages.length)return; [state.stages[i],state.stages[j]]=[state.stages[j],state.stages[i]]; renderStagesBox(); scheduleSave(); }
+
+/* ── 見證 testimonies ── */
+function renderTestimoniesEditor(asContent){
+  document.getElementById('editor').innerHTML =
+    `<div class="ed-head"><span class="badge">畫面 4</span><h2>真實見證</h2></div>
+     <div class="ed-sub">家長 / 學生的回饋,一則一則加。改完自動存。</div>
+     ${fieldCard('testimonies',4)}`;
+  bindTestimonies();
+}
+function bindTestimonies(){ renderTestiBox(); }
+function renderTestiBox(){
+  const box=document.getElementById('testi-box'); if(!box) return;
+  box.innerHTML = (state.testimonies||[]).map((t,i)=>`
+    <div class="item-card">
+      <div class="hd"><span class="t">見證 ${i+1}</span><span class="a">
+        <button class="icon-btn" onclick="moveTesti(${i},-1)">↑</button>
+        <button class="icon-btn" onclick="moveTesti(${i},1)">↓</button>
+        <button class="icon-btn danger" onclick="removeTesti(${i})">✕</button></span></div>
+      <div class="fld"><label class="f">內容 <small>可用 &lt;b&gt; 包重點</small></label>
+        <textarea class="inp" oninput="state.testimonies[${i}].text=this.value;scheduleSave()">${esc(t.text||'')}</textarea></div>
+      <div class="fld"><label class="f">署名</label><input class="inp" value="${esc(t.who||'')}" oninput="state.testimonies[${i}].who=this.value;scheduleSave()"></div>
+    </div>`).join('');
+}
+function addTestimony(){ state.testimonies.push({text:'',who:''}); renderTestiBox(); scheduleSave(); }
+function removeTesti(i){ if(!confirm('刪除這則見證?'))return; state.testimonies.splice(i,1); renderTestiBox(); scheduleSave(); }
+function moveTesti(i,d){ const j=i+d; if(j<0||j>=state.testimonies.length)return; [state.testimonies[i],state.testimonies[j]]=[state.testimonies[j],state.testimonies[i]]; renderTestiBox(); scheduleSave(); }
+function changeTi(d){ const s=Math.max(2,Math.round((state.testimonyInterval||6000)/1000)+d); state.testimonyInterval=s*1000; const el=document.getElementById('ti-in'); if(el)el.value=s; scheduleSave(); }
+
+/* ── 花絮 highlights ── */
+function renderHighlightsEditor(asContent){
+  document.getElementById('editor').innerHTML =
+    `<div class="ed-head"><span class="badge">畫面 7</span><h2>課程花絮照片</h2></div>
+     <div class="ed-sub">你最常換的東西。加照片、打標題,改完自動存。</div>
+     ${fieldCard('highlights',7)}`;
+  bindHighlights();
+}
+function bindHighlights(){ renderHlBox(); }
+function renderHlBox(){
+  const box=document.getElementById('hl-box'); if(!box) return;
+  box.innerHTML = (state.highlights||[]).map((h,i)=>`
+    <div class="item-card">
+      <div class="hd"><span class="t">花絮 ${i+1}</span><span class="a">
+        <button class="icon-btn" onclick="moveHl(${i},-1)">↑</button>
+        <button class="icon-btn" onclick="moveHl(${i},1)">↓</button>
+        <button class="icon-btn danger" onclick="removeHl(${i})">✕</button></span></div>
+      <div class="drop" style="margin-bottom:10px">
+        <div class="thumb" id="hlthumb-${i}">${h.image?`<img src="${h.image}">`:'📸'}</div>
+        <div class="dz"><b>花絮照片</b><div class="meta">${h.image?'已上傳':'尚未上傳'}</div>
+          <div class="acts"><label class="btn primary file-btn">選照片<input type="file" accept="image/*" onchange="uploadHl(event,${i})"></label>
+          ${h.image?`<button class="btn danger" onclick="state.highlights[${i}].image='';renderHlBox();scheduleSave()">移除</button>`:''}</div></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label class="f">標題</label><input class="inp" value="${esc(h.title||'')}" oninput="state.highlights[${i}].title=this.value;scheduleSave()"></div>
+        <div class="fld"><label class="f">日期</label><input class="inp" value="${esc(h.date||'')}" oninput="state.highlights[${i}].date=this.value;scheduleSave()"></div>
+      </div>
+      <div class="fld"><label class="f">說明</label><input class="inp" value="${esc(h.desc||'')}" oninput="state.highlights[${i}].desc=this.value;scheduleSave()"></div>
+    </div>`).join('');
+}
+async function uploadHl(ev,i){
+  const file=ev.target.files[0]; if(!file)return;
+  try{ const d=await compressImage(file,IMG_MAXDIM.highlight,0.82); state.highlights[i].image=d; renderHlBox(); scheduleSave(); toast('📷 已上傳 ・ 自動存'); }
+  catch(e){ toast('處理失敗:'+e.message,'err'); }
+  ev.target.value='';
+}
+function addHighlight(){ state.highlights.push({image:'',title:'活動標題',date:'',desc:''}); renderHlBox(); scheduleSave(); }
+function removeHl(i){ if(!confirm('刪除這張花絮?'))return; state.highlights.splice(i,1); renderHlBox(); scheduleSave(); }
+function moveHl(i,d){ const j=i+d; if(j<0||j>=state.highlights.length)return; [state.highlights[i],state.highlights[j]]=[state.highlights[j],state.highlights[i]]; renderHlBox(); scheduleSave(); }
+
+/* ── 整體設定 ── */
+function renderSettings(){
+  const theme=state.theme||'green', layout=state.layout||'A', orient=state.orientation||'auto';
+  document.getElementById('editor').innerHTML = `
+    <div class="ed-head"><h2>整體設定</h2></div>
+    <div class="ed-sub">外觀與 LOGO,通常設好就不太動。</div>
+    <div class="card"><h3><span class="k"></span>螢幕方向</h3>
+      <select class="sel" onchange="state.orientation=this.value;previewStyle();scheduleSave()">
+        <option value="auto" ${orient==='auto'?'selected':''}>自動</option>
+        <option value="landscape" ${orient==='landscape'?'selected':''}>橫式</option>
+        <option value="portrait" ${orient==='portrait'?'selected':''}>直式</option>
+      </select></div>
+    <div class="card"><h3><span class="k"></span>配色主題</h3>
+      <input class="inp" value="${esc(theme)}" oninput="state.theme=this.value.trim();previewStyle();scheduleSave()">
+      <div class="note" style="margin-top:8px">預設 green(翠玉綠)。如果你之前有設定其他主題名稱,維持原樣即可。</div></div>
+    <div class="card"><h3><span class="k"></span>版型</h3>
+      <input class="inp" value="${esc(layout)}" oninput="state.layout=this.value.trim();previewStyle();scheduleSave()"></div>
+    ${imageCard('右下角 LOGO','電視牆右下角的小 LOGO 圖','logoImage','logo')}`;
+}
+
+/* ── 備份 ── */
+function renderBackup(){
+  document.getElementById('editor').innerHTML = `
+    <div class="ed-head"><h2>匯出 / 匯入備份</h2></div>
+    <div class="ed-sub">資料存在這台電腦。建議偶爾匯出一份存到 USB 或雲端硬碟,最安心。</div>
+    <div class="card"><h3><span class="k"></span>匯出備份</h3>
+      <button class="btn primary" onclick="doExport()">⬇ 下載備份檔(.json)</button>
+      <div class="note" style="margin-top:10px">會把目前所有內容(文字 + 圖片)打包成一個檔案。</div></div>
+    <div class="card"><h3><span class="k"></span>匯入還原</h3>
+      <label class="btn ghost file-btn">⬆ 選備份檔還原<input type="file" accept="application/json,.json" onchange="doImport(event)"></label>
+      <div class="note" style="margin-top:10px">會用備份檔的內容覆蓋目前的設定。</div></div>`;
+}
+async function doExport(){
+  try{
+    await TVWALL_store.saveConfig(state);
+    const blob = await TVWALL_store.exportAll();
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='電視牆備份_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+    toast('已下載備份檔');
+  }catch(e){ toast('匯出失敗:'+e.message,'err'); }
+}
+async function doImport(ev){
+  const file=ev.target.files[0]; if(!file)return;
+  if(!confirm('確定用這個備份檔覆蓋目前設定?'))return;
+  try{
+    const txt=await file.text();
+    state=await TVWALL_store.importAll(txt);
+    ensureShape();
+    TVWALL_store.notifyUpdated(); pingPreview();
+    renderSlideList(); selectNav('slide:'+(effectiveOrder()[0]||1));
+    toast('已還原 ・ 電視牆已更新');
+  }catch(e){ toast('匯入失敗(檔案可能不對):'+e.message,'err'); }
+  ev.target.value='';
+}
+
+/* ── 自動存 + 即時同步 ── */
+let saveTimer=null;
+function scheduleSave(){
+  setStatus('saving');
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(doSave,500);
+}
+async function doSave(){
+  try{
+    await TVWALL_store.saveConfig(state);
+    TVWALL_store.notifyUpdated();   // → 真正的電視牆(其他分頁/視窗)
+    pingPreview();                   // → 右邊預覽 iframe
+    setStatus('saved');
+  }catch(e){ setStatus('error','儲存失敗:'+(e&&e.message)); }
+}
+function pingPreview(){
+  const f=document.getElementById('pv');
+  if(f&&f.contentWindow){
+    f.contentWindow.postMessage({type:'tvwall-reload-config'},'*');
+    if(curSlideId!=null) setTimeout(()=>previewShow(curSlideId),120);
   }
+}
+function previewShow(id){
+  const f=document.getElementById('pv');
+  if(f&&f.contentWindow&&id!=null) f.contentWindow.postMessage({type:'tvwall-preview-show',slideId:id},'*');
+}
+function previewStyle(){
+  const f=document.getElementById('pv');
+  if(f&&f.contentWindow) f.contentWindow.postMessage({type:'tvwall-preview-style',theme:state.theme,layout:state.layout,orientation:state.orientation},'*');
+}
 
-  async function compressImage(file, maxDim, quality, preferPng) {
-    return new Promise((resolve, reject) => {
-      // 雙重偵測:MIME + 副檔名(手機/剪貼簿匯出常常 MIME 不對)
-      // preferPng = true 時強制走 PNG 路徑(QR code 一定要無損才掃得到)
-      const fileName = (file.name || '').toLowerCase();
-      const isPng = preferPng || file.type === 'image/png' || fileName.endsWith('.png');
-      const reader = new FileReader();
-      reader.onerror = () => reject(new Error('讀取失敗'));
-      reader.onload = e => {
-        const img = new Image();
-        img.onerror = () => reject(new Error('圖片格式不對'));
-        img.onload = () => {
-          // 起始尺寸 = maxDim(PNG 若太大,壓不下 45KB 會自動 fallback 成 JPEG,不再硬卡上限)
-          let dim = maxDim;
-          const render = (d) => {
-            const ratio = Math.min(d / img.width, d / img.height, 1);
-            const w = Math.round(img.width * ratio);
-            const h = Math.round(img.height * ratio);
-            const canvas = document.createElement('canvas');
-            canvas.width = w; canvas.height = h;
-            const ctx = canvas.getContext('2d');
-            ctx.imageSmoothingQuality = 'high';
-            ctx.clearRect(0, 0, w, h);
-            ctx.drawImage(img, 0, 0, w, h);
-            return canvas;
-          };
+/* ── 狀態列 ── */
+function setStatus(kind,msg){
+  const el=document.getElementById('status'), t=document.getElementById('status-txt');
+  el.className='status'+(kind==='saving'?' saving':kind==='error'?' error':'');
+  t.textContent = kind==='saving'?'儲存中…' : kind==='error'?(msg||'儲存失敗') : '已儲存 ・ 電視牆已同步';
+}
+function toast(m,kind){ const el=document.getElementById('toast'); el.textContent=m; el.className='toast show'+(kind==='err'?' err':''); setTimeout(()=>el.className='toast'+(kind==='err'?' err':''),1800); }
 
-          // v3 雲端支援「單圖跨多格」(chunking),畫質預算大幅放寬,不再被 50K 壓死
-          const PNG_BUDGET = 250000;   // ≈ 185KB ・ 約 6 格(更高畫質)
-          const JPEG_BUDGET = 180000;  // ≈ 135KB ・ 約 4-5 格
-          if (isPng) {
-            // PNG:保留透明度 + 無損(QR 必用),逐步降解析度直到符合預算
-            let canvas = render(dim);
-            let result = canvas.toDataURL('image/png');
-            while (result.length > PNG_BUDGET && dim > 64) {
-              dim = Math.round(dim * 0.85);
-              canvas = render(dim);
-              result = canvas.toDataURL('image/png');
-            }
-            // PNG 還是壓不下來(極複雜大圖)→ fallback 用 JPEG 保留圖案,放棄透明
-            if (result.length > PNG_BUDGET) {
-              console.warn('[tvwall] PNG 太大,降級為 JPEG(透明會失去)');
-              const c2 = render(maxDim);
-              let q = quality;
-              result = c2.toDataURL('image/jpeg', q);
-              while (result.length > JPEG_BUDGET && q > 0.3) {
-                q -= 0.1;
-                result = c2.toDataURL('image/jpeg', q);
-              }
-            }
-            resolve(result);
-          } else {
-            // 非 PNG:JPEG 用 quality 壓
-            const canvas = render(dim);
-            let q = quality;
-            let result = canvas.toDataURL('image/jpeg', q);
-            while (result.length > JPEG_BUDGET && q > 0.3) {
-              q -= 0.1;
-              result = canvas.toDataURL('image/jpeg', q);
-            }
-            resolve(result);
-          }
-        };
-        img.src = e.target.result;
+/* ── 預覽 iframe 縮放(1920x1080 → 容器寬)── */
+function scalePreview(){
+  const wrap=document.getElementById('screenwrap'), f=document.getElementById('pv');
+  if(!wrap||!f) return;
+  const w=wrap.clientWidth, scale=w/1920;
+  f.style.transform='scale('+scale+')';
+  wrap.style.height=(1080*scale)+'px';
+}
+window.addEventListener('resize',scalePreview);
+
+/* ── utils ── */
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// compressImage — 沿用舊後台同一套(canvas 壓縮;QR 走 PNG 無損)
+async function compressImage(file, maxDim, quality, preferPng){
+  return new Promise((resolve,reject)=>{
+    const fileName=(file.name||'').toLowerCase();
+    const isPng=preferPng||file.type==='image/png'||fileName.endsWith('.png');
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error('讀取失敗'));
+    reader.onload=e=>{
+      const img=new Image();
+      img.onerror=()=>reject(new Error('圖片格式不對'));
+      img.onload=()=>{
+        let dim=maxDim;
+        const render=(d)=>{ const ratio=Math.min(d/img.width,d/img.height,1);
+          const w=Math.round(img.width*ratio),h=Math.round(img.height*ratio);
+          const c=document.createElement('canvas'); c.width=w;c.height=h;
+          const ctx=c.getContext('2d'); ctx.imageSmoothingQuality='high'; ctx.clearRect(0,0,w,h); ctx.drawImage(img,0,0,w,h); return c; };
+        const PNG_BUDGET=250000, JPEG_BUDGET=180000;
+        if(isPng){
+          let c=render(dim), r=c.toDataURL('image/png');
+          while(r.length>PNG_BUDGET&&dim>64){ dim=Math.round(dim*0.85); c=render(dim); r=c.toDataURL('image/png'); }
+          if(r.length>PNG_BUDGET){ const c2=render(maxDim); let q=quality; r=c2.toDataURL('image/jpeg',q);
+            while(r.length>JPEG_BUDGET&&q>0.3){ q-=0.1; r=c2.toDataURL('image/jpeg',q); } }
+          resolve(r);
+        } else {
+          const c=render(dim); let q=quality, r=c.toDataURL('image/jpeg',q);
+          while(r.length>JPEG_BUDGET&&q>0.3){ q-=0.1; r=c.toDataURL('image/jpeg',q); }
+          resolve(r);
+        }
       };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // QR 欄位清單 ・ 這些一律強制 PNG(無損,QR 才掃得到、不糊)
-  const QR_IMAGE_FIELDS = ['qrImageLine', 'qrImageMindspectrum', 'qrImageFacebook', 'qrImageInstagram'];
-
-  async function handleImageUpload(event, stateKey, maxDim) {
-    const file = event.target.files[0];
-    if (!file) return;
-    if (file.size > 10 * 1024 * 1024) {
-      showToast('❌ 圖片太大(超過 10MB)', 'error');
-      return;
-    }
-    try {
-      const preferPng = QR_IMAGE_FIELDS.indexOf(stateKey) >= 0;
-      const dataUrl = await compressImage(file, maxDim || 400, 0.85, preferPng);
-      // ⚠ 等雲端載入完成再更新 state,避免:
-      //   用戶上傳 → state[fb] = data → 雲端載入完成後 state 整個被覆寫 → fb 又變空
-      await cloudInitDone;
-      state[stateKey] = dataUrl;
-      renderImagePreview(stateKey, dataUrl);
-      const bytes = Math.round(dataUrl.length * 0.75);
-      const fmt = dataUrl.indexOf('image/png') >= 0 ? 'PNG' : 'JPEG';
-      showToast(`📷 已上傳 ${(bytes/1024).toFixed(1)} KB ・ ${fmt} ・ 自動同步中...`);
-      // 圖片上傳自動同步到雲端(原本要手動按儲存,容易漏)
-      await saveAll();
-    } catch(err) {
-      showToast('❌ 處理失敗:' + err.message, 'error');
-    }
-    event.target.value = '';
-  }
-
-  async function clearImage(stateKey) {
-    await cloudInitDone;
-    state[stateKey] = '';
-    renderImagePreview(stateKey, '');
-    showToast('🗑 已移除 ・ 自動同步中...');
-    // 移除也自動同步,跟上傳行為一致
-    try { await saveAll(); } catch(_) {}
-  }
-
-  function renderTestimonies() {
-    const list = document.getElementById('testimony-list');
-    list.innerHTML = state.testimonies.map((t, i) => `
-      <div class="testimony-card" data-i="${i}">
-        <div class="drag-handle" title="拖拉排序">⋮⋮</div>
-        <div class="index-tag">見證 ${i + 1}</div>
-        <div class="card-actions">
-          ${i > 0 ? `<button class="icon-btn" onclick="moveTestimony(${i}, -1)" title="往上">↑</button>` : ''}
-          ${i < state.testimonies.length - 1 ? `<button class="icon-btn" onclick="moveTestimony(${i}, 1)" title="往下">↓</button>` : ''}
-          <button class="icon-btn danger" onclick="removeTestimony(${i})" title="刪除">✕</button>
-        </div>
-        <div class="field" style="margin-top:18px">
-          <label>內容 <small>用 &lt;b&gt; 包重點、用 &lt;br&gt; 換行</small></label>
-          <textarea data-key="text" data-idx="${i}" oninput="updateTestimony(this); previewTestimony(${i})"></textarea>
-        </div>
-        <div class="field">
-          <label>署名 <small>例:— 國中智優 ・ 陳媽媽(高雄)</small></label>
-          <input type="text" data-key="who" data-idx="${i}" oninput="updateTestimony(this)">
-        </div>
-        <div class="preview-label">📺 電視牆顯示效果</div>
-        <div class="preview-box" id="preview-${i}"></div>
-      </div>
-    `).join('');
-
-    // 填值並渲染預覽
-    state.testimonies.forEach((t, i) => {
-      const card = list.querySelector(`[data-i="${i}"]`);
-      card.querySelector('[data-key="text"]').value = t.text;
-      card.querySelector('[data-key="who"]').value = t.who;
-      previewTestimony(i);
-    });
-  }
-
-  function previewTestimony(i) {
-    const t = state.testimonies[i];
-    if (!t) return;
-    const box = document.getElementById(`preview-${i}`);
-    if (box) box.innerHTML = (t.text || '') + '<br><span style="opacity:.7;font-size:.85em">' + (t.who || '') + '</span>';
-  }
-
-  // ====== 動作 ======
-  function updateTestimony(input) {
-    const i = parseInt(input.dataset.idx, 10);
-    const key = input.dataset.key;
-    state.testimonies[i][key] = input.value;
-  }
-
-  function addTestimony() {
-    state.testimonies.push({ text: '在這裡寫見證內容,用 &lt;b&gt; 框重點。', who: '— 班別 ・ 化名(城市)' });
-    renderTestimonies();
-    // 滾到新增的
-    setTimeout(() => {
-      const cards = document.querySelectorAll('.testimony-card');
-      cards[cards.length - 1].scrollIntoView({ behavior:'smooth', block:'center' });
-    }, 50);
-  }
-
-  function removeTestimony(i) {
-    if (state.testimonies.length <= 1) {
-      showToast('至少要保留 1 條見證', 'error');
-      return;
-    }
-    if (!confirm(`確定刪除見證 ${i + 1}?`)) return;
-    state.testimonies.splice(i, 1);
-    renderTestimonies();
-  }
-
-  function moveTestimony(i, dir) {
-    const target = i + dir;
-    if (target < 0 || target >= state.testimonies.length) return;
-    [state.testimonies[i], state.testimonies[target]] = [state.testimonies[target], state.testimonies[i]];
-    renderTestimonies();
-  }
-
-  // ====== Slide 2 班級卡片 ======
-  function renderStageCards() {
-    const list = document.getElementById('stage-list');
-    if (!list) return;
-    list.innerHTML = state.stages.map((s, i) => `
-      <div class="stage-card" data-i="${i}">
-        <div class="drag-handle" title="拖拉排序">⋮⋮</div>
-        <div class="index-tag">卡片 ${i + 1}</div>
-        <div class="field" style="margin-top:4px">
-          <label>年齡 <small>例:3 - 6 歲 / 全齡適用</small></label>
-          <input type="text" data-key="age" data-idx="${i}" oninput="updateStage(this)">
-        </div>
-        <div class="field">
-          <label>名稱 <small>例:啟蒙班</small></label>
-          <input type="text" data-key="name" data-idx="${i}" oninput="updateStage(this)">
-        </div>
-        <div class="field">
-          <label>標語 <small>換行直接按 Enter</small></label>
-          <textarea data-key="tag" data-idx="${i}" rows="2" oninput="updateStage(this)"></textarea>
-        </div>
-      </div>
-    `).join('');
-    state.stages.forEach((s, i) => {
-      const card = list.querySelector(`[data-i="${i}"]`);
-      if (!card) return;
-      card.querySelector('[data-key="age"]').value = s.age || '';
-      card.querySelector('[data-key="name"]').value = s.name || '';
-      card.querySelector('[data-key="tag"]').value = (s.tag || '').replace(/<br\s*\/?>/gi, '\n');
-    });
-  }
-  function updateStage(input) {
-    const i = parseInt(input.dataset.idx, 10);
-    const key = input.dataset.key;
-    state.stages[i][key] = input.value;
-  }
-
-  // ====== 通用拖拉排序 ・ 觸控 + 滑鼠(委派在清單容器上,渲染後不用重綁)======
-  function makeSortable(listEl, getArr, rerender) {
-    if (!listEl) return;
-    let dragCard = null, dragIdx = -1, startY = 0, centers = [];
-    listEl.addEventListener('pointerdown', e => {
-      const handle = e.target.closest('.drag-handle');
-      if (!handle || !listEl.contains(handle)) return;
-      const card = handle.closest('[data-i]');
-      if (!card) return;
-      e.preventDefault();
-      dragCard = card;
-      dragIdx = parseInt(card.dataset.i, 10);
-      startY = e.clientY;
-      // 拖曳開始時記下各卡片中心 Y
-      centers = [...listEl.querySelectorAll('[data-i]')].map(c => {
-        const r = c.getBoundingClientRect();
-        return r.top + r.height / 2;
-      });
-      card.classList.add('sortable-dragging');
-      try { handle.setPointerCapture(e.pointerId); } catch (_) {}
-      handle.addEventListener('pointermove', onMove);
-      handle.addEventListener('pointerup', onUp);
-      handle.addEventListener('pointercancel', onUp);
-    });
-    function onMove(e) {
-      if (!dragCard) return;
-      dragCard.style.transform = `translateY(${e.clientY - startY}px)`;
-    }
-    function onUp(e) {
-      if (!dragCard) return;
-      const handle = e.currentTarget;
-      handle.removeEventListener('pointermove', onMove);
-      handle.removeEventListener('pointerup', onUp);
-      handle.removeEventListener('pointercancel', onUp);
-      // 落點 index = 有多少「其他卡片」的原始中心在拖曳卡片目前中心之上
-      const draggedCenter = centers[dragIdx] + (e.clientY - startY);
-      let targetIdx = 0;
-      centers.forEach((c, idx) => {
-        if (idx !== dragIdx && c < draggedCenter) targetIdx++;
-      });
-      dragCard.style.transform = '';
-      dragCard.classList.remove('sortable-dragging');
-      const fromIdx = dragIdx;
-      dragCard = null; dragIdx = -1;
-      if (targetIdx !== fromIdx) {
-        const arr = getArr();
-        const [item] = arr.splice(fromIdx, 1);
-        arr.splice(targetIdx, 0, item);
-        rerender();
-      }
-    }
-  }
-  function setupSortableLists() {
-    makeSortable(document.getElementById('testimony-list'), () => state.testimonies, renderTestimonies);
-    makeSortable(document.getElementById('highlight-list'), () => state.highlights, renderHighlightList);
-    makeSortable(document.getElementById('stage-list'), () => state.stages, renderStageCards);
-    makeSortable(document.getElementById('slide-toggle-list'), () => state.slidesOrder, renderSlideToggleList);
-  }
-
-  function gatherFormData() {
-    return {
-      qr: {
-        line: document.getElementById('qr-line').value.trim(),
-        mindspectrum: document.getElementById('qr-mindspectrum').value.trim(),
-        facebook: document.getElementById('qr-facebook').value.trim(),
-        instagram: document.getElementById('qr-instagram').value.trim(),
-      },
-      testimonies: state.testimonies.map(t => ({ text: t.text, who: t.who })),
-      stages: (state.stages || []).map(s => ({ age: s.age, name: s.name, tag: s.tag })),
-      durations: state.durations || {},   /* ❾ 每張 slide 自己改秒數,直接抓 state */
-      testimonyInterval: parseInt(document.getElementById('ti').value, 10) * 1000,
-      portrait: state.portrait || '',
-      qrImageLine: state.qrImageLine || '',
-      qrImageMindspectrum: state.qrImageMindspectrum || '',
-      qrImageFacebook: state.qrImageFacebook || '',
-      qrImageInstagram: state.qrImageInstagram || '',
-      logoImage: state.logoImage || '',
-      stage1Image: state.stage1Image || '',
-      stage2Image: state.stage2Image || '',
-      stage3Image: state.stage3Image || '',
-      stage4Image: state.stage4Image || '',
-      bgImageS1: state.bgImageS1 || '',
-      bgImageS2: state.bgImageS2 || '',
-      bgImageS3: state.bgImageS3 || '',
-      bgImageS4: state.bgImageS4 || '',
-      bgImageS5: state.bgImageS5 || '',
-      bgImageS6: state.bgImageS6 || '',
-      bgImageS7: state.bgImageS7 || '',
-      orientation: state.orientation || 'auto',
-      layout: state.layout || 'A',
-      theme: state.theme || 'green',
-      highlights: state.highlights || [],
-      hiddenSlides: state.hiddenSlides || [],
-      slidesOrder: state.slidesOrder || [],
+      img.src=e.target.result;
     };
-  }
-
-  async function saveAll() {
-    // 防護:雲端初始載入還沒完成 → 等等再 save,免得用空白 state 蓋掉雲端
-    await cloudInitDone;
-    const config = gatherFormData();
-    // 識別「誰改的」(用瀏覽器指紋簡單區分)
-    const updatedBy = (function() {
-      let id = localStorage.getItem('tvwall_admin_who');
-      if (!id) {
-        id = (navigator.platform || 'unknown') + '_' + Math.random().toString(36).slice(2, 8);
-        localStorage.setItem('tvwall_admin_who', id);
-      }
-      return id;
-    })();
-    try {
-      const r = await window.TVWALL_saveSmart(config, updatedBy);
-      state = config;
-      if (r.source === 'cloud') {
-        showToast('☁️ 已儲存到雲端 ・ 電視牆 30 秒內自動更新');
-        updateCloudStatus('cloud');
-      } else {
-        showToast('💾 已儲存到本機(雲端' + (r.warning ? '失敗:' + r.warning : '未配置') + ')', r.warning ? 'error' : 'success');
-        updateCloudStatus('local');
-      }
-      await refreshCloudMeta();
-      // 通知 edit.html(若 admin 是在 iframe 內)
-      try { if (window.parent !== window) window.parent.postMessage({ type: 'tvwall-saved' }, '*'); } catch(_) {}
-    } catch(e) {
-      showToast('❌ 儲存失敗:' + e.message, 'error');
-    }
-  }
-
-  async function openPreview() {
-    await saveAll();
-    window.open('index.html', '_blank');
-  }
-
-  // ====== 跨裝置同步:手動「重新從雲端拉」+ 自動偵測別台改了什麼 ======
-  // 解決使用者的痛點:在 A 裝置改完後,B 裝置 admin 仍顯示舊版,
-  // 因為 admin 只在啟動時拉一次雲端。
-  async function forceCloudSync() {
-    if (!window.TVWALL_isCloudEnabled || !window.TVWALL_isCloudEnabled()) {
-      showToast('⚠ 沒有設定雲端 → 沒辦法跨裝置', 'error');
-      return;
-    }
-    showToast('🔄 從雲端拉取最新版...');
-    try {
-      // 重置 cloudInitDone,讓任何進行中的 save 都會等新一輪雲端載入完成
-      cloudInitDone = (async () => {
-        const r = await window.TVWALL_loadCloud();
-        state = r.config;
-        lastUpdatedAt = r.updated_at;
-        lastUpdatedBy = r.updated_by;
-        renderAll();
-        await refreshCloudMeta();
-        updateCloudStatus('cloud');
-      })();
-      await cloudInitDone;
-      showToast('✓ 已同步到雲端最新版');
-    } catch(e) {
-      showToast('❌ 同步失敗:' + e.message, 'error');
-      updateCloudStatus('offline');
-    }
-  }
-
-  // 每 30 秒輕量檢查雲端的 updated_at,跟本機紀錄不同就跳醒目提示
-  // (不直接覆蓋表單,因為使用者可能正在編輯沒儲存的內容)
-  function startCrossDevicePoller() {
-    if (!window.TVWALL_isCloudEnabled || !window.TVWALL_isCloudEnabled()) return;
-    setInterval(async () => {
-      // 表單正在輸入(< 5 秒前有 keystroke / focus)就跳過,避免打斷編輯
-      try {
-        const url = window.TVWALL_API.url + '?action=get&key=' +
-                    encodeURIComponent(window.TVWALL_API.key) + '&t=' + Date.now();
-        const res = await fetch(url);
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!data.ok || !data.updated_at) return;
-        if (data.updated_at !== lastUpdatedAt) {
-          // 別台改了 → 跳醒目提示(讓使用者決定要不要 force sync,避免覆蓋自己編輯)
-          showSyncBanner(data.updated_at, data.updated_by);
-        }
-      } catch(_) { /* 網路飄忽,下次再說 */ }
-    }, 30000);
-  }
-
-  function showSyncBanner(remoteAt, remoteBy) {
-    let bar = document.getElementById('sync-banner');
-    if (!bar) {
-      bar = document.createElement('div');
-      bar.id = 'sync-banner';
-      bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;' +
-        'background:linear-gradient(90deg,#ffd966,#f4b400);color:#3a2a00;' +
-        'padding:12px 20px;font-weight:600;text-align:center;' +
-        'box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;font-family:inherit';
-      bar.onclick = () => { bar.remove(); forceCloudSync(); };
-      document.body.appendChild(bar);
-    }
-    const who = remoteBy && remoteBy !== lastUpdatedBy ? `(${remoteBy})` : '';
-    bar.innerHTML = `🔔 雲端有別台儲存了新版${who} ・ 點這條 banner 「重新同步」蓋掉目前表單`;
-  }
-
-  function updateCloudStatus(mode) {
-    const el = document.getElementById('cloud-status');
-    const txt = document.getElementById('cloud-status-text');
-    el.className = 'cloud-status ' + mode;
-    if (mode === 'cloud') txt.textContent = '☁ 雲端模式';
-    else if (mode === 'local') txt.textContent = '💾 本機模式';
-    else if (mode === 'offline') txt.textContent = '⚠ 雲端離線';
-    else txt.textContent = '檢查中';
-  }
-
-  async function refreshCloudMeta() {
-    const meta = document.getElementById('cloud-meta');
-    if (!window.TVWALL_isCloudEnabled || !window.TVWALL_isCloudEnabled()) {
-      meta.textContent = '本機模式 ・ 設定只存這台裝置 ・ cloud_config.js 尚未配置';
-      return;
-    }
-    const updatedAt = localStorage.getItem('tvwall_updated_at') || '';
-    const updatedBy = localStorage.getItem('tvwall_updated_by') || '';
-    if (updatedAt) {
-      const d = new Date(updatedAt);
-      const niceDate = d.toLocaleString('zh-TW', { hour12: false });
-      meta.textContent = '最後更新:' + niceDate + (updatedBy ? ' ・ by ' + updatedBy : '');
-    } else {
-      meta.textContent = '雲端模式 ・ 尚未有任何儲存紀錄';
-    }
-  }
-
-  function exportJSON() {
-    const config = gatherFormData();
-    const dataStr = JSON.stringify(config, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const dateStr = new Date().toISOString().slice(0,10);
-    a.href = url;
-    a.download = `tvwall_設定備份_${dateStr}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('📤 已下載備份檔');
-  }
-
-  function importJSON(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      try {
-        const parsed = JSON.parse(e.target.result);
-        if (!parsed.qr || !parsed.testimonies || !parsed.durations) {
-          throw new Error('檔案格式不對');
-        }
-        // 用跟正常載入相同的完整合併邏輯還原設定 —
-        // 舊版只手動還原 4 個欄位,會把 images / layout / theme /
-        // orientation / highlights / stages 等其他設定全部清掉
-        state = window.TVWALL_merge(parsed);
-        renderAll();
-        showToast('📥 已匯入,記得按儲存');
-      } catch(err) {
-        showToast('❌ 檔案格式錯誤:' + err.message, 'error');
-      }
-    };
-    reader.readAsText(file);
-    event.target.value = '';  // reset
-  }
-
-  function resetAll() {
-    if (!confirm('確定重置為預設值?\n你目前所有設定會被清除(可先匯出備份)')) return;
-    state = JSON.parse(JSON.stringify(window.TVWALL_DEFAULTS));
-    renderAll();
-    showToast('↻ 已重置 ・ 按儲存後生效');
-  }
-
-  // ====== Toast ======
-  let toastTimer = null;
-  function showToast(msg, type = 'success') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.toggle('error', type === 'error');
-    t.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
-  }
-
-  // ====== 啟動 ======
-  window.addEventListener('load', async () => {
-    // 先用 cached 渲染避免白屏
-    renderAll();
-    setupSortableLists();   // 三個清單啟用拖拉排序(委派監聽,只需綁一次)
-    updateCloudStatus(window.TVWALL_isCloudEnabled && window.TVWALL_isCloudEnabled() ? 'cloud' : 'local');
-    await refreshCloudMeta();
-
-    // 若有設雲端,從雲端拉一次更新表單
-    // ⚠ 用 cloudInitDone promise 包起來 → handleImageUpload / saveAll 在寫雲端前
-    //   必須 await 這個 promise,確保 state 已經是雲端最新版,
-    //   不會用 localStorage 空白 state 覆蓋雲端
-    if (window.TVWALL_isCloudEnabled && window.TVWALL_isCloudEnabled()) {
-      cloudInitDone = (async () => {
-        try {
-          const r = await window.TVWALL_loadCloud();
-          state = r.config;
-          lastUpdatedAt = r.updated_at;
-          lastUpdatedBy = r.updated_by;
-          renderAll();
-          await refreshCloudMeta();
-          updateCloudStatus('cloud');
-        } catch(e) {
-          console.warn('雲端讀取失敗,使用本機 cache:', e);
-          updateCloudStatus('offline');
-          showToast('⚠ 雲端連不上,先用本機資料 ・ 儲存只會存本機', 'error');
-        }
-      })();
-      await cloudInitDone;
-    }
-    // 啟動跨裝置 polling:每 30 秒檢查雲端 updated_at,有別台儲存就跳 banner
-    startCrossDevicePoller();
+    reader.readAsDataURL(file);
   });
+}
 
-  // ===== 右側跳轉導航 ・ 平滑捲動 + scroll-spy ===========================
-  (function setupSectionNav() {
-    const nav = document.getElementById('section-nav');
-    if (!nav) return;
-    // EDIT 模式 iframe 內不顯示(空間太小,只用主視窗的)
-    if (window.parent !== window) { nav.style.display = 'none'; return; }
-    const buttons = Array.from(nav.querySelectorAll('button[data-target]'));
-    // 點按鈕 → 平滑捲到對應 section
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const el = document.getElementById(btn.dataset.target);
-        if (!el) return;
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
-    // scroll-spy:用 IntersectionObserver 標記當前可視區段
-    const sections = buttons.map(b => document.getElementById(b.dataset.target)).filter(Boolean);
-    if (!('IntersectionObserver' in window) || sections.length === 0) return;
-    const visible = new Set();
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) visible.add(e.target.id);
-        else visible.delete(e.target.id);
-      });
-      // 找出最靠頂的可視 section
-      const topMost = sections
-        .filter(s => visible.has(s.id))
-        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
-      if (!topMost) return;
-      buttons.forEach(b => b.classList.toggle('active', b.dataset.target === topMost.id));
-    }, { rootMargin: '-80px 0px -50% 0px', threshold: 0 });
-    sections.forEach(s => io.observe(s));
-  })();
-
-  // ===== EDIT 模式整合:被 index.html 以 iframe 嵌入時,把互動回報給父層 =====
-  // 讓父層的「10 秒閒置」計時器在表單操作時重置
-  (function reportActivityToParent() {
-    if (window.parent === window) return; // 非嵌入,略過
-    let last = 0;
-    const ping = () => {
-      const now = Date.now();
-      if (now - last < 500) return; // 節流,每 0.5 秒最多一次
-      last = now;
-      window.parent.postMessage({ type: 'tvwall-edit-activity' }, '*');
-    };
-    ['click', 'keydown', 'input', 'touchstart', 'mousemove'].forEach(ev => {
-      document.addEventListener(ev, ping, { passive: true });
-    });
-  })();
+// 若已解鎖(sessionStorage)直接啟動
+if (sessionStorage.getItem('tvwall_admin_ok')==='1') initApp();
+setTimeout(scalePreview, 300);
 </script>
-
 </body>
 </html>

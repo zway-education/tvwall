@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant"><meta charset="utf-8">
+<title>store.js 測試</title>
+<body style="font:14px/1.6 monospace;padding:20px">
+<h3>store.js / schema.js 測試</h3>
+<pre id="o"></pre>
+<script src="../js/schema.js"></script>
+<script src="../js/store.js"></script>
+<script>
+const o = document.getElementById('o');
+const log = m => o.textContent += m + "\n";
+let pass = 0, fail = 0;
+const ok = (cond, name) => { if (cond) { pass++; log('  PASS ' + name); } else { fail++; log('✗ FAIL ' + name); } };
+
+(async () => {
+  try {
+    // schema
+    const empty = TVWALL_emptyConfigV2();
+    ok(empty.version === 2, 'emptyConfigV2 version=2');
+    ok(Array.isArray(empty.slides), 'emptyConfigV2 slides is array');
+    const sl = TVWALL_newSlide('hero', { content: { big: '先懂心' } });
+    ok(typeof sl.id === 'string' && sl.id.length > 2, 'newSlide has id');
+    ok(sl.show === true && sl.sec === 8, 'newSlide defaults show=true sec=8');
+    ok(sl.content.big === '先懂心', 'newSlide merges partial content');
+
+    // store: clean slate
+    await TVWALL_store._wipeConfig();
+    const none = await TVWALL_store.loadConfig();
+    ok(none === undefined, 'loadConfig empty returns undefined');
+
+    // save / load roundtrip (incl. a big-ish dataURL to prove no quota fail)
+    const cfg = TVWALL_emptyConfigV2();
+    const bigImg = 'data:image/jpeg;base64,' + 'A'.repeat(300000); // ~300KB, would risk localStorage
+    cfg.slides.push(TVWALL_newSlide('hero', { content: { big: '測試標題', bg: bigImg } }));
+    await TVWALL_store.saveConfig(cfg);
+    const back = await TVWALL_store.loadConfig();
+    ok(back && back.slides[0].content.big === '測試標題', 'saveConfig/loadConfig text roundtrip');
+    ok(back.slides[0].content.bg.length === bigImg.length, 'big image survives (no quota fail)');
+
+    // export / import roundtrip
+    const blob = await TVWALL_store.exportAll();
+    const txt = await blob.text();
+    await TVWALL_store._wipeConfig();
+    const imported = await TVWALL_store.importAll(txt);
+    ok(imported.slides.length === 1, 'export→import roundtrip count');
+    const afterImport = await TVWALL_store.loadConfig();
+    ok(afterImport.slides[0].content.big === '測試標題', 'import persisted to store');
+
+    log(`\n=== ${pass} PASS / ${fail} FAIL ===`);
+    document.title = fail === 0 ? 'ALL PASS' : (fail + ' FAIL');
+  } catch (e) {
+    log('\n✗ EXCEPTION: ' + (e && e.message));
+    document.title = 'EXCEPTION';
+  }
+})();
+</script>
+</body></html>

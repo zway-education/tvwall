@@ -19,7 +19,9 @@ window.TVWALL_API = {
   //   從 Apps Script 編輯器「部署 → 管理現有部署作業」複製
   //   格式:https://script.google.com/macros/s/AKfycb.....長串/exec
   //   未填 = 本機模式
-  url: "https://script.google.com/macros/s/AKfycbzKH0FkfTGPWY7Bh0EDuVB05aw-4yZwEQEWh-KoyPSU7PQshK4j4tNyJYI9i4Kt8ZwgPQ/exec",
+  // 2026-06-16 改為「本機 IndexedDB 單機模式」,雲端(Apps Script)已停用。
+  // 舊網址保留供參:https://script.google.com/macros/s/AKfycbzKH0FkfTGPWY7Bh0EDuVB05aw-4yZwEQEWh-KoyPSU7PQshK4j4tNyJYI9i4Kt8ZwgPQ/exec
+  url: "",
 
   // 🔐 API 密鑰
   //   必須跟 Apps Script 內 API_KEY 完全一樣

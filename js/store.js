@@ -65,6 +65,28 @@
       return cfg;
     },
 
+    // ── 載入(首次自動從舊 localStorage v1 搬遷),回傳經 defaults 合併的完整設定 ──
+    loadOrMigrate: async () => {
+      let raw = await window.TVWALL_store.loadConfig();
+      if (!raw) {
+        try {
+          const old = localStorage.getItem('tvwall_config');
+          if (old) {
+            localStorage.setItem('tvwall_config_backup_v1', old); // 搬遷前先備份舊資料
+            raw = JSON.parse(old);
+            await window.TVWALL_store.saveConfig(raw);             // 種進 IndexedDB
+          }
+        } catch (e) { console.warn('[tvwall] 從 localStorage 搬遷失敗', e); }
+      }
+      return window.TVWALL_merge ? window.TVWALL_merge(raw || {}) : (raw || null);
+    },
+
+    // ── 通知同瀏覽器其他分頁(電視牆)設定已更新 ──
+    notifyUpdated: () => {
+      try { const bc = new BroadcastChannel('tvwall'); bc.postMessage({ type: 'config-updated' }); bc.close(); }
+      catch (e) { /* 不支援時略過 */ }
+    },
+
     // ── 測試用:清空設定 ──
     _wipeConfig: () => run('config', 'readwrite', s => s.clear())
   };

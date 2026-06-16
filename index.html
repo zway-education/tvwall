@@ -10,6 +10,8 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script src="cloud_config.js"></script>
 <script src="defaults.js"></script>
+<script src="js/schema.js"></script>
+<script src="js/store.js"></script>
 <style>
   :root {
     /* === 預設配色 ・ 🌿 翠玉綠 === */
@@ -3224,23 +3226,27 @@
     startProgressBar(SLIDES[0].duration);
     scheduleNext();
 
-    // 2. 啟動 1 秒後試著從雲端拉一次(如果有設定)
-    setTimeout(async () => {
-      if (window.TVWALL_isCloudEnabled && window.TVWALL_isCloudEnabled()) {
-        try {
-          const r = await window.TVWALL_loadCloud();
-          if (r.updated_at && r.updated_at !== lastUpdatedAt) {
-            lastUpdatedAt = r.updated_at;
-            applyConfig(r.config);
-          }
-          console.log('[tvwall] 雲端模式 ✓');
-        } catch(e) {
-          console.warn('[tvwall] 雲端連線失敗,使用本機 cache:', e.message);
+    // 2. 從本機 IndexedDB 載入正式設定(首次自動從舊 localStorage 搬遷)
+    try {
+      const idbCfg = await window.TVWALL_store.loadOrMigrate();
+      if (idbCfg) applyConfig(idbCfg);
+      console.log('[tvwall] 本機 IndexedDB 模式 ✓');
+    } catch(e) {
+      console.warn('[tvwall] IndexedDB 載入失敗,沿用 cached:', e && e.message);
+    }
+
+    // 3. 同瀏覽器即時更新:後台存檔 → 廣播 → 前台立即重讀重繪
+    try {
+      const bc = new BroadcastChannel('tvwall');
+      bc.onmessage = async (ev) => {
+        if (ev && ev.data && ev.data.type === 'config-updated') {
+          try {
+            const c = await window.TVWALL_store.loadConfig();
+            if (c) applyConfig(window.TVWALL_merge ? window.TVWALL_merge(c) : c);
+          } catch(err) { console.warn('[tvwall] 廣播更新套用失敗', err); }
         }
-      } else {
-        console.log('[tvwall] 本機模式(尚未配置 cloud_config.js)');
-      }
-    }, 1000);
+      };
+    } catch(e) { /* BroadcastChannel 不支援時略過 */ }
   });
 </script>
 

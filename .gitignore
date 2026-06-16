@@ -5,3 +5,5 @@ mockup_announcement.html
 .superpowers/
 *.tmp
 .gitignore.bak
+
+.vercel

@@ -144,6 +144,28 @@
       --frame-width: 380px;
       --frame-radius: 17px;
       --qr-size: 290px;
+      isolation: isolate;
+    }
+
+    .restored-line-panel--old-1::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      top: 387px;
+      left: 50%;
+      width: 430px;
+      height: 130px;
+      border-radius: 26px;
+      background: linear-gradient(90deg, #0b5335, #0c5b3a);
+      box-shadow: 0 10px 24px rgba(1, 40, 25, .24);
+      transform: translateX(-50%);
+    }
+
+    .restored-line-panel--old-1 .restored-line-cta--primary,
+    .restored-line-panel--old-1 .restored-line-cta--secondary {
+      position: relative;
+      z-index: 1;
+      visibility: visible;
     }
 
     .restored-line-panel--old-5 {

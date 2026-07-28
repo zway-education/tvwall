@@ -26,7 +26,7 @@ test("60% 縮放在常見 16:9 電視四周各保留 20% 空間", () => {
     const horizontalMargin = (width - 1920 * scale) / 2;
     const verticalMargin = (height - 1080 * scale) / 2;
 
-    assert.equal(horizontalMargin, width * 0.2);
-    assert.equal(verticalMargin, height * 0.2);
+    assert.ok(Math.abs(horizontalMargin - width * 0.2) < 1e-9);
+    assert.ok(Math.abs(verticalMargin - height * 0.2) < 1e-9);
   }
 });

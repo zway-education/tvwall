@@ -13,7 +13,7 @@ test("每一頁都不再顯示右下角進度或暫停介面", () => {
   assert.doesNotMatch(html, /event\.code\s*===\s*"Space"/);
 });
 
-test("滿版畫面外圍使用淺色且沒有黑色陰影", () => {
+test("響應式安全畫面外圍使用淺色且沒有黑色陰影", () => {
   const pageFrame = html.match(/html,\s*body\s*\{([^}]+)\}/);
   assert.ok(pageFrame, "找不到 html/body 外框樣式");
   assert.match(pageFrame[1], /background:\s*var\(--paper\)\s*;/);

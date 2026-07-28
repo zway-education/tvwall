@@ -4,15 +4,15 @@ import test from "node:test";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
-test("電視輪播保留 90% 安全畫面", () => {
-  assert.match(html, /const\s+TV_SAFE_AREA_SCALE\s*=\s*0\.9\s*;/);
+test("電視輪播使用 60% 畫面比例", () => {
+  assert.match(html, /const\s+TV_SAFE_AREA_SCALE\s*=\s*0\.6\s*;/);
   assert.match(
     html,
     /Math\.min\(window\.innerWidth\s*\/\s*1920,\s*window\.innerHeight\s*\/\s*1080\)\s*\*\s*TV_SAFE_AREA_SCALE/,
   );
 });
 
-test("90% 縮放在常見 16:9 電視四周各保留 5% 空間", () => {
+test("60% 縮放在常見 16:9 電視四周各保留 20% 空間", () => {
   const match = html.match(/const\s+TV_SAFE_AREA_SCALE\s*=\s*(0\.\d+)\s*;/);
   assert.ok(match, "找不到 TV_SAFE_AREA_SCALE");
 
@@ -26,7 +26,7 @@ test("90% 縮放在常見 16:9 電視四周各保留 5% 空間", () => {
     const horizontalMargin = (width - 1920 * scale) / 2;
     const verticalMargin = (height - 1080 * scale) / 2;
 
-    assert.equal(horizontalMargin, width * 0.05);
-    assert.equal(verticalMargin, height * 0.05);
+    assert.equal(horizontalMargin, width * 0.2);
+    assert.equal(verticalMargin, height * 0.2);
   }
 });

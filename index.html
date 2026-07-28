@@ -1425,8 +1425,10 @@
     let timer = null;
     let paused = false;
 
+    const TV_SAFE_AREA_SCALE = 0.9;
+
     function fit() {
-      const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+      const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080) * TV_SAFE_AREA_SCALE;
       stage.style.setProperty("--scale", String(scale));
     }
 

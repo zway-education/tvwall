@@ -21,5 +21,5 @@ test("滿版畫面外圍使用淺色且沒有黑色陰影", () => {
   const stage = html.match(/\.stage\s*\{([^}]+)\}/);
   assert.ok(stage, "找不到 stage 樣式");
   assert.match(stage[1], /box-shadow:\s*none\s*;/);
-  assert.match(html, /const\s+TV_SAFE_AREA_SCALE\s*=\s*1\s*;/);
+  assert.match(html, /const\s+TV_SAFE_AREA_SCALE\s*=\s*0\.95\s*;/);
 });

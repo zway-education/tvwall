@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <link rel="icon" href="./icon-192.png">
   <title>K12 電視牆 15 頁整合 HTML 預覽</title>
   <style>
@@ -31,25 +31,35 @@
       font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
     }
 
-    body {
+    .tv-viewport {
+      position: fixed;
+      inset: 0;
       display: grid;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
       place-items: center;
+      background: var(--paper);
+    }
+
+    .stage-frame {
+      position: relative;
+      overflow: hidden;
     }
 
     .stage {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      margin-top: -540px;
-      margin-left: -960px;
+      top: 0;
+      left: 0;
       width: 1920px;
       height: 1080px;
+      margin: 0;
       overflow: hidden;
       transform: scale(var(--scale, 1));
-      border-radius: 2px;
+      border-radius: 0;
       background: var(--paper);
       box-shadow: none;
-      transform-origin: center;
+      transform-origin: top left;
     }
 
     .slide-host,
@@ -1121,8 +1131,12 @@
   </style>
 </head>
 <body>
-  <main class="stage" id="stage" aria-label="K12 電視牆 15 頁整合預覽">
-    <div class="slide-host" id="slideHost"></div>
+  <main class="tv-viewport" id="tvViewport">
+    <div class="stage-frame" id="stageFrame">
+      <div class="stage" id="stage" aria-label="K12 電視牆 15 頁整合預覽">
+        <div class="slide-host" id="slideHost"></div>
+      </div>
+    </div>
   </main>
 
   <template id="expertTemplate">
@@ -1334,6 +1348,8 @@
       { kind: "template", id: "focusEvent", label: "親子體驗活動 1/1", duration: 12000 }
     ];
 
+    const viewport = document.getElementById("tvViewport");
+    const stageFrame = document.getElementById("stageFrame");
     const stage = document.getElementById("stage");
     const host = document.getElementById("slideHost");
     const restoredQrModifierByLegacyIndex = {
@@ -1344,11 +1360,13 @@
     let current = 11;
     let timer = null;
 
-    const TV_SAFE_AREA_SCALE = 0.95;
-
     function fit() {
-      const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080) * TV_SAFE_AREA_SCALE;
+      const viewportWidth = viewport.clientWidth;
+      const viewportHeight = viewport.clientHeight;
+      const scale = Math.min(viewportWidth / 1920, viewportHeight / 1080);
       stage.style.setProperty("--scale", String(scale));
+      stageFrame.style.width = `${1920 * scale}px`;
+      stageFrame.style.height = `${1080 * scale}px`;
     }
 
     function buildSlides() {
@@ -1412,6 +1430,7 @@
     });
 
     window.addEventListener("resize", fit);
+    window.addEventListener("orientationchange", fit);
     buildSlides();
     fit();
     show(current);

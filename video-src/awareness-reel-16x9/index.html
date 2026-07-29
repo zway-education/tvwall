@@ -175,8 +175,7 @@
       overflow: hidden;
     }
 
-    .scene::before,
-    .scene::after {
+    .scene::before {
       content: "";
       position: absolute;
       z-index: -1;
@@ -191,16 +190,6 @@
       border: 18px solid color-mix(in srgb, var(--accent) 18%, rgba(255, 253, 246, 0));
       border-radius: 50%;
       animation: ambient-breathe 3.6s ease-in-out infinite alternate;
-    }
-
-    .scene::after {
-      left: 78px;
-      bottom: 52px;
-      width: 290px;
-      height: 20px;
-      border-radius: 999px;
-      background: color-mix(in srgb, var(--accent) 74%, var(--paper));
-      animation: ambient-slide 3.2s ease-in-out infinite alternate;
     }
 
     .scene-header {
@@ -821,14 +810,12 @@
     .accent--violet { --accent: var(--violet); }
 
     body.is-static .scene *,
-    body.is-static .scene::before,
-    body.is-static .scene::after {
+    body.is-static .scene::before {
       animation: none !important;
     }
 
     body.is-record-armed .scene *,
-    body.is-record-armed .scene::before,
-    body.is-record-armed .scene::after {
+    body.is-record-armed .scene::before {
       animation-play-state: paused !important;
     }
 
@@ -964,15 +951,9 @@
       to { transform: scale(1.07); opacity: 1; }
     }
 
-    @keyframes ambient-slide {
-      from { transform: translateX(-24px) scaleX(.78); }
-      to { transform: translateX(24px) scaleX(1); }
-    }
-
     @media (prefers-reduced-motion: reduce) {
       .scene *,
       .scene::before,
-      .scene::after,
       .stage.is-transitioning::after {
         animation: none !important;
       }

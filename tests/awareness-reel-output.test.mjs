@@ -18,7 +18,7 @@ function ffprobe(file) {
         "-show_entries",
         "stream=codec_type,codec_name,width,height,r_frame_rate,pix_fmt,duration",
         "-show_entries",
-        "format=duration,size",
+        "format=duration,size,bit_rate",
         "-of",
         "json",
         file,
@@ -28,10 +28,23 @@ function ffprobe(file) {
   );
 }
 
-function extractFrame(file, timestamp, output) {
+function extractFrame(file, timestamp, output, videoFilter) {
+  const filterArgs = videoFilter ? ["-vf", videoFilter] : [];
   execFileSync(
     "ffmpeg",
-    ["-y", "-v", "error", "-ss", String(timestamp), "-i", file, "-frames:v", "1", output],
+    [
+      "-y",
+      "-v",
+      "error",
+      "-ss",
+      String(timestamp),
+      "-i",
+      file,
+      ...filterArgs,
+      "-frames:v",
+      "1",
+      output,
+    ],
     { stdio: "pipe" },
   );
 }
@@ -66,6 +79,10 @@ test("renders the awareness Reel as a TV-wall-ready 16:9 MP4", () => {
   assert.equal(Number(info.format.duration).toFixed(1), "106.1");
   assert.equal(Number(video.duration).toFixed(1), "106.1");
   assert.equal(Number(audio.duration).toFixed(1), "106.1");
+  assert.ok(
+    Number(info.format.bit_rate) >= 1_800_000,
+    `video quality bitrate is too low: ${info.format.bit_rate}`,
+  );
 });
 
 test("the rendered MP4 preserves HTML entrance motion and content-aware transitions", () => {
@@ -88,6 +105,25 @@ test("the rendered MP4 preserves HTML entrance motion and content-aware transiti
     assert.ok(
       averagePsnr(transitionA, transitionB) < 50,
       "pain-scene frames are effectively static instead of preserving the transition",
+    );
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("the lower-left safe area has no endlessly moving progress decoration", () => {
+  const tempDir = mkdtempSync(path.join(tmpdir(), "awareness-reel-lower-safe-area-"));
+  try {
+    const first = path.join(tempDir, "lower-a.png");
+    const second = path.join(tempDir, "lower-b.png");
+    const lowerLeftCrop = "crop=420:80:40:980";
+
+    extractFrame(output, 1.4, first, lowerLeftCrop);
+    extractFrame(output, 2.4, second, lowerLeftCrop);
+
+    assert.ok(
+      averagePsnr(first, second) >= 42,
+      "the lower-left area still contains a moving progress-like decoration",
     );
   } finally {
     rmSync(tempDir, { recursive: true, force: true });

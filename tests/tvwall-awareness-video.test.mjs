@@ -20,10 +20,24 @@ test("adds the awareness Reel as a timed video slide after the SEL pages", () =>
   assert.match(html, /\?\s*startParam\s*:\s*12/);
 });
 
-test("resets and plays the awareness video only when its slide is active", () => {
+test("resets and plays the awareness video muted only when its slide is active", () => {
   assert.match(html, /video\.currentTime\s*=\s*0/);
-  assert.match(html, /video\.muted\s*=\s*false/);
-  assert.match(html, /playback\.catch/);
   assert.match(html, /video\.muted\s*=\s*true/);
+  assert.doesNotMatch(html, /video\.muted\s*=\s*false/);
   assert.match(html, /video\.pause\(\)/);
+});
+
+test("loops one shared soundtrack across the entire TV wall", () => {
+  assert.match(
+    html,
+    /<audio[^>]+id="tvSoundtrack"[^>]+src="\.\/assets\/awareness-reel-soundtrack\.m4a\?v=[^"]+"[^>]+autoplay[^>]+loop[^>]+preload="auto"/,
+  );
+  assert.match(html, /const soundtrack = document\.getElementById\("tvSoundtrack"\)/);
+  assert.match(html, /function startSoundtrack\(\)/);
+  assert.match(html, /soundtrack\.play\(\)/);
+  assert.match(html, /window\.addEventListener\("pointerdown", startSoundtrack\)/);
+  assert.match(html, /window\.addEventListener\("keydown", startSoundtrack\)/);
+  assert.match(html, /window\.addEventListener\("touchstart", startSoundtrack\)/);
+  assert.match(html, /playback\.then\(stopSoundtrackFallbacks\)/);
+  assert.doesNotMatch(html, /soundtrack\.(?:pause\(|currentTime\s*=)/);
 });

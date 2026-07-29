@@ -1331,6 +1331,14 @@
     </section>
   </template>
 
+  <audio
+    id="tvSoundtrack"
+    src="./assets/awareness-reel-soundtrack.m4a?v=20260729"
+    autoplay
+    loop
+    preload="auto"
+  ></audio>
+
   <script>
     const legacyItems = [
       { kind: "image", src: "./old-1.png", label: "舊電視牆 1/5", duration: 9000 },
@@ -1352,7 +1360,7 @@
       })),
       {
         kind: "video",
-      src: "./assets/awareness-reel-16x9.mp4?v=20260729-transitions",
+      src: "./assets/awareness-reel-16x9.mp4?v=20260729-clean-hq-soundtrack",
         label: "覺知 SEL 影片 1/1",
         duration: 106100
       },
@@ -1366,6 +1374,7 @@
     const stageFrame = document.getElementById("stageFrame");
     const stage = document.getElementById("stage");
     const host = document.getElementById("slideHost");
+    const soundtrack = document.getElementById("tvSoundtrack");
     const restoredQrModifierByLegacyIndex = {
       0: "restored-line-panel--old-1",
       4: "restored-line-panel--old-5"
@@ -1423,6 +1432,7 @@
           video.className = "capture-video";
           video.src = item.src;
           video.preload = "auto";
+          video.muted = true;
           video.playsInline = true;
           video.setAttribute("playsinline", "");
           video.setAttribute("webkit-playsinline", "");
@@ -1451,13 +1461,10 @@
         if (!video) return;
         if (slideIndex === current) {
           video.currentTime = 0;
-          video.muted = false;
+          video.muted = true;
           const playback = video.play();
           if (playback && typeof playback.catch === "function") {
-            playback.catch(() => {
-              video.muted = true;
-              video.play().catch(() => {});
-            });
+            playback.catch(() => {});
           }
         } else {
           video.pause();
@@ -1466,6 +1473,33 @@
       });
       schedule();
     }
+
+    function stopSoundtrackFallbacks() {
+      window.removeEventListener("pointerdown", startSoundtrack);
+      window.removeEventListener("keydown", startSoundtrack);
+      window.removeEventListener("touchstart", startSoundtrack);
+    }
+
+    function startSoundtrack() {
+      if (!soundtrack.paused) {
+        stopSoundtrackFallbacks();
+        return;
+      }
+      soundtrack.volume = 0.72;
+      const playback = soundtrack.play();
+      if (playback && typeof playback.then === "function") {
+        playback.then(stopSoundtrackFallbacks).catch(() => {});
+      } else if (playback && typeof playback.catch === "function") {
+        playback.catch(() => {});
+      }
+    }
+
+    window.addEventListener("pointerdown", startSoundtrack);
+    window.addEventListener("keydown", startSoundtrack);
+    window.addEventListener("touchstart", startSoundtrack);
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && soundtrack.paused) startSoundtrack();
+    });
 
     document.addEventListener("keydown", event => {
       if (event.key === "ArrowLeft") show(current - 1);
@@ -1476,6 +1510,7 @@
     window.addEventListener("orientationchange", fit);
     buildSlides();
     fit();
+    startSoundtrack();
     show(current);
   </script>
 </body>

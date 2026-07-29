@@ -6,7 +6,7 @@ const html = readFileSync("index.html", "utf8");
 
 test("adds the awareness Reel as a timed video slide after the SEL pages", () => {
   assert.match(html, /kind:\s*"video"/);
-  assert.match(html, /src:\s*"\.\/assets\/awareness-reel-16x9\.mp4\?v=20260729"/);
+  assert.match(html, /src:\s*"\.\/assets\/awareness-reel-16x9\.mp4\?v=[^"]+"/);
   assert.match(html, /label:\s*"覺知 SEL 影片 1\/1"/);
   assert.match(html, /duration:\s*106100/);
 

@@ -65,13 +65,18 @@ function runPlayerUntil(html, scenes, targetTimeMs, search = "") {
   const timers = [];
   const renders = [];
   const stageClasses = new Set();
+  const stageDataset = {};
+  const stageStyles = new Map();
   let stageMarkup = "";
   const stage = {
     classList: {
       add: (...names) => names.forEach((name) => stageClasses.add(name)),
       remove: (...names) => names.forEach((name) => stageClasses.delete(name)),
     },
-    style: {},
+    dataset: stageDataset,
+    style: {
+      setProperty: (name, value) => stageStyles.set(name, value),
+    },
   };
   Object.defineProperty(stage, "innerHTML", {
     get: () => stageMarkup,
@@ -120,7 +125,14 @@ function runPlayerUntil(html, scenes, targetTimeMs, search = "") {
   }
   now = targetTimeMs;
 
-  return { renders, stageMarkup, player: fakeWindow.TV_REEL_PLAYER };
+  return {
+    renders,
+    stageMarkup,
+    player: fakeWindow.TV_REEL_PLAYER,
+    stageClasses,
+    stageDataset,
+    stageStyles,
+  };
 }
 
 test("publishes the fixed 1920x1080, 21-scene manifest contract", () => {
@@ -221,6 +233,21 @@ test("advances at manifest boundaries and loops at exactly 106.1 seconds", () =>
     renders.map(({ id, at }) => [id, at]),
     expectedRenders,
   );
+});
+
+test("uses the original content-aware delay transition before the next pain scene", () => {
+  const { html, sceneSource } = readComposition();
+  const scenes = loadManifest(sceneSource);
+  const { stageClasses, stageDataset, stageStyles } = runPlayerUntil(
+    html,
+    scenes,
+    1_900,
+    "?scene=2",
+  );
+
+  assert.equal(stageDataset.transition, "delay-lag");
+  assert.equal(stageStyles.get("--wipe-duration"), "1300ms");
+  assert.equal(stageClasses.has("is-transitioning"), true);
 });
 
 test("keeps scene count and duration review metadata off the formal canvas", () => {

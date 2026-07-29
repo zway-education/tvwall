@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
-import { existsSync, statSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { existsSync, mkdtempSync, rmSync, statSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import { test } from "node:test";
 
 const output = "assets/awareness-reel-16x9.mp4";
@@ -26,6 +28,26 @@ function ffprobe(file) {
   );
 }
 
+function extractFrame(file, timestamp, output) {
+  execFileSync(
+    "ffmpeg",
+    ["-y", "-v", "error", "-ss", String(timestamp), "-i", file, "-frames:v", "1", output],
+    { stdio: "pipe" },
+  );
+}
+
+function averagePsnr(first, second) {
+  const result = spawnSync(
+    "ffmpeg",
+    ["-v", "info", "-i", first, "-i", second, "-lavfi", "psnr", "-f", "null", "NUL"],
+    { encoding: "utf8" },
+  );
+  assert.equal(result.status, 0, result.stderr);
+  const value = Number(result.stderr.match(/average:([0-9.]+)/)?.[1]);
+  assert.ok(Number.isFinite(value), `missing PSNR result:\n${result.stderr}`);
+  return value;
+}
+
 test("renders the awareness Reel as a TV-wall-ready 16:9 MP4", () => {
   assert.equal(existsSync(output), true);
   assert.ok(statSync(output).size > 1_000_000);
@@ -44,4 +66,30 @@ test("renders the awareness Reel as a TV-wall-ready 16:9 MP4", () => {
   assert.equal(Number(info.format.duration).toFixed(1), "106.1");
   assert.equal(Number(video.duration).toFixed(1), "106.1");
   assert.equal(Number(audio.duration).toFixed(1), "106.1");
+});
+
+test("the rendered MP4 preserves HTML entrance motion and content-aware transitions", () => {
+  const tempDir = mkdtempSync(path.join(tmpdir(), "awareness-reel-motion-"));
+  try {
+    const entranceA = path.join(tempDir, "entrance-a.png");
+    const entranceB = path.join(tempDir, "entrance-b.png");
+    const transitionA = path.join(tempDir, "transition-a.png");
+    const transitionB = path.join(tempDir, "transition-b.png");
+
+    extractFrame(output, 0.2, entranceA);
+    extractFrame(output, 0.8, entranceB);
+    extractFrame(output, 9.1, transitionA);
+    extractFrame(output, 9.5, transitionB);
+
+    assert.ok(
+      averagePsnr(entranceA, entranceB) < 50,
+      "intro frames are effectively static instead of preserving HTML entrances",
+    );
+    assert.ok(
+      averagePsnr(transitionA, transitionB) < 50,
+      "pain-scene frames are effectively static instead of preserving the transition",
+    );
+  } finally {
+    rmSync(tempDir, { recursive: true, force: true });
+  }
 });

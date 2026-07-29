@@ -99,11 +99,70 @@
       inset: 0;
       pointer-events: none;
       opacity: 0;
-      background: var(--paper);
+      background: var(--wipe-color, var(--paper));
     }
 
     .stage.is-transitioning::after {
-      animation: scene-wash 560ms cubic-bezier(.76, 0, .24, 1) both;
+      animation: stage-wipe var(--wipe-duration, 560ms) cubic-bezier(.76, 0, .24, 1) both;
+    }
+
+    .stage[data-transition="paper-push"].is-transitioning::after {
+      background: linear-gradient(90deg, #fffdf6 0 62%, #eaf5ff 62%);
+      animation-name: paper-push;
+    }
+
+    .stage[data-transition="natural-fade"].is-transitioning::after {
+      background: rgba(255, 253, 246, .88);
+      animation-name: natural-fade;
+    }
+
+    .stage[data-transition="focus-scatter"].is-transitioning::after {
+      background:
+        radial-gradient(circle, #176bdf 0 9%, rgba(23, 107, 223, 0) 10%) 0 0 / 104px 104px,
+        #fffdf6;
+      animation-name: scatter-away;
+    }
+
+    .stage[data-transition="delay-lag"].is-transitioning::after {
+      background: linear-gradient(90deg, #f0a500 0 32%, #fffdf6 32% 38%, #f0a500 38% 70%, #fffdf6 70%);
+      animation: lag-steps var(--wipe-duration) steps(3, end) both;
+    }
+
+    .stage[data-transition="anger-spike"].is-transitioning::after {
+      background: conic-gradient(from 20deg at 50% 50%, #f25a43 0 8deg, #fffdf6 8deg 22deg, #f25a43 22deg 34deg, #fffdf6 34deg 45deg);
+      animation-name: spike-flash;
+    }
+
+    .stage[data-transition="retreat-shrink"].is-transitioning::after {
+      background: #7467e8;
+      animation: shrink-back var(--wipe-duration) cubic-bezier(.7, 0, .3, 1) both;
+    }
+
+    .stage[data-transition="conflict-collision"].is-transitioning::after {
+      background: linear-gradient(90deg, #ff7a18 0 49%, #fffdf6 49% 51%, #176bdf 51%);
+      animation-name: collision-in;
+    }
+
+    .stage[data-transition="absorb-center"].is-transitioning::after {
+      background: radial-gradient(circle at center, #00a59b 0 28%, #fffdf6 29% 35%, #00a59b 36%);
+      animation-name: absorb-center;
+    }
+
+    .stage[data-transition="chapter-bridge"].is-transitioning::after {
+      background: linear-gradient(180deg, #fffdf6, #fffaf0);
+      animation: chapter-paper-rise var(--wipe-duration) cubic-bezier(.46, 0, .24, 1) both;
+    }
+
+    .stage[data-transition="link-flow"].is-transitioning::after {
+      background:
+        linear-gradient(90deg, rgba(23, 107, 223, 0) 0 15%, #176bdf 16% 19%, rgba(23, 107, 223, 0) 20% 45%, #00a59b 46% 49%, rgba(0, 165, 155, 0) 50%),
+        #fffdf6;
+      animation-name: link-flow;
+    }
+
+    .stage[data-transition="soft-bright"].is-transitioning::after {
+      background: radial-gradient(circle at center, #fff 0 18%, rgba(255, 253, 246, .98) 48%, rgba(240, 245, 255, .88));
+      animation-name: soft-bright;
     }
 
     .scene {
@@ -767,10 +826,82 @@
       animation: none !important;
     }
 
-    @keyframes scene-wash {
+    body.is-record-armed .scene *,
+    body.is-record-armed .scene::before,
+    body.is-record-armed .scene::after {
+      animation-play-state: paused !important;
+    }
+
+    @keyframes stage-wipe {
       0% { opacity: 0; transform: translateX(-100%); }
       45%, 55% { opacity: .96; transform: translateX(0); }
       100% { opacity: 0; transform: translateX(100%); }
+    }
+
+    @keyframes paper-push {
+      0% { opacity: 1; transform: translateX(-105%); }
+      48%, 55% { opacity: 1; transform: translateX(0); }
+      100% { opacity: 1; transform: translateX(105%); }
+    }
+
+    @keyframes natural-fade {
+      0%, 100% { opacity: 0; transform: none; }
+      45%, 55% { opacity: .88; transform: none; }
+    }
+
+    @keyframes scatter-away {
+      0% { opacity: 0; transform: scale(.58); }
+      48%, 55% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.34); }
+    }
+
+    @keyframes lag-steps {
+      0% { opacity: 1; transform: translateX(-105%); }
+      55% { opacity: 1; transform: translateX(0); }
+      100% { opacity: 1; transform: translateX(105%); }
+    }
+
+    @keyframes spike-flash {
+      0% { opacity: 0; clip-path: circle(0); }
+      48%, 55% { opacity: 1; clip-path: circle(74%); }
+      100% { opacity: 0; clip-path: circle(100%); }
+    }
+
+    @keyframes shrink-back {
+      0% { opacity: 0; transform: scale(1.3); }
+      48% { opacity: 1; transform: scale(.92); }
+      55% { opacity: 1; transform: scale(.95); }
+      100% { opacity: 0; transform: scale(.45); }
+    }
+
+    @keyframes collision-in {
+      0% { opacity: 0; clip-path: inset(0 50%); }
+      45%, 55% { opacity: 1; clip-path: inset(0); }
+      100% { opacity: 0; clip-path: inset(0 50%); }
+    }
+
+    @keyframes absorb-center {
+      0% { opacity: 0; transform: scale(1.6); }
+      55% { opacity: 1; transform: scale(.7); }
+      100% { opacity: 0; transform: scale(.15); }
+    }
+
+    @keyframes chapter-paper-rise {
+      0%, 30% { opacity: 1; transform: translateY(105%); }
+      60%, 68% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 1; transform: translateY(-105%); }
+    }
+
+    @keyframes link-flow {
+      0% { opacity: 0; transform: translateX(-55%); }
+      50% { opacity: 1; }
+      100% { opacity: 0; transform: translateX(55%); }
+    }
+
+    @keyframes soft-bright {
+      0% { opacity: 0; transform: scale(.88); }
+      52% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1.05); }
     }
 
     @keyframes brand-enter {
@@ -863,13 +994,31 @@
       const params = new URLSearchParams(window.location.search);
       const requestedScene = Number.parseInt(params.get("scene") ?? "0", 10);
       const staticMode = params.get("static") === "1";
+      const recordMode = params.get("record") === "1";
+      let recordingStarted = !recordMode;
       let currentIndex = Number.isFinite(requestedScene)
         ? Math.min(Math.max(requestedScene, 0), scenes.length - 1)
         : 0;
       let advanceTimer = 0;
       let transitionTimer = 0;
       let cleanupTimer = 0;
-      const transitionHalfMs = 280;
+      const transitionNames = [
+        "natural-fade", "paper-push", "focus-scatter", "delay-lag",
+        "anger-spike", "retreat-shrink", "conflict-collision", "absorb-center",
+        "chapter-bridge", "natural-fade", "natural-fade", "natural-fade",
+        "natural-fade", "link-flow", "natural-fade", "natural-fade",
+        "natural-fade", "natural-fade", "link-flow", "soft-bright", "natural-fade",
+      ];
+      const transitionColors = [
+        "#f35f50", "#fffdf6", "#176bdf", "#f0a500", "#f25a43", "#7467e8",
+        "#ff7a18", "#00a59b", "#fffdf6", "#00a59b", "#00a59b", "#176bdf",
+        "#176bdf", "#176bdf", "#176bdf", "#176bdf", "#176bdf", "#176bdf",
+        "#00a59b", "#f05a16", "#fffdf6",
+      ];
+      const transitionDurations = [
+        363, 825, 1300, 1300, 1300, 1300, 1300, 1300, 1800, 396, 396,
+        396, 396, 759, 396, 396, 396, 396, 759, 957, 396,
+      ];
 
       const escapeHtml = (value) => String(value)
         .replaceAll("&", "&amp;")
@@ -1005,17 +1154,33 @@
         document.title = `${String(index + 1).padStart(2, "0")}｜${scene.title.join(" ")}｜K12 覺知 Reel`;
       }
 
+      function transitionFor(nextIndex) {
+        return {
+          name: transitionNames[nextIndex],
+          color: transitionColors[nextIndex],
+          duration: transitionDurations[nextIndex],
+        };
+      }
+
       function scheduleAdvance() {
         window.clearTimeout(advanceTimer);
         window.clearTimeout(transitionTimer);
-        if (staticMode) return;
+        if (staticMode || !recordingStarted) return;
         const scene = scenes[currentIndex];
         const durationMs = scene.duration * 1000;
+        const nextIndex = (currentIndex + 1) % scenes.length;
+        const transition = transitionFor(nextIndex);
+        const transitionHalfMs = transition.duration / 2;
         transitionTimer = window.setTimeout(() => {
+          stage.dataset.transition = transition.name;
+          stage.style.setProperty("--wipe-color", transition.color);
+          stage.style.setProperty("--wipe-duration", `${transition.duration}ms`);
+          stage.classList.remove("is-transitioning");
+          void stage.offsetWidth;
           stage.classList.add("is-transitioning");
         }, Math.max(0, durationMs - transitionHalfMs));
         advanceTimer = window.setTimeout(() => {
-          currentIndex = (currentIndex + 1) % scenes.length;
+          currentIndex = nextIndex;
           renderScene(currentIndex);
           window.clearTimeout(cleanupTimer);
           cleanupTimer = window.setTimeout(() => {
@@ -1033,6 +1198,7 @@
       }
 
       document.body.classList.toggle("is-static", staticMode);
+      document.body.classList.toggle("is-record-armed", recordMode);
       renderScene(currentIndex);
       fitStage();
       scheduleAdvance();
@@ -1042,6 +1208,14 @@
         get currentScene() { return currentIndex; },
         get totalDuration() {
           return Number(scenes.reduce((total, scene) => total + scene.duration, 0).toFixed(1));
+        },
+        startCapture() {
+          if (recordingStarted) return;
+          recordingStarted = true;
+          currentIndex = 0;
+          document.body.classList.remove("is-record-armed");
+          renderScene(currentIndex);
+          scheduleAdvance();
         },
         show(index) {
           window.clearTimeout(advanceTimer);

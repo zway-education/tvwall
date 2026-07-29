@@ -152,7 +152,6 @@
       right: var(--safe-x);
       display: flex;
       align-items: center;
-      justify-content: space-between;
       min-height: 72px;
     }
 
@@ -163,28 +162,6 @@
       object-fit: contain;
       object-position: left center;
       animation: brand-enter 620ms cubic-bezier(.16, .82, .24, 1) both;
-    }
-
-    .scene-meta {
-      display: flex;
-      align-items: center;
-      gap: 22px;
-      color: #2d789d;
-      font-size: 28px;
-      font-weight: 650;
-      line-height: 1;
-      font-variant-numeric: tabular-nums;
-      animation: meta-enter 420ms 110ms ease-out both;
-    }
-
-    .scene-meta span {
-      display: inline-flex;
-      align-items: center;
-      min-height: 50px;
-      padding: 0 20px;
-      border: 2px solid rgba(23, 107, 223, 0.18);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.72);
     }
 
     .layout--cover,
@@ -801,11 +778,6 @@
       to { opacity: 1; transform: translateX(0); }
     }
 
-    @keyframes meta-enter {
-      from { opacity: 0; transform: translateY(-18px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     @keyframes eyebrow-enter {
       from { opacity: 0; transform: translateX(-30px) scaleX(.88); }
       to { opacity: 1; transform: translateX(0) scaleX(1); }
@@ -895,6 +867,9 @@
         ? Math.min(Math.max(requestedScene, 0), scenes.length - 1)
         : 0;
       let advanceTimer = 0;
+      let transitionTimer = 0;
+      let cleanupTimer = 0;
+      const transitionHalfMs = 280;
 
       const escapeHtml = (value) => String(value)
         .replaceAll("&", "&amp;")
@@ -910,18 +885,18 @@
         ? `<div class="body-copy">${scene.body.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}</div>`
         : "";
 
-      const headerHtml = (scene, index) => `
+      const eyebrowHtml = (scene) => scene.eyebrow
+        ? `<p class="eyebrow">${escapeHtml(scene.eyebrow)}</p>`
+        : "";
+
+      const headerHtml = () => `
         <header class="scene-header">
           <img class="brand" src="./assets/k12-awareness-horizontal.png" alt="K12 覺知素養教育學苑">
-          <div class="scene-meta" aria-label="播放資訊">
-            <span>${String(index + 1).padStart(2, "0")} / ${scenes.length}</span>
-            <span>${scene.duration.toFixed(1)} 秒</span>
-          </div>
         </header>`;
 
       const copyHtml = (scene, className = "copy") => `
         <div class="${className}">
-          <p class="eyebrow">${escapeHtml(scene.eyebrow)}</p>
+          ${eyebrowHtml(scene)}
           <h1 class="scene-title">${titleHtml(scene)}</h1>
           ${bodyHtml(scene)}
         </div>`;
@@ -969,7 +944,7 @@
         return `
           <div class="layout--systems">
             <div class="copy">
-              <p class="eyebrow">${escapeHtml(scene.eyebrow)}</p>
+              ${eyebrowHtml(scene)}
               <h1 class="scene-title">${titleHtml(scene)}</h1>
               ${bodyHtml(scene)}
               ${tags}
@@ -1024,7 +999,7 @@
         const scene = scenes[index];
         stage.innerHTML = `
           <section class="scene scene--${escapeHtml(scene.id)} accent--${escapeHtml(scene.accent)}" data-scene="${escapeHtml(scene.id)}">
-            ${headerHtml(scene, index)}
+            ${headerHtml()}
             ${renderers[scene.family](scene)}
           </section>`;
         document.title = `${String(index + 1).padStart(2, "0")}｜${scene.title.join(" ")}｜K12 覺知 Reel`;
@@ -1032,19 +1007,22 @@
 
       function scheduleAdvance() {
         window.clearTimeout(advanceTimer);
+        window.clearTimeout(transitionTimer);
         if (staticMode) return;
         const scene = scenes[currentIndex];
-        advanceTimer = window.setTimeout(() => {
+        const durationMs = scene.duration * 1000;
+        transitionTimer = window.setTimeout(() => {
           stage.classList.add("is-transitioning");
-          window.setTimeout(() => {
-            currentIndex = (currentIndex + 1) % scenes.length;
-            renderScene(currentIndex);
-          }, 280);
-          window.setTimeout(() => {
+        }, Math.max(0, durationMs - transitionHalfMs));
+        advanceTimer = window.setTimeout(() => {
+          currentIndex = (currentIndex + 1) % scenes.length;
+          renderScene(currentIndex);
+          window.clearTimeout(cleanupTimer);
+          cleanupTimer = window.setTimeout(() => {
             stage.classList.remove("is-transitioning");
-            scheduleAdvance();
-          }, 560);
-        }, scene.duration * 1000);
+          }, transitionHalfMs);
+          scheduleAdvance();
+        }, durationMs);
       }
 
       function fitStage() {
@@ -1066,6 +1044,10 @@
           return Number(scenes.reduce((total, scene) => total + scene.duration, 0).toFixed(1));
         },
         show(index) {
+          window.clearTimeout(advanceTimer);
+          window.clearTimeout(transitionTimer);
+          window.clearTimeout(cleanupTimer);
+          stage.classList.remove("is-transitioning");
           currentIndex = Math.min(Math.max(Number(index) || 0, 0), scenes.length - 1);
           renderScene(currentIndex);
           scheduleAdvance();

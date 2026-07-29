@@ -52,6 +52,77 @@ function loadManifest(sceneSource) {
   return context.window.TV_REEL_SCENES;
 }
 
+function runPlayerUntil(html, scenes, targetTimeMs, search = "") {
+  const inlineScript = Array.from(
+    html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g),
+    (match) => match[1],
+  ).findLast((source) => source.trim());
+  assert.ok(inlineScript, "player inline script should exist");
+
+  let now = 0;
+  let nextTimerId = 1;
+  const cancelledTimers = new Set();
+  const timers = [];
+  const renders = [];
+  const stageClasses = new Set();
+  let stageMarkup = "";
+  const stage = {
+    classList: {
+      add: (...names) => names.forEach((name) => stageClasses.add(name)),
+      remove: (...names) => names.forEach((name) => stageClasses.delete(name)),
+    },
+    style: {},
+  };
+  Object.defineProperty(stage, "innerHTML", {
+    get: () => stageMarkup,
+    set: (markup) => {
+      stageMarkup = markup;
+      const id = markup.match(/\bdata-scene="([^"]+)"/)?.[1];
+      if (id) renders.push({ id, at: now, markup });
+    },
+  });
+
+  const fakeWindow = {
+    TV_REEL_SCENES: scenes,
+    location: { search },
+    innerWidth: 1920,
+    innerHeight: 1080,
+    addEventListener() {},
+    clearTimeout(id) {
+      cancelledTimers.add(id);
+    },
+    setTimeout(callback, delay = 0) {
+      const id = nextTimerId++;
+      timers.push({ id, at: now + Number(delay), callback });
+      return id;
+    },
+  };
+  const fakeDocument = {
+    body: { classList: { toggle() {} } },
+    getElementById: (id) => (id === "stage" ? stage : null),
+    title: "",
+  };
+  const context = vm.createContext({
+    document: fakeDocument,
+    URLSearchParams,
+    window: fakeWindow,
+  });
+  new vm.Script(inlineScript, { filename: indexPath }).runInContext(context);
+
+  while (true) {
+    const nextTimer = timers
+      .filter((timer) => !cancelledTimers.has(timer.id) && timer.at <= targetTimeMs)
+      .sort((a, b) => a.at - b.at || a.id - b.id)[0];
+    if (!nextTimer) break;
+    cancelledTimers.add(nextTimer.id);
+    now = nextTimer.at;
+    nextTimer.callback();
+  }
+  now = targetTimeMs;
+
+  return { renders, stageMarkup, player: fakeWindow.TV_REEL_PLAYER };
+}
+
 test("publishes the fixed 1920x1080, 21-scene manifest contract", () => {
   const { html, sceneSource } = readComposition();
   const scenes = loadManifest(sceneSource);
@@ -114,4 +185,79 @@ test("gives the LINE CTA a 300px+ QR and an explicit white quiet zone", () => {
   assert.match(html, /--qr-size:\s*(3\d\d|[4-9]\d\d|\d{4,})px/);
   assert.match(html, /\.qr-quiet-zone\s*\{[^}]*background:\s*#fff(?:fff)?\b/s);
   assert.match(html, /\.qr-quiet-zone\s*\{[^}]*padding:\s*(?:[2-9]\d|1\d{2,})px/s);
+});
+
+test("advances at manifest boundaries and loops at exactly 106.1 seconds", () => {
+  const { html, sceneSource } = readComposition();
+  const scenes = loadManifest(sceneSource);
+  const { renders, player } = runPlayerUntil(html, scenes, 106_100);
+  const expectedRenders = [
+    ["cover", 0],
+    ["bridge-reminder", 4_000],
+    ["pain-focus", 7_200],
+    ["pain-delay", 9_700],
+    ["pain-restless", 12_200],
+    ["pain-homework", 14_700],
+    ["pain-conflict", 17_200],
+    ["pain-absorb", 19_700],
+    ["bridge-awareness", 22_200],
+    ["step-observe", 26_700],
+    ["step-accept", 31_500],
+    ["step-choose", 36_300],
+    ["bridge-systems", 40_800],
+    ["systems-overview", 46_600],
+    ["systems-daily", 52_400],
+    ["system-neuroscience", 60_200],
+    ["system-management", 68_500],
+    ["system-positive-psychology", 76_800],
+    ["course-info", 85_100],
+    ["cta-close", 93_500],
+    ["cta-action", 98_800],
+    ["cover", 106_100],
+  ];
+
+  assert.equal(player.totalDuration, 106.1);
+  assert.deepEqual(
+    renders.map(({ id, at }) => [id, at]),
+    expectedRenders,
+  );
+});
+
+test("keeps scene count and duration review metadata off the formal canvas", () => {
+  const { html, sceneSource } = readComposition();
+  const scenes = loadManifest(sceneSource);
+  const { stageMarkup } = runPlayerUntil(html, scenes, 0, "?scene=0&static=1");
+
+  assert.doesNotMatch(stageMarkup, /\bscene-meta\b/);
+  assert.doesNotMatch(stageMarkup, /\b0?1\s*\/\s*21\b/);
+  assert.doesNotMatch(stageMarkup, /\b4\.0\s*秒\b/);
+  assert.doesNotMatch(stageMarkup, /播放資訊/);
+});
+
+test("uses no invented eyebrow copy on scenes without a formal source eyebrow", () => {
+  const { sceneSource } = readComposition();
+  const scenes = loadManifest(sceneSource);
+  const scenesWithoutFormalEyebrows = [
+    "bridge-reminder",
+    "bridge-awareness",
+    "step-observe",
+    "step-accept",
+    "step-choose",
+    "bridge-systems",
+    "cta-close",
+  ];
+  const inventedCopy = [
+    "從日常裡的卡住開始",
+    "看見行為背後的提醒",
+    "覺知的三個步驟",
+    "把覺知帶進真實生活",
+    "從理解開始，陪孩子練習",
+  ];
+
+  for (const id of scenesWithoutFormalEyebrows) {
+    assert.equal(scenes.find((scene) => scene.id === id)?.eyebrow, undefined, id);
+  }
+  for (const copy of inventedCopy) {
+    assert.doesNotMatch(sceneSource, new RegExp(copy));
+  }
 });

@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>K12 覺知 Reel｜1920 × 1080</title>
+  <style>
+    @font-face {
+      font-family: "Open Huninn";
+      src: url("./assets/jf-openhuninn.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "Noto Sans TC Local";
+      src: url("./assets/NotoSansTC-VF.ttf") format("truetype");
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    :root {
+      --canvas-width: 1920px;
+      --canvas-height: 1080px;
+      --safe-x: 96px;
+      --safe-y: 54px;
+      --text-body: 36px;
+      --text-support: 28px;
+      --qr-size: 380px;
+      --paper: #fffdf6;
+      --paper-blue: #eef6ff;
+      --ink: #315e73;
+      --blue: #176bdf;
+      --orange: #f05a16;
+      --coral: #f35f50;
+      --teal: #00a59b;
+      --gold: #f0a500;
+      --violet: #7467e8;
+      --warm-orange: #ff7a18;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-width: 320px;
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #173f59;
+    }
+
+    body {
+      font-family: "Noto Sans TC Local", "Microsoft JhengHei", sans-serif;
+    }
+
+    button,
+    img {
+      font: inherit;
+    }
+
+    .viewport {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .stage {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: var(--canvas-width);
+      height: var(--canvas-height);
+      overflow: hidden;
+      transform-origin: left top;
+      color: var(--ink);
+      background: var(--paper);
+      isolation: isolate;
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      z-index: -3;
+      inset: 0;
+      background:
+        radial-gradient(circle at 9% 14%, rgba(23, 107, 223, 0.13), rgba(23, 107, 223, 0) 26%),
+        radial-gradient(circle at 88% 84%, rgba(240, 90, 22, 0.12), rgba(240, 90, 22, 0) 30%),
+        var(--paper);
+    }
+
+    .stage::after {
+      content: "";
+      position: absolute;
+      z-index: 50;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      background: var(--paper);
+    }
+
+    .stage.is-transitioning::after {
+      animation: scene-wash 560ms cubic-bezier(.76, 0, .24, 1) both;
+    }
+
+    .scene {
+      --accent: var(--blue);
+      position: relative;
+      display: flex;
+      width: 100%;
+      height: 100%;
+      padding: 166px var(--safe-x) 76px;
+      overflow: hidden;
+    }
+
+    .scene::before,
+    .scene::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .scene::before {
+      top: 118px;
+      right: 64px;
+      width: 210px;
+      height: 210px;
+      border: 18px solid color-mix(in srgb, var(--accent) 18%, rgba(255, 253, 246, 0));
+      border-radius: 50%;
+      animation: ambient-breathe 3.6s ease-in-out infinite alternate;
+    }
+
+    .scene::after {
+      left: 78px;
+      bottom: 52px;
+      width: 290px;
+      height: 20px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 74%, var(--paper));
+      animation: ambient-slide 3.2s ease-in-out infinite alternate;
+    }
+
+    .scene-header {
+      position: absolute;
+      z-index: 20;
+      top: var(--safe-y);
+      left: var(--safe-x);
+      right: var(--safe-x);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+    }
+
+    .brand {
+      display: block;
+      width: 396px;
+      height: 82px;
+      object-fit: contain;
+      object-position: left center;
+      animation: brand-enter 620ms cubic-bezier(.16, .82, .24, 1) both;
+    }
+
+    .scene-meta {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      color: #2d789d;
+      font-size: 28px;
+      font-weight: 650;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      animation: meta-enter 420ms 110ms ease-out both;
+    }
+
+    .scene-meta span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 50px;
+      padding: 0 20px;
+      border: 2px solid rgba(23, 107, 223, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .layout--cover,
+    .layout--pain,
+    .layout--systems,
+    .layout--cta {
+      display: grid;
+      align-items: center;
+      gap: 76px;
+      width: 100%;
+    }
+
+    .layout--cover {
+      grid-template-columns: minmax(0, 1.08fr) minmax(620px, .92fr);
+    }
+
+    .layout--pain {
+      grid-template-columns: minmax(0, .95fr) minmax(720px, 1.05fr);
+    }
+
+    .layout--systems {
+      grid-template-columns: minmax(0, 1.08fr) minmax(610px, .92fr);
+      gap: 62px;
+    }
+
+    .layout--cta {
+      grid-template-columns: minmax(0, 1fr) minmax(640px, 1fr);
+    }
+
+    .layout--steps {
+      display: grid;
+      grid-template-columns: minmax(0, .98fr) minmax(700px, 1.02fr);
+      grid-template-rows: 1fr auto;
+      column-gap: 68px;
+      row-gap: 28px;
+      width: 100%;
+    }
+
+    .copy {
+      position: relative;
+      z-index: 4;
+      min-width: 0;
+      align-self: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      min-height: 54px;
+      margin: 0 0 24px;
+      padding: 0 24px;
+      border-left: 9px solid var(--accent);
+      border-radius: 7px 999px 999px 7px;
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 9%, var(--paper));
+      font-size: 30px;
+      font-weight: 720;
+      line-height: 1.25;
+      letter-spacing: .035em;
+      animation: eyebrow-enter 460ms 80ms cubic-bezier(.16, .82, .24, 1) both;
+    }
+
+    .scene-title {
+      margin: 0;
+      color: var(--blue);
+      font-family: "Open Huninn", "Noto Sans TC Local", sans-serif;
+      font-size: 84px;
+      font-weight: 400;
+      line-height: 1.16;
+      letter-spacing: -.03em;
+    }
+
+    .scene-title span {
+      display: block;
+      animation: title-enter 680ms cubic-bezier(.16, .82, .24, 1) both;
+    }
+
+    .scene-title span:nth-child(2) {
+      margin-top: 6px;
+      color: var(--accent);
+      animation-delay: 90ms;
+    }
+
+    .body-copy {
+      display: grid;
+      gap: 14px;
+      max-width: 900px;
+      margin: 32px 0 0;
+      color: var(--ink);
+      font-size: var(--text-body);
+      font-weight: 560;
+      line-height: 1.55;
+      letter-spacing: -.012em;
+    }
+
+    .body-copy p {
+      margin: 0;
+      animation: body-enter 520ms 180ms ease-out both;
+    }
+
+    .body-copy p + p {
+      animation-delay: 260ms;
+    }
+
+    .art-panel {
+      position: relative;
+      z-index: 3;
+      align-self: stretch;
+      min-height: 720px;
+      max-height: 780px;
+      overflow: hidden;
+      border: 5px solid rgba(255, 255, 255, 0.9);
+      border-radius: 48px;
+      background: #fffaf0;
+      box-shadow: 0 24px 62px rgba(23, 63, 89, 0.16);
+      animation: art-enter 820ms 120ms cubic-bezier(.2, .72, .24, 1) both;
+    }
+
+    .art-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 3px solid color-mix(in srgb, var(--accent) 24%, rgba(255, 253, 246, 0));
+      border-radius: 43px;
+      pointer-events: none;
+    }
+
+    .art-panel img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .layout--cover .scene-title {
+      font-size: 96px;
+    }
+
+    .layout--cover .body-copy {
+      font-size: 38px;
+    }
+
+    .scene--bridge-reminder .scene-title,
+    .scene--bridge-awareness .scene-title {
+      font-family: "Noto Sans TC Local", sans-serif;
+      font-size: 72px;
+      font-weight: 730;
+      line-height: 1.28;
+      letter-spacing: -.025em;
+    }
+
+    .scene--bridge-awareness .scene-title {
+      font-size: 64px;
+    }
+
+    .scene--bridge-systems .scene-title {
+      font-size: 102px;
+    }
+
+    .scene--bridge-systems .body-copy {
+      font-size: 42px;
+      line-height: 1.5;
+    }
+
+    .layout--pain .copy {
+      padding-left: 32px;
+    }
+
+    .layout--pain .scene-title {
+      position: relative;
+      width: max-content;
+      color: var(--accent);
+      font-family: "Noto Sans TC Local", sans-serif;
+      font-size: 176px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: .01em;
+      text-shadow: 14px 16px 0 color-mix(in srgb, var(--accent) 14%, rgba(255, 253, 246, 0));
+    }
+
+    .layout--pain .scene-title::after {
+      content: "";
+      display: block;
+      width: 260px;
+      height: 15px;
+      margin-top: 28px;
+      border-radius: 999px;
+      background: var(--accent);
+      transform-origin: left center;
+      animation: rule-draw 620ms 220ms cubic-bezier(.16, .82, .24, 1) both;
+    }
+
+    .layout--pain .body-copy {
+      max-width: 620px;
+      margin-top: 36px;
+      font-size: 38px;
+    }
+
+    .layout--pain .art-panel {
+      min-height: 738px;
+    }
+
+    .steps-copy {
+      align-self: center;
+    }
+
+    .layout--steps .scene-title {
+      color: var(--accent);
+      font-size: 82px;
+    }
+
+    .layout--steps .body-copy p:first-child {
+      color: var(--accent);
+      font-size: 44px;
+      font-weight: 720;
+    }
+
+    .layout--steps .art-panel {
+      grid-column: 2;
+      grid-row: 1;
+      min-height: 620px;
+      max-height: 660px;
+    }
+
+    .step-rail {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      width: 100%;
+    }
+
+    .step-card {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      align-items: center;
+      min-height: 116px;
+      padding: 18px 25px;
+      border: 3px solid rgba(49, 94, 115, 0.12);
+      border-radius: 28px;
+      color: #557c8f;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 12px 30px rgba(23, 63, 89, 0.07);
+      font-size: 30px;
+      font-weight: 650;
+      line-height: 1.25;
+      animation: step-enter 520ms ease-out both;
+    }
+
+    .step-card:nth-child(2) {
+      animation-delay: 90ms;
+    }
+
+    .step-card:nth-child(3) {
+      animation-delay: 180ms;
+    }
+
+    .step-card.is-current {
+      border-color: color-mix(in srgb, var(--accent) 60%, var(--paper));
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, #fff);
+      box-shadow: 0 18px 36px color-mix(in srgb, var(--accent) 14%, rgba(255, 253, 246, 0));
+      transform: translateY(-8px);
+    }
+
+    .step-number {
+      font-family: "Open Huninn", sans-serif;
+      font-size: 48px;
+      font-weight: 400;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .layout--systems .scene-title {
+      font-size: 76px;
+      line-height: 1.16;
+    }
+
+    .layout--systems .body-copy {
+      gap: 12px;
+      margin-top: 24px;
+      font-size: 34px;
+      line-height: 1.45;
+    }
+
+    .layout--systems .body-copy p:first-child {
+      color: var(--accent);
+      font-size: 40px;
+      font-weight: 720;
+    }
+
+    .layout--systems .art-panel {
+      min-height: 690px;
+      max-height: 730px;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .tag-list span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 56px;
+      padding: 0 22px;
+      border: 3px solid color-mix(in srgb, var(--accent) 25%, var(--paper));
+      border-radius: 999px;
+      color: var(--accent);
+      background: rgba(255, 255, 255, 0.84);
+      font-size: 29px;
+      font-weight: 680;
+      line-height: 1.2;
+      animation: tag-enter 480ms ease-out both;
+    }
+
+    .tag-list span:nth-child(2) {
+      animation-delay: 80ms;
+    }
+
+    .tag-list span:nth-child(3) {
+      animation-delay: 160ms;
+    }
+
+    .scene--systems-overview .art-panel {
+      min-height: 600px;
+      max-height: 650px;
+    }
+
+    .scene--systems-overview .layout--systems {
+      grid-template-columns: minmax(0, 1.22fr) minmax(560px, .78fr);
+    }
+
+    .scene--systems-overview .art-panel img {
+      object-fit: contain;
+      padding: 40px;
+    }
+
+    .scene--systems-daily {
+      padding-top: 150px;
+    }
+
+    .scene--systems-daily .layout--systems {
+      grid-template-columns: minmax(0, 1.25fr) minmax(520px, .75fr);
+      gap: 48px;
+    }
+
+    .scene--systems-daily .eyebrow {
+      margin-bottom: 16px;
+      font-size: 28px;
+    }
+
+    .scene--systems-daily .scene-title {
+      font-size: 64px;
+    }
+
+    .scene--systems-daily .art-panel {
+      min-height: 650px;
+      max-height: 700px;
+    }
+
+    .ability-groups {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .ability-group {
+      display: grid;
+      grid-template-columns: 76px 180px minmax(0, 1fr);
+      align-items: center;
+      min-height: 82px;
+      padding: 12px 18px;
+      border: 3px solid color-mix(in srgb, var(--accent) 20%, var(--paper));
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: 0 10px 24px rgba(23, 63, 89, 0.06);
+      animation: group-enter 520ms ease-out both;
+    }
+
+    .ability-group:nth-child(2) {
+      animation-delay: 100ms;
+    }
+
+    .ability-group:nth-child(3) {
+      animation-delay: 200ms;
+    }
+
+    .ability-number {
+      color: var(--accent);
+      font-family: "Open Huninn", sans-serif;
+      font-size: 38px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ability-group h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 30px;
+      font-weight: 760;
+      line-height: 1.25;
+    }
+
+    .ability-group p {
+      margin: 0;
+      color: #2d789d;
+      font-size: 28px;
+      font-weight: 580;
+      line-height: 1.3;
+    }
+
+    .layout--course {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .layout--course .eyebrow {
+      align-self: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .layout--course .scene-title {
+      font-size: 76px;
+    }
+
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 34px;
+      width: 100%;
+      margin-top: 38px;
+    }
+
+    .course-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 360px;
+      padding: 46px 52px;
+      overflow: hidden;
+      border: 4px solid rgba(23, 107, 223, 0.24);
+      border-radius: 38px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 20px 48px rgba(23, 63, 89, 0.11);
+      animation: course-enter 620ms cubic-bezier(.16, .82, .24, 1) both;
+    }
+
+    .course-card:nth-child(2) {
+      border-color: rgba(240, 90, 22, 0.25);
+      animation-delay: 130ms;
+    }
+
+    .course-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 17px;
+      background: var(--blue);
+    }
+
+    .course-card:nth-child(2)::before {
+      background: var(--orange);
+    }
+
+    .course-card h2 {
+      margin: 0;
+      color: var(--blue);
+      font-size: 54px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .course-card:nth-child(2) h2 {
+      color: var(--orange);
+    }
+
+    .course-time {
+      margin: 28px 0 0;
+      color: var(--ink);
+      font-size: 38px;
+      font-weight: 700;
+      line-height: 1.42;
+      letter-spacing: -.02em;
+    }
+
+    .course-capacity {
+      margin: 22px 0 0;
+      color: #327da8;
+      font-size: 34px;
+      font-weight: 600;
+      line-height: 1.42;
+    }
+
+    .scene--cta-close .scene-title {
+      font-size: 84px;
+    }
+
+    .scene--cta-close .body-copy {
+      font-size: 38px;
+    }
+
+    .scene--cta-action {
+      background:
+        linear-gradient(90deg, rgba(255, 253, 246, .98) 0 56%, rgba(238, 246, 255, .96) 100%);
+    }
+
+    .scene--cta-action .layout--cta {
+      grid-template-columns: minmax(0, 1fr) minmax(540px, .82fr);
+      gap: 96px;
+    }
+
+    .scene--cta-action .scene-title {
+      font-size: 98px;
+    }
+
+    .scene--cta-action .body-copy {
+      font-size: 36px;
+    }
+
+    .scene--cta-action .body-copy p:last-child {
+      color: var(--orange);
+      font-size: 44px;
+      font-weight: 760;
+    }
+
+    .cta-qr-panel {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 700px;
+      padding: 42px;
+      border: 4px solid rgba(23, 107, 223, .16);
+      border-radius: 48px;
+      background: rgba(255, 255, 255, .72);
+      box-shadow: 0 24px 58px rgba(23, 63, 89, .12);
+      animation: qr-panel-enter 720ms 120ms cubic-bezier(.16, .82, .24, 1) both;
+    }
+
+    .qr-quiet-zone {
+      display: grid;
+      place-items: center;
+      width: calc(var(--qr-size) + 56px);
+      height: calc(var(--qr-size) + 56px);
+      padding: 28px;
+      border-radius: 28px;
+      background: #fff;
+      box-shadow: 0 16px 38px rgba(23, 63, 89, .14);
+    }
+
+    .qr-code {
+      display: block;
+      width: var(--qr-size);
+      height: var(--qr-size);
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .qr-label {
+      margin: 28px 0 0;
+      color: var(--blue);
+      font-size: 32px;
+      font-weight: 720;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .qr-label span {
+      display: block;
+    }
+
+    .cta-ghost-art {
+      position: absolute;
+      z-index: -2;
+      inset: 0 0 0 auto;
+      width: 52%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 72%;
+      opacity: .075;
+      filter: saturate(1.05);
+    }
+
+    .accent--blue { --accent: var(--blue); }
+    .accent--orange { --accent: var(--orange); }
+    .accent--coral { --accent: var(--coral); }
+    .accent--teal { --accent: var(--teal); }
+    .accent--gold { --accent: var(--gold); }
+    .accent--violet { --accent: var(--violet); }
+
+    body.is-static .scene *,
+    body.is-static .scene::before,
+    body.is-static .scene::after {
+      animation: none !important;
+    }
+
+    @keyframes scene-wash {
+      0% { opacity: 0; transform: translateX(-100%); }
+      45%, 55% { opacity: .96; transform: translateX(0); }
+      100% { opacity: 0; transform: translateX(100%); }
+    }
+
+    @keyframes brand-enter {
+      from { opacity: 0; transform: translateX(-28px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes meta-enter {
+      from { opacity: 0; transform: translateY(-18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes eyebrow-enter {
+      from { opacity: 0; transform: translateX(-30px) scaleX(.88); }
+      to { opacity: 1; transform: translateX(0) scaleX(1); }
+    }
+
+    @keyframes title-enter {
+      from { opacity: 0; transform: translateY(42px); filter: blur(8px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    @keyframes body-enter {
+      from { opacity: 0; transform: translateX(-26px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes art-enter {
+      from { opacity: 0; transform: translateX(48px) scale(.975); clip-path: inset(0 0 0 20% round 48px); }
+      to { opacity: 1; transform: translateX(0) scale(1); clip-path: inset(0 round 48px); }
+    }
+
+    @keyframes rule-draw {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    @keyframes step-enter {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes tag-enter {
+      from { opacity: 0; transform: scale(.86) translateY(14px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes group-enter {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes course-enter {
+      from { opacity: 0; transform: translateY(36px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes qr-panel-enter {
+      from { opacity: 0; transform: scale(.92) rotate(1deg); }
+      to { opacity: 1; transform: scale(1) rotate(0); }
+    }
+
+    @keyframes ambient-breathe {
+      from { transform: scale(.92); opacity: .5; }
+      to { transform: scale(1.07); opacity: 1; }
+    }
+
+    @keyframes ambient-slide {
+      from { transform: translateX(-24px) scaleX(.78); }
+      to { transform: translateX(24px) scaleX(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scene *,
+      .scene::before,
+      .scene::after,
+      .stage.is-transitioning::after {
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="viewport" aria-label="K12 覺知 Reel 16 比 9 預覽">
+    <div class="stage" id="stage" aria-live="polite"></div>
+  </main>
+
+  <script src="./scenes.js"></script>
+  <script>
+    (() => {
+      "use strict";
+
+      const scenes = window.TV_REEL_SCENES;
+      const stage = document.getElementById("stage");
+      const params = new URLSearchParams(window.location.search);
+      const requestedScene = Number.parseInt(params.get("scene") ?? "0", 10);
+      const staticMode = params.get("static") === "1";
+      let currentIndex = Number.isFinite(requestedScene)
+        ? Math.min(Math.max(requestedScene, 0), scenes.length - 1)
+        : 0;
+      let advanceTimer = 0;
+
+      const escapeHtml = (value) => String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+
+      const titleHtml = (scene) => scene.title
+        .map((line) => `<span>${escapeHtml(line)}</span>`)
+        .join("");
+
+      const bodyHtml = (scene) => scene.body.length
+        ? `<div class="body-copy">${scene.body.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}</div>`
+        : "";
+
+      const headerHtml = (scene, index) => `
+        <header class="scene-header">
+          <img class="brand" src="./assets/k12-awareness-horizontal.png" alt="K12 覺知素養教育學苑">
+          <div class="scene-meta" aria-label="播放資訊">
+            <span>${String(index + 1).padStart(2, "0")} / ${scenes.length}</span>
+            <span>${scene.duration.toFixed(1)} 秒</span>
+          </div>
+        </header>`;
+
+      const copyHtml = (scene, className = "copy") => `
+        <div class="${className}">
+          <p class="eyebrow">${escapeHtml(scene.eyebrow)}</p>
+          <h1 class="scene-title">${titleHtml(scene)}</h1>
+          ${bodyHtml(scene)}
+        </div>`;
+
+      const artHtml = (scene) => `
+        <figure class="art-panel">
+          <img src="${escapeHtml(scene.image)}" alt="" style="object-position:${escapeHtml(scene.focus || "center")}">
+        </figure>`;
+
+      function renderCover(scene) {
+        return `<div class="layout--cover">${copyHtml(scene)}${artHtml(scene)}</div>`;
+      }
+
+      function renderPain(scene) {
+        return `<div class="layout--pain">${copyHtml(scene)}${artHtml(scene)}</div>`;
+      }
+
+      function renderSteps(scene) {
+        const labels = ["覺察當下", "接納一切", "有意識的回應"];
+        const rail = labels.map((label, index) => `
+          <div class="step-card${index + 1 === scene.step ? " is-current" : ""}">
+            <span class="step-number">0${index + 1}</span>
+            <span>${escapeHtml(label)}</span>
+          </div>`).join("");
+        return `
+          <div class="layout--steps">
+            ${copyHtml(scene, "copy steps-copy")}
+            ${artHtml(scene)}
+            <div class="step-rail" aria-label="覺知三個步驟">${rail}</div>
+          </div>`;
+      }
+
+      function renderSystems(scene) {
+        const tags = scene.tags?.length
+          ? `<div class="tag-list">${scene.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}</div>`
+          : "";
+        const groups = scene.groups?.length
+          ? `<div class="ability-groups">${scene.groups.map((group) => `
+              <section class="ability-group">
+                <span class="ability-number">${escapeHtml(group.number)}</span>
+                <h3>${escapeHtml(group.title)}</h3>
+                <p>${group.items.map(escapeHtml).join("・")}</p>
+              </section>`).join("")}</div>`
+          : "";
+        return `
+          <div class="layout--systems">
+            <div class="copy">
+              <p class="eyebrow">${escapeHtml(scene.eyebrow)}</p>
+              <h1 class="scene-title">${titleHtml(scene)}</h1>
+              ${bodyHtml(scene)}
+              ${tags}
+              ${groups}
+            </div>
+            ${artHtml(scene)}
+          </div>`;
+      }
+
+      function renderCourse(scene) {
+        const cards = scene.cards.map((card) => `
+          <section class="course-card">
+            <h2>${escapeHtml(card.title)}</h2>
+            <p class="course-time">${escapeHtml(card.time)}</p>
+            <p class="course-capacity">${escapeHtml(card.capacity)}</p>
+          </section>`).join("");
+        return `
+          <div class="layout--course">
+            <p class="eyebrow">${escapeHtml(scene.eyebrow)}</p>
+            <h1 class="scene-title">${titleHtml(scene)}</h1>
+            <div class="course-grid">${cards}</div>
+          </div>`;
+      }
+
+      function renderCta(scene) {
+        if (scene.id === "course-info") return renderCourse(scene);
+        if (scene.id === "cta-action") {
+          return `
+            <img class="cta-ghost-art" src="${escapeHtml(scene.image)}" alt="">
+            <div class="layout--cta">
+              ${copyHtml(scene)}
+              <section class="cta-qr-panel" aria-label="加入 K12 官方 LINE">
+                <div class="qr-quiet-zone">
+                  <img class="qr-code" src="${escapeHtml(scene.qr)}" alt="加入 K12 官方 LINE 的 QR Code">
+                </div>
+                <p class="qr-label"><span>掃描 QR Code</span><span>加入 K12 官方 LINE</span></p>
+              </section>
+            </div>`;
+        }
+        return `<div class="layout--cta">${copyHtml(scene)}${artHtml(scene)}</div>`;
+      }
+
+      const renderers = {
+        cover: renderCover,
+        pain: renderPain,
+        steps: renderSteps,
+        systems: renderSystems,
+        cta: renderCta,
+      };
+
+      function renderScene(index) {
+        const scene = scenes[index];
+        stage.innerHTML = `
+          <section class="scene scene--${escapeHtml(scene.id)} accent--${escapeHtml(scene.accent)}" data-scene="${escapeHtml(scene.id)}">
+            ${headerHtml(scene, index)}
+            ${renderers[scene.family](scene)}
+          </section>`;
+        document.title = `${String(index + 1).padStart(2, "0")}｜${scene.title.join(" ")}｜K12 覺知 Reel`;
+      }
+
+      function scheduleAdvance() {
+        window.clearTimeout(advanceTimer);
+        if (staticMode) return;
+        const scene = scenes[currentIndex];
+        advanceTimer = window.setTimeout(() => {
+          stage.classList.add("is-transitioning");
+          window.setTimeout(() => {
+            currentIndex = (currentIndex + 1) % scenes.length;
+            renderScene(currentIndex);
+          }, 280);
+          window.setTimeout(() => {
+            stage.classList.remove("is-transitioning");
+            scheduleAdvance();
+          }, 560);
+        }, scene.duration * 1000);
+      }
+
+      function fitStage() {
+        const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+        const left = (window.innerWidth - 1920 * scale) / 2;
+        const top = (window.innerHeight - 1080 * scale) / 2;
+        stage.style.transform = `translate(${left}px, ${top}px) scale(${scale})`;
+      }
+
+      document.body.classList.toggle("is-static", staticMode);
+      renderScene(currentIndex);
+      fitStage();
+      scheduleAdvance();
+      window.addEventListener("resize", fitStage);
+
+      window.TV_REEL_PLAYER = {
+        get currentScene() { return currentIndex; },
+        get totalDuration() {
+          return Number(scenes.reduce((total, scene) => total + scene.duration, 0).toFixed(1));
+        },
+        show(index) {
+          currentIndex = Math.min(Math.max(Number(index) || 0, 0), scenes.length - 1);
+          renderScene(currentIndex);
+          scheduleAdvance();
+        },
+      };
+    })();
+  </script>
+</body>
+</html>

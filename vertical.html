@@ -11,6 +11,11 @@
 <script src="vertical/cloud_config.js"></script>
 <script src="vertical/defaults.js"></script>
 <style>
+  .progress,
+  .controls {
+    display: none !important;
+  }
+
   :root {
     /* === 預設配色 ・ 🌿 翠玉綠 === */
     --brand: #1f8a5c;
@@ -2919,7 +2924,6 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft') prevSlide();
     if (e.key === 'ArrowRight') nextSlide();
-    if (e.key === ' ') { e.preventDefault(); togglePause(); }
     if (e.key === 'f' || e.key === 'F') document.documentElement.requestFullscreen();
   });
 

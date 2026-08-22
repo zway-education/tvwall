@@ -88,6 +88,18 @@
       display: block;
     }
 
+    .slide--captured-controls::after {
+      content: "";
+      position: absolute;
+      z-index: 3;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 58px;
+      background: linear-gradient(180deg, rgba(255, 253, 247, .94), var(--paper) 34%, var(--paper));
+      pointer-events: none;
+    }
+
     .capture-video {
       width: 100%;
       height: 100%;
@@ -961,30 +973,6 @@
       transform: rotate(.7deg);
     }
 
-    .focus-event__poster-qr-mask {
-      position: absolute;
-      z-index: 4;
-      top: 540px;
-      left: 300px;
-      display: grid;
-      width: 225px;
-      height: 200px;
-      box-sizing: border-box;
-      place-items: center;
-      padding: 24px;
-      border: 5px solid var(--focus-green);
-      border-radius: 26px;
-      background: #fff5cf;
-      box-shadow: 0 16px 28px rgba(36, 97, 79, .22);
-      color: var(--focus-green-dark);
-      font-size: 27px;
-      font-weight: 950;
-      line-height: 1.35;
-      text-align: center;
-      transform: rotate(.7deg);
-      pointer-events: none;
-    }
-
     .focus-event__content {
       position: relative;
       z-index: 2;
@@ -1296,21 +1284,20 @@
   <template id="focusEvent">
     <section class="slide focus-event">
       <div class="focus-event__poster-wrap">
-        <img class="focus-event__poster" src="./focus-event-poster.jpg" alt="覺知 SEL 親子成長體驗活動原海報">
-        <div class="focus-event__poster-qr-mask" aria-label="報名請掃右側 QR Code">報名請掃<br>右側 QR Code</div>
+        <img class="focus-event__poster" src="./focus-event-poster-20260829.png" alt="8 月 29 日、9 月 5 日與 9 月 12 日開智班試上課程海報">
       </div>
       <div class="focus-event__content">
-        <p class="focus-event__eyebrow">覺知 × SEL 親子成長體驗活動</p>
-        <h1>兒童開智班・6～10 歲<strong>小小專注實踐家</strong></h1>
-        <p class="focus-event__meta"><span>親子共學</span>目標管理 × 專注練習</p>
+        <p class="focus-event__eyebrow">覺知 × SEL 開智班試上課程</p>
+        <h1>兒童開智班・6～10 歲<strong>開智班試上課程</strong></h1>
+        <p class="focus-event__meta"><span>親子共學</span>目標管理 × 專注投入</p>
         <div class="focus-event__outcomes">
           <article class="focus-outcome">
             <b>自我覺察</b>
             <p>認識情緒與想法，建立自信與內在力量。</p>
           </article>
           <article class="focus-outcome">
-            <b>專注訓練</b>
-            <p>提升專注力，練習把每件事好好完成。</p>
+            <b>專注投入</b>
+            <p>提升專注力，逐步把每件事好好完成。</p>
           </article>
           <article class="focus-outcome">
             <b>溝通表達</b>
@@ -1319,11 +1306,11 @@
         </div>
         <div class="focus-event__footer">
           <div class="focus-event__facts">
-            <div class="focus-event__fact"><strong>時間｜</strong>2026/8/1（六）15:00–17:00<br>2026/8/15（六）14:00、16:00 兩場</div>
+            <div class="focus-event__fact"><strong>時間｜</strong>2026/8/29（六）、9/5（六）、9/12（六）<br>14:00–14:50</div>
             <div class="focus-event__fact"><strong>地點｜</strong>高雄市鼓山區美術東三路 86 號</div>
           </div>
           <a class="focus-event__qr" href="https://docs.google.com/forms/d/e/1FAIpQLSdkb9eI8eLsy_cb8ZtFJ5btgGARnx7UyAUeQGhmY3wV7kYvpw/viewform?usp=header" target="_blank" rel="noopener">
-            <img src="./focus-event-qr.png" alt="親子成長體驗活動報名 QR Code">
+            <img src="./focus-event-qr.png" alt="開智班試上課程報名 QR Code">
             <strong>掃碼立即報名</strong>
           </a>
         </div>
@@ -1367,7 +1354,7 @@
       { kind: "template", id: "activityIntro", label: "成大活動 1/3", duration: 11000 },
       { kind: "template", id: "activityRoutes", label: "成大活動 2/3", duration: 12000 },
       { kind: "template", id: "activitySignup", label: "成大活動 3/3", duration: 11000 },
-      { kind: "template", id: "focusEvent", label: "親子體驗活動 1/1", duration: 12000 }
+      { kind: "template", id: "focusEvent", label: "開智班試上課程 1/1", duration: 12000 }
     ];
 
     const viewport = document.getElementById("tvViewport");
@@ -1403,6 +1390,7 @@
           image.className = "capture";
           image.src = item.src;
           image.alt = item.label;
+          if (item.src.startsWith("./new-")) slide.classList.add("slide--captured-controls");
           if (index === 0) image.classList.add("capture--bright");
           if (index === 4) image.classList.add("capture--warm-bright");
           slide.appendChild(image);

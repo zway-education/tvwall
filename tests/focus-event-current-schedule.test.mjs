@@ -16,8 +16,8 @@ test("開智班試上課程不再顯示已過期場次", () => {
   assert.doesNotMatch(focusEvent, /2026\/8\/15/);
 });
 
-test("使用重新排版的開智班試上課程海報", () => {
-  assert.match(focusEvent, /src="\.\/focus-event-poster-20260829\.png"/);
+test("使用網頁版 GPT 重新設計的開智班試上課程海報", () => {
+  assert.match(focusEvent, /src="\.\/focus-event-poster-20260829-gpt\.png"/);
   assert.doesNotMatch(focusEvent, /focus-event__poster-update/);
   assert.doesNotMatch(focusEvent, /focus-event__poster-qr-mask/);
 });

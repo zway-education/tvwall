@@ -17,7 +17,7 @@ test("開智班試上課程不再顯示已過期場次", () => {
 });
 
 test("使用網頁版 GPT 重新設計的開智班試上課程海報", () => {
-  assert.match(focusEvent, /src="\.\/focus-event-poster-20260829-gpt\.png"/);
+  assert.match(focusEvent, /src="\.\/focus-event-poster-20260829-gpt\.png\?v=20260822-bright"/);
   assert.doesNotMatch(focusEvent, /focus-event__poster-update/);
   assert.doesNotMatch(focusEvent, /focus-event__poster-qr-mask/);
 });

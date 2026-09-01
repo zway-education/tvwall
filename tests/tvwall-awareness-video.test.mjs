@@ -1,23 +1,35 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { test } from "node:test";
 
 const html = readFileSync("index.html", "utf8");
 
-test("adds the awareness Reel as a timed video slide after the SEL pages", () => {
-  assert.match(html, /kind:\s*"video"/);
-  assert.match(html, /src:\s*"\.\/assets\/awareness-reel-16x9\.mp4\?v=[^"]+"/);
-  assert.match(html, /label:\s*"覺知 SEL 影片 1\/1"/);
-  assert.match(html, /duration:\s*106100/);
+test("adds both current course videos after the SEL pages", () => {
+  const awarenessAsset = "assets/awareness-sel-course-intro-quality.mp4";
+  const pdcaAsset = "assets/pdca-goal-management-intro-poster.mp4";
 
-  const selPosition = html.indexOf("...Array.from({ length: 6 }");
-  const videoPosition = html.indexOf('kind: "video"');
+  assert.equal(existsSync(awarenessAsset), true, "missing current awareness SEL course video");
+  assert.equal(existsSync(pdcaAsset), true, "missing current PDCA course video");
+  assert.ok(statSync(awarenessAsset).size > 1_000_000, "awareness SEL course video is unexpectedly small");
+  assert.ok(statSync(pdcaAsset).size > 1_000_000, "PDCA course video is unexpectedly small");
+
+  assert.match(html, /src:\s*"\.\/assets\/awareness-sel-course-intro-quality\.mp4\?v=[^"]+"/);
+  assert.match(html, /label:\s*"覺知 SEL 課程介紹 1\/2"/);
+  assert.match(html, /duration:\s*144000/);
+  assert.match(html, /src:\s*"\.\/assets\/pdca-goal-management-intro-poster\.mp4\?v=[^"]+"/);
+  assert.match(html, /label:\s*"PDCA 目標管理課程介紹 2\/2"/);
+  assert.match(html, /duration:\s*81000/);
+
+  const selPosition = html.indexOf('id: "selCoreTemplate"');
+  const awarenessPosition = html.indexOf("awareness-sel-course-intro-quality.mp4");
+  const pdcaPosition = html.indexOf("pdca-goal-management-intro-poster.mp4");
   const activityPosition = html.indexOf('id: "activityIntro"');
   assert.ok(selPosition > -1);
-  assert.ok(videoPosition > selPosition);
-  assert.ok(videoPosition < activityPosition);
+  assert.ok(awarenessPosition > selPosition);
+  assert.ok(pdcaPosition > awarenessPosition);
+  assert.ok(pdcaPosition < activityPosition);
   assert.match(html, /URLSearchParams\(window\.location\.search\)\.get\("start"\)/);
-  assert.match(html, /\?\s*startParam\s*:\s*12/);
+  assert.match(html, /\?\s*startParam\s*:\s*13/);
 });
 
 test("resets and plays the awareness video muted only when its slide is active", () => {

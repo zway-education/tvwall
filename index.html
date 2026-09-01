@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <link rel="icon" href="./icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Huninn&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
   <title>K12 電視牆 15 頁整合 HTML 預覽</title>
   <style>
     :root {
@@ -17,6 +20,14 @@
       --activity-orange: #f4772b;
       --activity-yellow: #ffc84d;
       --activity-ink: #334f46;
+      --legacy-green-deep: #073b22;
+      --legacy-green-mid: #1d5b3f;
+      --legacy-green-bright: #0b5334;
+      --legacy-gold: #e5be64;
+      --legacy-cream: #fffaf0;
+      --tv-supporting-size: 24px;
+      --tv-body-size: 28px;
+      --tv-title-size: 68px;
     }
 
     * { box-sizing: border-box; }
@@ -255,6 +266,7 @@
         radial-gradient(circle at 15% 12%, rgba(255, 209, 91, .18), transparent 25%),
         linear-gradient(135deg, #fffdf7, #f3f8ed);
       color: #153f31;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
     }
 
     .expert-slide::before {
@@ -1121,6 +1133,588 @@
       line-height: 1;
     }
 
+    .green-question-slide {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(430px, .55fr);
+      gap: 94px;
+      padding: 100px 130px 94px;
+      overflow: hidden;
+      color: var(--legacy-cream);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background:
+        radial-gradient(circle at 82% 50%, rgba(29, 91, 63, .82) 0 12%, transparent 39%),
+        radial-gradient(circle at 15% 112%, rgba(29, 91, 63, .6), transparent 42%),
+        linear-gradient(115deg, var(--legacy-green-deep) 0%, var(--legacy-green-bright) 58%, var(--legacy-green-deep) 100%);
+      isolation: isolate;
+    }
+
+    .green-question-slide::before,
+    .green-question-slide::after {
+      position: absolute;
+      z-index: -1;
+      border: 1px solid rgba(229, 190, 100, .16);
+      border-radius: 50%;
+      content: "";
+      pointer-events: none;
+    }
+
+    .green-question-slide::before {
+      top: -330px;
+      right: -120px;
+      width: 940px;
+      height: 940px;
+      box-shadow: 0 0 0 70px rgba(255, 250, 240, .025), 0 0 0 150px rgba(229, 190, 100, .035);
+    }
+
+    .green-question-slide::after {
+      bottom: -430px;
+      left: -270px;
+      width: 760px;
+      height: 760px;
+      box-shadow: 0 0 0 54px rgba(255, 250, 240, .022);
+    }
+
+    .green-question-copy {
+      align-self: center;
+      min-width: 0;
+    }
+
+    .green-question-eyebrow {
+      margin: 0 0 20px;
+      color: var(--legacy-gold);
+      font: 700 29px/1.35 "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      letter-spacing: .22em;
+    }
+
+    .green-question-title {
+      max-width: 1100px;
+      margin: 0;
+      color: var(--legacy-cream);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      font-size: clamp(72px, 5.2vw, 100px);
+      font-weight: 900;
+      letter-spacing: .025em;
+      line-break: strict;
+      line-height: 1.16;
+      text-wrap: balance;
+    }
+
+    .green-question-title span {
+      color: var(--legacy-gold);
+      text-shadow: 0 3px 22px rgba(0, 0, 0, .18);
+    }
+
+    .green-question-rule {
+      display: block;
+      width: 120px;
+      height: 5px;
+      margin: 35px 0 32px;
+      border-radius: 999px;
+      background: var(--legacy-gold);
+    }
+
+    .green-question-list {
+      display: grid;
+      gap: 17px;
+      max-width: 1100px;
+    }
+
+    .green-question-row {
+      display: grid;
+      grid-template-columns: 98px minmax(0, 1fr);
+      align-items: center;
+      min-height: 105px;
+      margin: 0;
+      padding: 16px 34px 17px 25px;
+      border: 1px solid rgba(255, 250, 240, .13);
+      border-left: 5px solid var(--legacy-gold);
+      border-radius: 10px;
+      background: linear-gradient(90deg, rgba(255, 250, 240, .105), rgba(255, 250, 240, .045));
+      box-shadow: 0 14px 35px rgba(0, 20, 10, .12);
+    }
+
+    .green-question-number {
+      color: var(--legacy-gold);
+      font: 900 49px/1 "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.035em;
+    }
+
+    .green-question-text {
+      margin: 0;
+      color: var(--legacy-cream);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      font-size: clamp(34px, 2.15vw, 42px);
+      font-weight: 400;
+      letter-spacing: .025em;
+      line-break: strict;
+      line-height: 1.35;
+      text-wrap: balance;
+    }
+
+    .green-question-contact {
+      position: relative;
+      align-self: center;
+      justify-self: stretch;
+      padding: 49px 44px 43px;
+      border: 1px solid rgba(229, 190, 100, .34);
+      border-radius: 24px;
+      background: rgba(4, 42, 24, .68);
+      box-shadow: 0 30px 70px rgba(0, 20, 10, .28);
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .green-question-contact::before {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      bottom: 18px;
+      left: 18px;
+      border: 1px solid rgba(255, 250, 240, .08);
+      border-radius: 16px;
+      content: "";
+      pointer-events: none;
+    }
+
+    .green-question-qr-frame {
+      position: relative;
+      display: grid;
+      width: 354px;
+      height: 354px;
+      margin: 0 auto 29px;
+      padding: 22px;
+      border-radius: 18px;
+      background: #fff;
+      place-items: center;
+    }
+
+    .green-question-qr-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .green-question-contact-title {
+      margin: 0;
+      color: var(--legacy-gold);
+      font: 800 36px/1.2 "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      letter-spacing: .06em;
+    }
+
+    .green-question-contact-copy {
+      margin: 11px 0 0;
+      color: var(--legacy-cream);
+      font: 700 28px/1.4 "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      letter-spacing: .08em;
+    }
+
+    .sel-slide {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      color: #123f70;
+      font-family: "Huninn", "Microsoft JhengHei", sans-serif;
+      line-break: strict;
+      word-break: keep-all;
+    }
+
+    .sel-slide__background {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .sel-slide::after {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(90deg, #fffef9 0 53%, rgba(255, 254, 249, .985) 61%, rgba(255, 254, 249, .72) 70%, transparent 82%);
+      content: "";
+      pointer-events: none;
+    }
+
+    .sel-slide::before {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 3;
+      height: 58px;
+      background: linear-gradient(180deg, rgba(255, 254, 249, 0), #fffef9 42%);
+      content: "";
+      pointer-events: none;
+    }
+
+    .sel-slide__copy {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      width: 1050px;
+      height: 100%;
+      flex-direction: column;
+      padding: 72px 0 66px 92px;
+    }
+
+    .sel-eyebrow {
+      align-self: flex-start;
+      margin: 0 0 20px;
+      padding: 9px 18px 10px;
+      border: 2px solid #ef7a2f;
+      border-radius: 999px;
+      color: #d85b19;
+      font-size: var(--tv-supporting-size);
+      font-weight: 700;
+      letter-spacing: .09em;
+      line-height: 1;
+    }
+
+    .sel-title {
+      max-width: 950px;
+      margin: 0;
+      color: #0d5796;
+      font-family: "Zen Maru Gothic", "Huninn", sans-serif;
+      font-size: var(--tv-title-size);
+      font-weight: 900;
+      letter-spacing: -.025em;
+      line-height: 1.18;
+      text-wrap: balance;
+    }
+
+    .sel-title strong {
+      display: block;
+      color: #f06222;
+      font-weight: 900;
+    }
+
+    .sel-tagline {
+      max-width: 920px;
+      margin: 18px 0 0;
+      color: #365970;
+      font-size: var(--tv-body-size);
+      font-weight: 500;
+      letter-spacing: .015em;
+      line-height: 1.45;
+      text-wrap: pretty;
+    }
+
+    .sel-path {
+      display: flex;
+      align-items: center;
+      gap: 17px;
+      margin-top: 28px;
+      color: #173e5c;
+      font-size: 34px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .sel-path span:not(.sel-path__arrow) {
+      padding-bottom: 7px;
+      border-bottom: 3px solid rgba(239, 122, 47, .48);
+    }
+
+    .sel-path__arrow {
+      color: #f06222;
+      font-size: 27px;
+    }
+
+    .sel-slide--core .sel-slide__copy {
+      width: 1120px;
+      padding-top: 76px;
+      padding-bottom: 88px;
+    }
+
+    .sel-slide--core .sel-title {
+      max-width: 1040px;
+      font-size: 76px;
+      line-height: 1.14;
+    }
+
+    .sel-slide--core .sel-title strong {
+      margin-top: 8px;
+    }
+
+    .sel-slide--core .sel-path {
+      align-self: flex-start;
+      gap: 18px;
+      margin-top: 31px;
+      padding: 16px 24px 18px;
+      border-left: 6px solid #f06222;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, .9);
+      box-shadow: 0 12px 28px rgba(20, 75, 115, .1);
+      font-size: 38px;
+    }
+
+    .sel-slide--core .sel-path span:not(.sel-path__arrow) {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .sel-slide--core .sel-path__arrow {
+      color: #ef6d25;
+      font-size: 31px;
+    }
+
+    .sel-slide--core .sel-tagline {
+      max-width: 850px;
+      margin-top: 27px;
+      padding-left: 21px;
+      border-left: 3px solid rgba(13, 87, 150, .24);
+      color: #294e66;
+      font-size: 31px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .sel-slide--core .sel-contact {
+      margin-top: 34px;
+    }
+
+    .sel-groups {
+      display: grid;
+      gap: 15px;
+      margin-top: 27px;
+    }
+
+    .sel-group {
+      padding: 16px 21px 17px;
+      border: 1px solid rgba(22, 108, 192, .18);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .9);
+      box-shadow: 0 11px 26px rgba(20, 75, 115, .08);
+    }
+
+    .sel-group__heading {
+      display: flex;
+      align-items: baseline;
+      gap: 13px;
+      color: #e2601e;
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .sel-group__heading small {
+      color: #557180;
+      font-size: 20px;
+      font-weight: 500;
+    }
+
+    .sel-group__items {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .sel-group__items span {
+      flex: 1 1 0;
+      padding: 10px 13px 11px;
+      border-radius: 9px;
+      background: #eef7ff;
+      color: #155b94;
+      font-size: var(--tv-supporting-size);
+      font-weight: 700;
+      line-height: 1.25;
+      text-align: center;
+    }
+
+    .sel-group--green .sel-group__items span {
+      background: #edf8f2;
+      color: #287157;
+    }
+
+    .sel-assist {
+      margin: 17px 0 0;
+      color: #a76118;
+      font-size: var(--tv-supporting-size);
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .sel-contact {
+      display: grid;
+      grid-template-columns: 98px minmax(0, 1fr);
+      align-items: center;
+      gap: 18px;
+      width: 460px;
+      margin-top: auto;
+      padding: 11px 17px;
+      border: 2px solid rgba(23, 108, 192, .34);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 12px 24px rgba(20, 75, 115, .12);
+    }
+
+    .sel-contact img {
+      width: 98px;
+      height: 98px;
+      object-fit: contain;
+    }
+
+    .sel-contact small,
+    .sel-contact strong,
+    .sel-contact span {
+      display: block;
+    }
+
+    .sel-contact small {
+      color: #ef6d25;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .sel-contact strong {
+      margin-top: 2px;
+      color: #155b94;
+      font-family: "Zen Maru Gothic", "Huninn", sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .sel-contact span {
+      margin-top: 4px;
+      color: #647781;
+      font-size: 18px;
+      line-height: 1.3;
+    }
+
+    .sel-class-title {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      margin: 0;
+      color: #0d5796;
+      font-family: "Zen Maru Gothic", "Huninn", sans-serif;
+      line-height: 1;
+    }
+
+    .sel-class-title strong {
+      font-size: 82px;
+      font-weight: 900;
+    }
+
+    .sel-class-title span {
+      color: #f06222;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .sel-date-card {
+      width: 650px;
+      margin-top: 27px;
+      padding: 19px 25px 20px;
+      border: 2px solid rgba(23, 108, 192, .28);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, .94);
+      box-shadow: 0 13px 28px rgba(20, 75, 115, .1);
+    }
+
+    .sel-date-card__date {
+      color: #f06222;
+      font-family: "Zen Maru Gothic", "Huninn", sans-serif;
+      font-size: 70px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .sel-date-card__date small {
+      margin-left: 12px;
+      color: #d46227;
+      font-size: 24px;
+    }
+
+    .sel-date-card__time {
+      margin-top: 13px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(23, 108, 192, .23);
+      color: #153f70;
+      font-size: 30px;
+      font-weight: 700;
+    }
+
+    .sel-class-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 19px;
+      color: #3e5868;
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .sel-class-meta strong {
+      color: #e65e1d;
+    }
+
+    .sel-learning {
+      width: 850px;
+      margin-top: 21px;
+      padding: 17px 21px 18px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .9);
+      box-shadow: 0 12px 28px rgba(20, 75, 115, .09);
+    }
+
+    .sel-learning__title {
+      color: #a85c17;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .sel-learning__steps {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-top: 12px;
+      color: #155b94;
+      font-size: 23px;
+      font-weight: 700;
+    }
+
+    .sel-learning__steps b {
+      color: #f06222;
+      font-weight: 700;
+    }
+
+    .activity,
+    .focus-event {
+      font-family: "Huninn", "Microsoft JhengHei", sans-serif;
+      line-break: strict;
+      word-break: keep-all;
+    }
+
+    .activity-title,
+    .activity h1,
+    .activity h2,
+    .focus-event h1,
+    .focus-outcome b {
+      font-family: "Zen Maru Gothic", "Huninn", sans-serif;
+      text-wrap: balance;
+    }
+
+    .expert-heading,
+    .expert-card h2 {
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      text-wrap: balance;
+    }
+
+    .expert-heading { font-size: 64px; }
+    .expert-card h2 { font-size: 36px; }
+    .expert-card p { font-size: var(--tv-supporting-size); font-weight: 500; }
+    .activity__lead,
+    .route p,
+    .speaker-band p,
+    .focus-event__meta,
+    .focus-outcome p { text-wrap: pretty; }
+
     @media (prefers-reduced-motion: reduce) {
       .slide { transition: none; }
     }
@@ -1134,6 +1728,162 @@
       </div>
     </div>
   </main>
+
+  <template id="greenQuestionTemplate">
+    <section class="slide green-question-slide" data-green-question-slide aria-label="三個常見教養問題">
+      <div class="green-question-copy">
+        <p class="green-question-eyebrow">你也常有這些困惑嗎？</p>
+        <h1 class="green-question-title">3 個問題，<br>覺知教育有<span>答案</span>。</h1>
+        <span class="green-question-rule" aria-hidden="true"></span>
+        <div class="green-question-list">
+          <article class="green-question-row">
+            <span class="green-question-number">01</span>
+            <p class="green-question-text">孩子為什麼不喜歡讀書嗎？</p>
+          </article>
+          <article class="green-question-row">
+            <span class="green-question-number">02</span>
+            <p class="green-question-text">孩子為什麼動不動就生氣嗎？</p>
+          </article>
+          <article class="green-question-row">
+            <span class="green-question-number">03</span>
+            <p class="green-question-text">孩子為什麼坐不住、寫作業要 3 小時嗎？</p>
+          </article>
+        </div>
+      </div>
+      <aside class="green-question-contact" aria-label="加入 LINE 好友">
+        <span class="green-question-qr-frame"><img src="./line-qr.png" alt="K12 LINE 好友 QR Code"></span>
+        <p class="green-question-contact-title">加 LINE 好友</p>
+        <p class="green-question-contact-copy">與我們聊一聊</p>
+      </aside>
+    </section>
+  </template>
+
+  <template id="selCoreTemplate">
+    <section class="slide sel-slide sel-slide--core" data-typography-upgraded aria-label="覺知 SEL 核心">
+      <img class="sel-slide__background" src="./new-1.png?v=20260727-core-copy" alt="孩子辨認情緒、表達需要與合作的插圖">
+      <div class="sel-slide__copy">
+        <p class="sel-eyebrow">覺知 SEL 核心</p>
+        <h1 class="sel-title">孩子有情緒時<strong>不只要他冷靜，更要教他怎麼辦</strong></h1>
+        <div class="sel-path" aria-label="看懂情緒，說出需要，做出選擇">
+          <span>看懂情緒</span><b class="sel-path__arrow">→</b><span>說出需要</span><b class="sel-path__arrow">→</b><span>做出選擇</span>
+        </div>
+        <p class="sel-tagline">覺知 SEL 讓孩子在情緒與人際情境中理解當下，逐步把方法運用在生活裡。</p>
+        <div class="sel-contact">
+          <img src="./line-qr.png" alt="K12 LINE 好友 QR Code">
+          <span><small>LINE 聯繫</small><strong>掃碼預約體驗</strong><span>先體驗，再決定是否適合孩子</span></span>
+        </div>
+      </div>
+    </section>
+  </template>
+
+  <template id="selAssessmentTemplate">
+    <section class="slide sel-slide" data-typography-upgraded aria-label="覺知全人測評">
+      <img class="sel-slide__background" src="./new-2.png" alt="家長與老師一起理解孩子特質與需要的插圖">
+      <div class="sel-slide__copy">
+        <p class="sel-eyebrow">覺知全人測評</p>
+        <h2 class="sel-title">先看懂孩子<strong>再給對支持</strong></h2>
+        <p class="sel-tagline">不是替孩子貼標籤，而是整合孩子、家長與老師的觀察，讓家長少一點誤解，多一點真正理解。</p>
+        <div class="sel-groups">
+          <section class="sel-group">
+            <div class="sel-group__heading">家長會看見 <small>從猜測走向理解</small></div>
+            <div class="sel-group__items"><span>看見優勢與特質</span><span>理解情緒與壓力</span><span>找到支持方向</span></div>
+          </section>
+          <section class="sel-group sel-group--green">
+            <div class="sel-group__heading">測評後能做什麼 <small>把理解帶回生活</small></div>
+            <div class="sel-group__items"><span>少一點反覆催促</span><span>對話更有依據</span><span>陪伴更有方向</span></div>
+          </section>
+        </div>
+        <p class="sel-assist">看懂孩子，是精準陪伴的第一步。</p>
+        <div class="sel-contact"><img src="./line-qr.png" alt="K12 LINE 好友 QR Code"><span><small>LINE 聯繫</small><strong>掃碼預約體驗</strong><span>先體驗，再決定是否適合孩子</span></span></div>
+      </div>
+    </section>
+  </template>
+
+  <template id="selCourseTemplate">
+    <section class="slide sel-slide" data-typography-upgraded aria-label="覺知 SEL 課程">
+      <img class="sel-slide__background" src="./new-3.png" alt="孩子在課堂中表達、思考與合作的插圖">
+      <div class="sel-slide__copy">
+        <p class="sel-eyebrow">覺知 SEL 課程</p>
+        <h2 class="sel-title">孩子不只要聽懂<strong>更需要在情境中知道怎麼做</strong></h2>
+        <p class="sel-tagline">把情緒、人際與選擇，變成孩子在生活裡能理解、能判斷，也能採取行動的方法。</p>
+        <div class="sel-groups">
+          <section class="sel-group">
+            <div class="sel-group__heading">課堂如何進行 <small>把抽象能力拆成步驟</small></div>
+            <div class="sel-group__items"><span>看懂情緒</span><span>說出需要</span><span>合作解題</span></div>
+          </section>
+          <section class="sel-group sel-group--green">
+            <div class="sel-group__heading">孩子逐步建立 <small>能運用在生活裡的能力</small></div>
+            <div class="sel-group__items"><span>自我覺察</span><span>自我管理</span><span>負責選擇</span></div>
+          </section>
+        </div>
+        <p class="sel-assist">課程以 SEL 為架構，結合腦科學、正向心理學與管理學觀點。</p>
+        <div class="sel-contact"><img src="./line-qr.png" alt="K12 LINE 好友 QR Code"><span><small>LINE 聯繫</small><strong>掃碼預約體驗</strong><span>先體驗，再決定是否適合孩子</span></span></div>
+      </div>
+    </section>
+  </template>
+
+  <template id="selParentTemplate">
+    <section class="slide sel-slide" data-typography-upgraded aria-label="家長課程">
+      <img class="sel-slide__background" src="./new-4.png" alt="家長在生活情境中理解並回應孩子的插圖">
+      <div class="sel-slide__copy">
+        <p class="sel-eyebrow">家長課程</p>
+        <h2 class="sel-title">孩子在課堂理解與嘗試<strong>家長在生活裡延續支持</strong></h2>
+        <p class="sel-tagline">不要求家長成為專家，而是在真實情境裡，更清楚孩子怎麼了，也知道如何回應。</p>
+        <div class="sel-groups">
+          <section class="sel-group">
+            <div class="sel-group__heading">家長課程提供什麼 <small>面對日常更有方法</small></div>
+            <div class="sel-group__items"><span>看懂行為訊息</span><span>少一點說教拉扯</span><span>用孩子聽得懂的話</span></div>
+          </section>
+          <section class="sel-group sel-group--green">
+            <div class="sel-group__heading">把方法帶回家 <small>讓支持持續發生</small></div>
+            <div class="sel-group__items"><span>一致引導語言</span><span>現場可用方法</span><span>陪伴更有方向</span></div>
+          </section>
+        </div>
+        <p class="sel-assist">家長更理解如何回應，孩子在家也能獲得一致支持。</p>
+        <div class="sel-contact"><img src="./line-qr.png" alt="K12 LINE 好友 QR Code"><span><small>LINE 聯繫</small><strong>掃碼預約體驗</strong><span>先體驗，再決定是否適合孩子</span></span></div>
+      </div>
+    </section>
+  </template>
+
+  <template id="selOpenmindTemplate">
+    <section class="slide sel-slide" data-typography-upgraded aria-label="覺知 SEL 開智班">
+      <img class="sel-slide__background" src="./new-5.png" alt="國小孩子合作討論並解決問題的插圖">
+      <div class="sel-slide__copy">
+        <p class="sel-eyebrow">國小 1～4 年級</p>
+        <h2 class="sel-class-title"><strong>開智班</strong><span>即將開班</span></h2>
+        <div class="sel-date-card">
+          <div class="sel-date-card__date">8/29 <small>（六）起</small></div>
+          <div class="sel-date-card__time">每週六　14:00–14:50</div>
+        </div>
+        <div class="sel-class-meta"><span>國小 1～4 年級</span><span><strong>10 人開班</strong>・15 人滿班・名額有限</span></div>
+        <section class="sel-learning">
+          <div class="sel-learning__title">遇到情緒與人際狀況，孩子開始知道下一步怎麼做</div>
+          <div class="sel-learning__steps"><span>先停一下</span><b>→</b><span>說出想法</span><b>→</b><span>合作解題</span></div>
+        </section>
+        <div class="sel-contact"><img src="./line-qr.png" alt="K12 LINE 好友 QR Code"><span><small>LINE 聯繫</small><strong>掃碼預約體驗</strong><span>先體驗，再決定是否適合孩子</span></span></div>
+      </div>
+    </section>
+  </template>
+
+  <template id="selEarlyTemplate">
+    <section class="slide sel-slide" data-typography-upgraded aria-label="覺知 SEL 啟蒙班">
+      <img class="sel-slide__background" src="./new-6.png" alt="幼兒使用表情卡並進行友善互動的插圖">
+      <div class="sel-slide__copy">
+        <p class="sel-eyebrow">4～6 歲幼兒</p>
+        <h2 class="sel-class-title"><strong>啟蒙班</strong><span>即將開班</span></h2>
+        <div class="sel-date-card">
+          <div class="sel-date-card__date">8/28 <small>（五）起</small></div>
+          <div class="sel-date-card__time">每週五　18:00–18:50</div>
+        </div>
+        <div class="sel-class-meta"><span>適合年齡 4～6 歲</span><span><strong>5 人開班</strong>・6 人滿班・名額有限</span></div>
+        <section class="sel-learning">
+          <div class="sel-learning__title">從感官與生活經驗開始，認識自己的感受與需要</div>
+          <div class="sel-learning__steps"><span>認識表情</span><b>→</b><span>說出感受</span><b>→</b><span>友善互動</span></div>
+        </section>
+        <div class="sel-contact"><img src="./line-qr.png" alt="K12 LINE 好友 QR Code"><span><small>LINE 聯繫</small><strong>掃碼預約體驗</strong><span>先體驗，再決定是否適合孩子</span></span></div>
+      </div>
+    </section>
+  </template>
 
   <template id="expertTemplate">
     <section class="slide expert-slide">
@@ -1328,7 +2078,7 @@
 
   <script>
     const legacyItems = [
-      { kind: "image", src: "./old-1.png", label: "舊電視牆 1/5", duration: 9000 },
+      { kind: "template", id: "greenQuestionTemplate", label: "舊電視牆 1/5", duration: 9000 },
       { kind: "image", src: "./old-2.png", label: "舊電視牆 2/5", duration: 9000 },
       { kind: "template", id: "expertTemplate", label: "舊電視牆 3/5", duration: 9000 },
       { kind: "image", src: "./old-4.png", label: "舊電視牆 4/5", duration: 9000 },
@@ -1337,19 +2087,23 @@
 
     const items = [
       ...legacyItems,
-      ...Array.from({ length: 6 }, (_, index) => ({
-        kind: "image",
-        src: index === 0
-          ? "./new-1.png?v=20260727-core-copy"
-          : `./new-${index + 1}.png`,
-        label: `SEL 招生 ${index + 1}/6`,
-        duration: 9000
-      })),
+      { kind: "template", id: "selCoreTemplate", label: "SEL 招生 1/6", duration: 9000 },
+      { kind: "template", id: "selAssessmentTemplate", label: "SEL 招生 2/6", duration: 9000 },
+      { kind: "template", id: "selCourseTemplate", label: "SEL 招生 3/6", duration: 9000 },
+      { kind: "template", id: "selParentTemplate", label: "SEL 招生 4/6", duration: 9000 },
+      { kind: "template", id: "selOpenmindTemplate", label: "SEL 招生 5/6", duration: 9000 },
+      { kind: "template", id: "selEarlyTemplate", label: "SEL 招生 6/6", duration: 9000 },
       {
         kind: "video",
-      src: "./assets/awareness-reel-16x9.mp4?v=20260729-clean-hq-soundtrack",
-        label: "覺知 SEL 影片 1/1",
-        duration: 106100
+        src: "./assets/awareness-sel-course-intro-quality.mp4?v=20260901",
+        label: "覺知 SEL 課程介紹 1/2",
+        duration: 144000
+      },
+      {
+        kind: "video",
+        src: "./assets/pdca-goal-management-intro-poster.mp4?v=20260901",
+        label: "PDCA 目標管理課程介紹 2/2",
+        duration: 81000
       },
       { kind: "template", id: "activityIntro", label: "成大活動 1/3", duration: 11000 },
       { kind: "template", id: "activityRoutes", label: "成大活動 2/3", duration: 12000 },
@@ -1368,7 +2122,7 @@
     };
 
     const startParam = Number(new URLSearchParams(window.location.search).get("start"));
-    let current = Number.isInteger(startParam) && startParam >= 0 && startParam < items.length ? startParam : 12;
+    let current = Number.isInteger(startParam) && startParam >= 0 && startParam < items.length ? startParam : 13;
     let timer = null;
 
     function fit() {

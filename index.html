@@ -2188,10 +2188,53 @@
       });
     }
 
+    // ===== 輪播守門機制(2026-09-02)=====
+    // 問題:影片頁只靠寫死的 setTimeout(144 秒)推進,影片卡住/播完暫停時整面電視就停住。
+    // 對策:三道保險 — ①影片 ended/error 立刻換頁 ②影片畫面凍住 10 秒判定卡住 ③全域看門狗。
+    let slideToken = 0;              // 每次換頁 +1,用來擋掉舊頁殘留的觸發
+    let slideStartedAt = Date.now(); // 這一頁開始的時間(全域看門狗用)
+    let stallTimer = null;
+
+    function advance(token) {
+      if (token !== slideToken) return;   // 不是當前這頁發出的,忽略
+      show(current + 1);
+    }
+
     function schedule() {
       clearTimeout(timer);
-      timer = setTimeout(() => show(current + 1), items[current].duration);
+      clearInterval(stallTimer);
+      slideToken += 1;
+      slideStartedAt = Date.now();
+      const token = slideToken;
+      const item = items[current];
+      timer = setTimeout(() => advance(token), item.duration);
+
+      // 影片頁:播完就換、載入失敗就跳過、畫面凍住也跳過
+      const video = host.querySelector(".slide.is-active video");
+      if (!video) return;
+      video.onended = () => advance(token);
+      video.onerror = () => advance(token);
+      let lastTime = -1;
+      let frozenFor = 0;
+      stallTimer = setInterval(() => {
+        if (token !== slideToken) { clearInterval(stallTimer); return; }
+        if (video.ended) { advance(token); return; }
+        if (video.currentTime === lastTime && !video.paused) {
+          frozenFor += 2;
+          if (frozenFor >= 10) advance(token);   // 連續 10 秒沒前進 = 卡住
+        } else {
+          frozenFor = 0;
+          lastTime = video.currentTime;
+        }
+      }, 2000);
     }
+
+    // 全域看門狗:不管什麼原因(分頁被節流、timer 掉了、影片暫停),
+    // 只要這頁停留超過「設定秒數 + 20 秒」就強制換下一頁,電視牆絕不停住。
+    setInterval(() => {
+      const over = Date.now() - slideStartedAt - items[current].duration;
+      if (over > 20000) show(current + 1);
+    }, 5000);
 
     function show(index) {
       const slides = [...host.querySelectorAll(".slide")];
@@ -2202,15 +2245,18 @@
         const video = slide.querySelector("video");
         if (!video) return;
         if (slideIndex === current) {
-          video.currentTime = 0;
+          try { video.currentTime = 0; } catch (err) { /* 尚未可 seek,忽略 */ }
           video.muted = true;
+          video.loop = false;
           const playback = video.play();
           if (playback && typeof playback.catch === "function") {
             playback.catch(() => {});
           }
         } else {
+          video.onended = null;
+          video.onerror = null;
           video.pause();
-          video.currentTime = 0;
+          try { video.currentTime = 0; } catch (err) { /* 忽略 */ }
         }
       });
       schedule();

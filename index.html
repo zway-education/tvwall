@@ -117,6 +117,11 @@
       object-fit: cover;
       display: block;
       background: var(--paper);
+      pointer-events: none;
+    }
+
+    .capture-video::-webkit-media-controls {
+      display: none !important;
     }
 
     .capture--bright {
@@ -2173,13 +2178,21 @@
           slide.className = "slide";
           const video = document.createElement("video");
           video.className = "capture-video";
-          video.src = item.src;
           video.preload = "auto";
           video.muted = true;
+          video.defaultMuted = true;
+          video.controls = false;
+          video.tabIndex = -1;
           video.playsInline = true;
           video.setAttribute("playsinline", "");
           video.setAttribute("webkit-playsinline", "");
+          video.setAttribute("controlslist", "nofullscreen noremoteplayback nodownload");
+          video.setAttribute("disablepictureinpicture", "");
+          video.setAttribute("disableremoteplayback", "");
           video.setAttribute("aria-label", item.label);
+          video.addEventListener("contextmenu", event => event.preventDefault());
+          // Set inline policy before loading media, including on older TV engines.
+          video.src = item.src;
           slide.appendChild(video);
         } else {
           slide = document.getElementById(item.id).content.firstElementChild.cloneNode(true);
@@ -2188,6 +2201,21 @@
         host.appendChild(slide);
       });
     }
+
+    // Only leave video-owned fullscreen. Whole-page TV fullscreen must stay available.
+    // Browser/TV player UI outside the DOM can still ignore website-level requests.
+    function keepVideoInPage() {
+      const fullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+      if (!fullscreen || !fullscreen.matches("video.capture-video")) return;
+      const exitFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
+      if (typeof exitFullscreen !== "function") return;
+      try {
+        const result = exitFullscreen.call(document);
+        if (result && typeof result.catch === "function") result.catch(() => {});
+      } catch (error) { /* Some TV browsers expose but reject this API. */ }
+    }
+    document.addEventListener("fullscreenchange", keepVideoInPage);
+    document.addEventListener("webkitfullscreenchange", keepVideoInPage);
 
     // ===== 輪播守門機制(2026-09-02)=====
     // 問題:影片頁只靠寫死的 setTimeout(144 秒)推進,影片卡住/播完暫停時整面電視就停住。

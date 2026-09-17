@@ -39,7 +39,7 @@ test('only the active video downloads on a cold page load', async t => {
     if (request.url().includes('.mp4')) mediaRequests.add(new URL(request.url()).pathname.split('/').pop());
   });
   const url = new URL(base);
-  url.searchParams.set('start', '17');
+  url.searchParams.set('start', '16');
   await page.goto(url.href, { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => document.querySelector('.slide.is-active video')?.currentTime > 0.2);
   assert.deepEqual([...mediaRequests], ['park-inquiry-original-20260915.mp4']);
@@ -64,13 +64,25 @@ test('a slow first park-video response does not skip its slide before playback s
     await route.continue();
   });
   const url = new URL(base);
-  url.searchParams.set('start', '17');
+  url.searchParams.set('start', '16');
   await page.goto(url.href, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(15500);
-  assert.equal(await page.locator('.slide.is-active').getAttribute('data-index'), '17');
+  assert.equal(await page.locator('.slide.is-active').getAttribute('data-index'), '16');
   await page.waitForFunction(() => document.querySelector('.slide.is-active video')?.currentTime > 0.2,
     null, { timeout: 15000 });
-  assert.equal(await page.locator('.slide.is-active').getAttribute('data-index'), '17');
+  assert.equal(await page.locator('.slide.is-active').getAttribute('data-index'), '16');
+});
+
+test('the trial-class page is removed while the park video still leads into the daily article', async t => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  t.after(() => page.close());
+  const url = new URL(base);
+  url.searchParams.set('start', '16');
+  await page.goto(url.href, { waitUntil: 'domcontentloaded' });
+  assert.equal(await page.locator('.slide').count(), 18);
+  assert.equal(await page.locator('.slide.focus-event').count(), 0);
+  assert.equal(await page.locator('.slide[data-index="16"] video').count(), 1);
+  assert.equal(await page.locator('.slide[data-index="17"].daily-article').count(), 1);
 });
 
 test('the video surface cannot receive pointer or menu input that launches a player', async t => {
@@ -136,11 +148,11 @@ test('video-only fullscreen returns to the page without blocking whole-page full
   await page.evaluate(() => document.exitFullscreen());
 });
 
-for (const [index, next] of [[11, 12], [12, 13], [17, 18]]) {
+for (const [index, next] of [[11, 12], [12, 13], [16, 17]]) {
   test(`video ${index} ends in the webpage and advances once to slide ${next}`, async t => {
     const page = await openVideo(t, index);
-    if (index === 17) {
-      assert.equal(await page.locator('.slide').count(), 19);
+    if (index === 16) {
+      assert.equal(await page.locator('.slide').count(), 18);
       const media = await page.locator('.slide.is-active video').evaluate(v => ({ src: v.currentSrc, duration: v.duration, inline: v.playsInline, muted: v.muted, controls: v.controls }));
       assert.ok(media.src.includes('/assets/park-inquiry-original-20260915.mp4'));
       assert.ok(Math.abs(media.duration - 79.05) < 0.1);
@@ -167,7 +179,7 @@ test('the latest article has one readable page and the carousel wraps to slide z
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   t.after(() => page.close());
   const url = new URL(base);
-  url.searchParams.set('start', '18');
+  url.searchParams.set('start', '17');
   await page.goto(url.href, { waitUntil: 'domcontentloaded' });
   assert.equal(await page.locator('.slide.is-active.daily-article').count(), 1);
   assert.ok((await page.locator('.slide.is-active.daily-article h1').textContent()).trim().length > 5);

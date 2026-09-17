@@ -2185,7 +2185,7 @@
           slide.className = "slide";
           const video = document.createElement("video");
           video.className = "capture-video";
-          video.preload = "auto";
+          video.preload = "none";
           video.muted = true;
           video.defaultMuted = true;
           video.controls = false;
@@ -2281,6 +2281,7 @@
         const video = slide.querySelector("video");
         if (!video) return;
         if (slideIndex === current) {
+          video.preload = "auto";
           try { video.currentTime = 0; } catch (err) { /* 尚未可 seek,忽略 */ }
           video.muted = true;
           video.loop = false;

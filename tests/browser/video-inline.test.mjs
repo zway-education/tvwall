@@ -31,6 +31,27 @@ async function openVideo(t, index = 11) {
   return page;
 }
 
+test('only the active video downloads on a cold page load', async t => {
+  const page = await browser.newPage();
+  t.after(() => page.close());
+  const mediaRequests = new Set();
+  page.on('request', request => {
+    if (request.url().includes('.mp4')) mediaRequests.add(new URL(request.url()).pathname.split('/').pop());
+  });
+  const url = new URL(base);
+  url.searchParams.set('start', '17');
+  await page.goto(url.href, { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => document.querySelector('.slide.is-active video')?.currentTime > 0.2);
+  assert.deepEqual([...mediaRequests], ['park-inquiry-original-20260915.mp4']);
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('ArrowLeft');
+  await page.waitForFunction(() => document.querySelector('.slide.is-active video')?.currentTime > 0.2);
+  assert.ok(mediaRequests.has('pdca-goal-management-intro-poster.mp4'));
+});
+
 test('the video surface cannot receive pointer or menu input that launches a player', async t => {
   const page = await openVideo(t);
   const state = await page.evaluate(() => {

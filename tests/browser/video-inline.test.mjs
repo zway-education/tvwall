@@ -52,6 +52,27 @@ test('only the active video downloads on a cold page load', async t => {
   assert.ok(mediaRequests.has('pdca-goal-management-intro-poster.mp4'));
 });
 
+test('a slow first park-video response does not skip its slide before playback starts', async t => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  t.after(() => page.close());
+  let delayed = false;
+  await page.route('**/park-inquiry-original-20260915.mp4*', async route => {
+    if (!delayed) {
+      delayed = true;
+      await new Promise(resolve => setTimeout(resolve, 17000));
+    }
+    await route.continue();
+  });
+  const url = new URL(base);
+  url.searchParams.set('start', '17');
+  await page.goto(url.href, { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(15500);
+  assert.equal(await page.locator('.slide.is-active').getAttribute('data-index'), '17');
+  await page.waitForFunction(() => document.querySelector('.slide.is-active video')?.currentTime > 0.2,
+    null, { timeout: 15000 });
+  assert.equal(await page.locator('.slide.is-active').getAttribute('data-index'), '17');
+});
+
 test('the video surface cannot receive pointer or menu input that launches a player', async t => {
   const page = await openVideo(t);
   const state = await page.evaluate(() => {

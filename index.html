@@ -2264,11 +2264,17 @@
       slideStartedAt = Date.now();
       const token = slideToken;
       const item = items[current];
-      timer = setTimeout(() => advance(token), item.duration);
+      timer = setTimeout(() => advance(token), item.kind === "video" ? 45000 : item.duration);
 
       // 影片頁:播完就換、載入失敗就跳過、畫面凍住也跳過
       const video = host.querySelector(".slide.is-active video");
       if (!video) return;
+      video.onplaying = () => {
+        if (token !== slideToken) return;
+        slideStartedAt = Date.now();
+        clearTimeout(timer);
+        timer = setTimeout(() => advance(token), item.duration);
+      };
       video.onended = () => advance(token);
       video.onerror = () => advance(token);
       let lastTime = -1;
@@ -2276,6 +2282,7 @@
       stallTimer = setInterval(() => {
         if (token !== slideToken) { clearInterval(stallTimer); return; }
         if (video.ended) { advance(token); return; }
+        if (video.currentTime <= 0) return;
         if (video.currentTime === lastTime && !video.paused) {
           frozenFor += 2;
           if (frozenFor >= 10) advance(token);   // 連續 10 秒沒前進 = 卡住
@@ -2313,6 +2320,7 @@
         } else {
           video.onended = null;
           video.onerror = null;
+          video.onplaying = null;
           video.pause();
           try { video.currentTime = 0; } catch (err) { /* 忽略 */ }
         }

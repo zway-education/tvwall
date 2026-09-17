@@ -52,6 +52,10 @@ class LatestCard(HTMLParser):
             self.field = "excerpt"
         elif tag == "span" and "upload-date" in classes:
             self.field = "date"
+        elif tag == "span" and "age" in classes:
+            self.field = "audience"
+        elif tag == "span" and "axis" in classes:
+            self.field = "axis"
 
     def handle_data(self, data):
         if self.depth and self.field:
@@ -78,41 +82,51 @@ def main():
     if not all(article.get(key) for key in ("href", "hero", "title", "excerpt", "date")):
         raise RuntimeError("Latest published card is incomplete; leaving the current TV page unchanged")
     article_url = safe_source_url(article["href"])
-    cover_url = safe_source_url(article["hero"])
-    if not article_url.endswith(".html") or not cover_url.lower().endswith((".jpg", ".jpeg", ".png")):
-        raise ValueError("Unexpected article or cover format")
+    if not article_url.endswith(".html"):
+        raise ValueError("Unexpected article format")
     # Do not publish a card until its full article and image are available.
     download(article_url)
-    cover = download(cover_url)
+    cover_url = article_url.replace(".html", "_cover.png")
+    try:
+        cover = download(cover_url)
+    except Exception:
+        cover_url = safe_source_url(article["hero"])
+        cover = download(cover_url)
+    if not cover_url.lower().endswith((".jpg", ".jpeg", ".png")):
+        raise ValueError("Unexpected cover format")
     if not cover or len(cover) > 15_000_000:
         raise ValueError("Article cover is missing or too large")
     with Image.open(BytesIO(cover)) as cover_image:
         cover_image.verify()
-    if cover_url.lower().endswith(".png"):
+    if not cover_url.lower().endswith(".png"):
         with Image.open(BytesIO(cover)) as cover_image:
-            jpeg = BytesIO()
-            cover_image.convert("RGB").save(jpeg, format="JPEG", quality=92)
-            cover = jpeg.getvalue()
+            png = BytesIO()
+            cover_image.convert("RGB").save(png, format="PNG")
+            cover = png.getvalue()
 
     title = article["title"]
-    headline = title.split("——", 1)[0].strip() if "——" in title else title
-    if len(headline) < 8:
-        headline = title
-    sentences = re.split(r"(?<=。)", article["excerpt"])
-    excerpt = "".join(sentences[:2]).strip()
-    if len(excerpt) < 25:
-        excerpt = "".join(sentences[:3]).strip()
-    # This approved sentence can be shortened with source words only for TV reading.
-    if article_url.endswith("/2026-09/parenting_essence_2026-09-17.html"):
-        excerpt = "「我想走行銷。」飯桌上安靜了大概三秒。"
+    headline = title
+    excerpt = article["excerpt"]
     date = re.sub(r"\s+", " ", article["date"])
+    audience = article.get("audience", "")
+    axis = article.get("axis", "")
+    topic = axis.split("｜", 1)[-1].strip() if "｜" in axis else axis
+    weekday = date.split(" ")[-1]
+    display_title = escape(headline).replace("——", "——<wbr>").replace("，", "，<wbr>")
+    display_excerpt = escape(excerpt)
+    if article_url.endswith("/2026-09/parenting_essence_2026-09-17.html"):
+        for phrase in ("飯桌上安靜了大概三秒。", "他爸爸夾菜的手停在半空，", "媽媽先笑了一下，", "高二下就要選組，"):
+            display_excerpt = display_excerpt.replace(
+                phrase, f'<span class="daily-article__keep">{phrase}</span>'
+            )
     metadata_path = ROOT / "assets" / "daily-article.json"
-    cover_path = ROOT / "assets" / "daily-article-cover.jpg"
+    cover_path = ROOT / "assets" / "daily-article-cover.png"
     qr_path = ROOT / "assets" / "daily-article-qr.png"
     if metadata_path.exists() and cover_path.exists() and qr_path.exists():
         old = json.loads(metadata_path.read_text(encoding="utf-8"))
         current_fields = {"url": article_url, "title": title, "headline": headline,
-                          "excerpt": excerpt, "date": date, "cover": cover_url}
+                          "excerpt": excerpt, "date": date, "cover": cover_url,
+                          "audience": audience, "topic": topic}
         if all(old.get(key) == value for key, value in current_fields.items()) and cover_path.read_bytes() == cover:
             print(f"UNCHANGED {article_url}")
             return
@@ -125,17 +139,16 @@ def main():
     qr.make_image(fill_color="black", back_color="white").save(qr_bytes, format="PNG")
 
     section = f'''<section class="slide daily-article" aria-label="覺知教養每日精華文章">
-      <div class="daily-article__header"><span>K12 覺知素養教育學苑</span><span>覺知教養．每日精華</span></div>
       <div class="daily-article__body">
         <div class="daily-article__copy">
-          <p class="daily-article__eyebrow">最新文章 · {escape(date)}</p>
-          <h1 class="{'is-long' if len(headline) > 26 else ''}">{escape(headline)}</h1>
-          <p class="daily-article__excerpt">{escape(excerpt)}</p>
-          <div class="daily-article__foot"><span>覺知教養．每日精華</span></div>
+          <div class="daily-article__meta"><span class="daily-article__today">今日</span><span class="daily-article__topic">{escape(topic)}</span><span class="daily-article__audience">{escape(audience)}｜{escape(weekday)}</span></div>
+          <h1 class="{'is-long' if len(headline) > 46 else ''}">{display_title}</h1>
+          <p class="daily-article__excerpt">{display_excerpt}</p>
+          <div class="daily-article__foot"><span class="daily-article__cta">掃碼閱讀全文 →</span><span class="daily-article__date">{escape(date.split(' ')[0].replace('-', '.'))}</span></div>
         </div>
         <div class="daily-article__visual">
-          <div class="daily-article__photo"><img src="./assets/daily-article-cover.jpg?v={version}" alt="文章封面"></div>
-          <div class="daily-article__scan"><div class="daily-article__qr"><img src="./assets/daily-article-qr.png?v={version}" alt="掃描閱讀最新文章的 QR Code"></div><p>掃 QR Code 閱讀全文</p></div>
+          <div class="daily-article__photo"><img src="./assets/daily-article-cover.png?v={version}" alt="文章封面"></div>
+          <div class="daily-article__scan"><div class="daily-article__qr"><img src="./assets/daily-article-qr.png?v={version}" alt="掃描閱讀最新文章的 QR Code"></div><p>手機掃描 QR Code<br>閱讀這篇文章</p></div>
         </div>
       </div>
     </section>'''
@@ -158,6 +171,8 @@ def main():
         "excerpt": excerpt,
         "date": date,
         "cover": cover_url,
+        "audience": audience,
+        "topic": topic,
         "updatedAt": datetime.now(timezone.utc).isoformat()
     }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"UPDATED {article_url}")

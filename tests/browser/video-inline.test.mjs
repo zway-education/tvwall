@@ -150,7 +150,10 @@ test('the latest article has one readable page and the carousel wraps to slide z
   await page.goto(url.href, { waitUntil: 'domcontentloaded' });
   assert.equal(await page.locator('.slide.is-active.daily-article').count(), 1);
   assert.ok((await page.locator('.slide.is-active.daily-article h1').textContent()).trim().length > 5);
-  assert.equal(await page.locator('.slide.is-active.daily-article .daily-article__qr img').evaluate(img => img.complete && img.naturalWidth > 0), true);
+  await page.waitForFunction(() => {
+    const qr = document.querySelector('.slide.is-active.daily-article .daily-article__qr img');
+    return qr?.complete && qr.naturalWidth > 0;
+  }, null, { timeout: 12000 });
   await page.waitForFunction(() => document.querySelector('.slide.is-active')?.dataset.index === '0', null, { timeout: 26000 });
   assert.equal(await page.locator('.slide.is-active').getAttribute('data-index'), '0');
 });

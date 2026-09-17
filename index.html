@@ -1725,6 +1725,7 @@
     }
   </style>
   <link rel="stylesheet" href="./assets/tv-layout.css?v=20260912-layout">
+  <link rel="stylesheet" href="./assets/daily-article.css?v=20260917">
 </head>
 <body>
   <main class="tv-viewport" id="tvViewport">
@@ -2074,6 +2075,26 @@
     </section>
   </template>
 
+  <template id="dailyArticleTemplate">
+    <!-- DAILY_ARTICLE_CONTENT_START -->
+    <section class="slide daily-article" aria-label="覺知教養每日精華文章">
+      <div class="daily-article__header"><span>K12 覺知素養教育學苑</span><span>覺知教養．每日精華</span></div>
+      <div class="daily-article__body">
+        <div class="daily-article__copy">
+          <p class="daily-article__eyebrow">最新文章 · 2026-09-17 週四</p>
+          <h1 class="">飯桌上那三秒的安靜</h1>
+          <p class="daily-article__excerpt">「我想走行銷。」飯桌上安靜了大概三秒。</p>
+          <div class="daily-article__foot"><span>覺知教養．每日精華</span></div>
+        </div>
+        <div class="daily-article__visual">
+          <div class="daily-article__photo"><img src="./assets/daily-article-cover.jpg?v=20260917" alt="文章封面"></div>
+          <div class="daily-article__scan"><div class="daily-article__qr"><img src="./assets/daily-article-qr.png?v=20260917" alt="掃描閱讀最新文章的 QR Code"></div><p>掃 QR Code 閱讀全文</p></div>
+        </div>
+      </div>
+    </section>
+    <!-- DAILY_ARTICLE_CONTENT_END -->
+  </template>
+
   <audio
     id="tvSoundtrack"
     src="./assets/awareness-reel-soundtrack.m4a?v=20260729"
@@ -2121,7 +2142,8 @@
         label: "公園探究課程影片",
         // 79.05s original; allow a short loading buffer before the safety timeout.
         duration: 85000
-      }
+      },
+      { kind: "template", id: "dailyArticleTemplate", label: "覺知教養每日文章", duration: 20000 }
     ];
 
     const viewport = document.getElementById("tvViewport");

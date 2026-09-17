@@ -115,11 +115,11 @@ test('video-only fullscreen returns to the page without blocking whole-page full
   await page.evaluate(() => document.exitFullscreen());
 });
 
-for (const [index, next] of [[11, 12], [12, 13], [17, 0]]) {
+for (const [index, next] of [[11, 12], [12, 13], [17, 18]]) {
   test(`video ${index} ends in the webpage and advances once to slide ${next}`, async t => {
     const page = await openVideo(t, index);
     if (index === 17) {
-      assert.equal(await page.locator('.slide').count(), 18);
+      assert.equal(await page.locator('.slide').count(), 19);
       const media = await page.locator('.slide.is-active video').evaluate(v => ({ src: v.currentSrc, duration: v.duration, inline: v.playsInline, muted: v.muted, controls: v.controls }));
       assert.ok(media.src.includes('/assets/park-inquiry-original-20260915.mp4'));
       assert.ok(Math.abs(media.duration - 79.05) < 0.1);
@@ -141,3 +141,16 @@ for (const [index, next] of [[11, 12], [12, 13], [17, 0]]) {
     assert.equal(new URL(page.url()).pathname, new URL(base).pathname);
   });
 }
+
+test('the latest article has one readable page and the carousel wraps to slide zero', async t => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  t.after(() => page.close());
+  const url = new URL(base);
+  url.searchParams.set('start', '18');
+  await page.goto(url.href, { waitUntil: 'domcontentloaded' });
+  assert.equal(await page.locator('.slide.is-active.daily-article').count(), 1);
+  assert.ok((await page.locator('.slide.is-active.daily-article h1').textContent()).trim().length > 5);
+  assert.equal(await page.locator('.slide.is-active.daily-article .daily-article__qr img').evaluate(img => img.complete && img.naturalWidth > 0), true);
+  await page.waitForFunction(() => document.querySelector('.slide.is-active')?.dataset.index === '0', null, { timeout: 26000 });
+  assert.equal(await page.locator('.slide.is-active').getAttribute('data-index'), '0');
+});

@@ -2114,7 +2114,14 @@
       { kind: "template", id: "activityIntro", label: "成大活動 1/3", duration: 11000 },
       { kind: "template", id: "activityRoutes", label: "成大活動 2/3", duration: 12000 },
       { kind: "template", id: "activitySignup", label: "成大活動 3/3", duration: 11000 },
-      { kind: "template", id: "focusEvent", label: "開智班試上課程 1/1", duration: 12000 }
+      { kind: "template", id: "focusEvent", label: "開智班試上課程 1/1", duration: 12000 },
+      {
+        kind: "video",
+        src: "./assets/park-inquiry-original-20260915.mp4?v=20260917",
+        label: "公園探究課程影片",
+        // 79.05s original; allow a short loading buffer before the safety timeout.
+        duration: 85000
+      }
     ];
 
     const viewport = document.getElementById("tvViewport");

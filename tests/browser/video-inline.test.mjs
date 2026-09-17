@@ -23,6 +23,7 @@ async function openVideo(t, index = 11) {
   const url = new URL(base);
   url.searchParams.set('start', String(index));
   await page.goto(url.href);
+  assert.equal(await page.locator('.slide.is-active video').count(), 1, `slide ${index} must contain its inline video`);
   await page.waitForFunction(() => {
     const video = document.querySelector('.slide.is-active video');
     return video && video.currentTime > 0.15 && !video.paused;
@@ -93,17 +94,26 @@ test('video-only fullscreen returns to the page without blocking whole-page full
   await page.evaluate(() => document.exitFullscreen());
 });
 
-for (const index of [11, 12]) {
-  test(`video ${index} ends in the webpage and advances once to slide ${index + 1}`, async t => {
+for (const [index, next] of [[11, 12], [12, 13], [17, 0]]) {
+  test(`video ${index} ends in the webpage and advances once to slide ${next}`, async t => {
     const page = await openVideo(t, index);
+    if (index === 17) {
+      assert.equal(await page.locator('.slide').count(), 18);
+      const media = await page.locator('.slide.is-active video').evaluate(v => ({ src: v.currentSrc, duration: v.duration, inline: v.playsInline, muted: v.muted, controls: v.controls }));
+      assert.ok(media.src.includes('/assets/park-inquiry-original-20260915.mp4'));
+      assert.ok(Math.abs(media.duration - 79.05) < 0.1);
+      assert.equal(media.inline, true);
+      assert.equal(media.muted, true);
+      assert.equal(media.controls, false);
+    }
     await page.mouse.click(1, 1); // The real gesture required to unlock background audio.
     await page.waitForFunction(() => document.getElementById('tvSoundtrack').currentTime > 0);
     assert.deepEqual(await page.locator('.slide.is-active video').evaluate(v => [v.videoWidth, v.videoHeight]), [1920, 1080]);
     const soundtrackStart = await page.locator('#tvSoundtrack').evaluate(a => a.currentTime);
     await page.locator('.slide.is-active video').evaluate(v => { v.currentTime = v.duration - 0.5; });
-    await page.waitForFunction(i => document.querySelector('.slide.is-active').dataset.index === String(i), index + 1);
+    await page.waitForFunction(i => document.querySelector('.slide.is-active').dataset.index === String(i), next);
     await page.waitForTimeout(200);
-    assert.equal(await page.locator('.slide.is-active').getAttribute('data-index'), String(index + 1));
+    assert.equal(await page.locator('.slide.is-active').getAttribute('data-index'), String(next));
     assert.equal(await page.locator(`.slide[data-index="${index}"] video`).evaluate(v => v.paused), true);
     assert.ok(await page.locator('#tvSoundtrack').evaluate(a => a.currentTime) > soundtrackStart);
     assert.equal(await page.evaluate(() => document.fullscreenElement), null);

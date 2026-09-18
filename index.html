@@ -2210,6 +2210,23 @@
     // ===== 輪播守門機制(2026-09-02)=====
     // 問題:影片頁只靠寫死的 setTimeout(144 秒)推進,影片卡住/播完暫停時整面電視就停住。
     // 對策:三道保險 — ①影片 ended/error 立刻換頁 ②影片畫面凍住 10 秒判定卡住 ③全域看門狗。
+    // ===== 電視瀏覽器影片保護(2026-09-18)=====
+    // 問題:櫃檯 TCL 電視的內建瀏覽器會把 <video> 接管成原生播放器(畫面只剩大播放鍵＋「全螢幕／×」),
+    //       影片不會自己播,整面電視牆就停在那裡。
+    // 對策:①已知電視瀏覽器直接跳過所有影片頁 ②任一影片 6 秒內沒真的播起來、或播到一半被暫停 6 秒,
+    //       就判定這台裝置放不了影片:立刻拆掉影片、換下一頁,之後整輪都不再嘗試影片頁。圖片與版型頁完全不受影響。
+    const TV_UA = /SmartTV|SMART-TV|Android TV|AndroidTV|HbbTV|Tizen|Web0S|webOS|BRAVIA|VIDAA|NetCast|Roku|AFT[A-Z]|TCL/i;
+    let videoUnsupported = TV_UA.test(navigator.userAgent);
+    function killVideo(video) {
+      try { video.pause(); } catch (err) { /* 忽略 */ }
+      try { video.removeAttribute("src"); video.load(); } catch (err) { /* 忽略 */ }
+    }
+    function markVideoUnsupported(video) {
+      videoUnsupported = true;
+      host.querySelectorAll("video").forEach(killVideo);
+      if (video) killVideo(video);
+    }
+
     let slideToken = 0;              // 每次換頁 +1,用來擋掉舊頁殘留的觸發
     let slideStartedAt = Date.now(); // 這一頁開始的時間(全域看門狗用)
     let stallTimer = null;
@@ -2231,12 +2248,20 @@
       // 影片頁:播完就換、載入失敗就跳過、畫面凍住也跳過
       const video = host.querySelector(".slide.is-active video");
       if (!video) return;
+      let started = false;
       video.onplaying = () => {
         if (token !== slideToken) return;
+        started = true;
         slideStartedAt = Date.now();
         clearTimeout(timer);
         timer = setTimeout(() => advance(token), item.duration);
       };
+      // 6 秒內沒有真的播起來 = 這台裝置放不了影片(被原生播放器接管或自動播放被擋)
+      setTimeout(() => {
+        if (token !== slideToken || started) return;
+        markVideoUnsupported(video);
+        advance(token);
+      }, 6000);
       video.onended = () => advance(token);
       video.onerror = () => advance(token);
       let lastTime = -1;
@@ -2245,7 +2270,10 @@
         if (token !== slideToken) { clearInterval(stallTimer); return; }
         if (video.ended) { advance(token); return; }
         if (video.currentTime <= 0) return;
-        if (video.currentTime === lastTime && !video.paused) {
+        if (video.paused && started) {
+          frozenFor += 2;                        // 播到一半被(電視)暫停:6 秒沒恢復就放棄影片
+          if (frozenFor >= 6) { markVideoUnsupported(video); advance(token); }
+        } else if (video.currentTime === lastTime && !video.paused) {
           frozenFor += 2;
           if (frozenFor >= 10) advance(token);   // 連續 10 秒沒前進 = 卡住
         } else {
@@ -2265,6 +2293,13 @@
     function show(index) {
       const slides = [...host.querySelectorAll(".slide")];
       current = (index + items.length) % items.length;
+      if (videoUnsupported) {
+        let hops = 0;
+        while (items[current].kind === "video" && hops < items.length) {
+          current = (current + 1) % items.length;
+          hops += 1;
+        }
+      }
       slides.forEach((slide, slideIndex) => {
         slide.classList.toggle("is-active", slideIndex === current);
         slide.setAttribute("aria-hidden", slideIndex === current ? "false" : "true");

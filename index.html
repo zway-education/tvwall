@@ -2043,14 +2043,14 @@
     <section class="slide daily-article" aria-label="覺知教養每日精華文章">
       <div class="daily-article__body">
         <div class="daily-article__copy">
-          <div class="daily-article__meta"><span class="daily-article__today">今日</span><span class="daily-article__topic">父母自我覺知</span><span class="daily-article__audience">覺知．開智班（6-12）｜週五</span></div>
-          <h1 class="">九歲的孩子每一次都說好，<wbr>該先教她怎麼說不，<wbr>還是先問她想不想？</h1>
-          <p class="daily-article__excerpt">安親班的老師注意到一件事：孩子鉛筆盒裡那支藍色的筆，已經三個禮拜不在了。問她，她說借同學，對方還沒還。老師說那要不要去要回來？她搖頭，說沒關係啦。她說這句話的時候是笑的。</p>
-          <div class="daily-article__foot"><span class="daily-article__cta">掃碼閱讀全文 →</span><span class="daily-article__date">2026.09.18</span></div>
+          <div class="daily-article__meta"><span class="daily-article__today">今日</span><span class="daily-article__topic">3 秒鐘覺知對話</span><span class="daily-article__audience">覺知．啟蒙班（3-6）｜週四</span></div>
+          <h1 class="is-long">媽媽在講電話，<wbr>五歲的孩子一直喊媽媽：他可能只是在努力記住自己想說的話</h1>
+          <p class="daily-article__excerpt">那台小汽車的輪子還在轉。五歲的孩子一隻手<span class="daily-article__keep">握著它</span>，另一隻手拉著媽媽的衣服，嘴裡一直是同一句：<span class="daily-article__keep">「媽媽、媽媽——」</span>媽媽正在跟外婆講電話，低頭比了<span class="daily-article__keep">一個「等一下」</span>。孩子沒有等。過了幾秒，他又插進來了。</p>
+          <div class="daily-article__foot"><span class="daily-article__cta">掃碼閱讀全文 →</span><span class="daily-article__date">2026.09.24</span></div>
         </div>
         <div class="daily-article__visual">
-          <div class="daily-article__photo"><img src="./assets/daily-article-cover.png?v=20260918" alt="文章封面"></div>
-          <div class="daily-article__scan"><div class="daily-article__qr"><img src="./assets/daily-article-qr.png?v=20260918" alt="掃描閱讀最新文章的 QR Code"></div><p>手機掃描 QR Code<br>閱讀這篇文章</p></div>
+          <div class="daily-article__photo"><img src="./assets/daily-article-cover.png?v=20260924" alt="文章封面"></div>
+          <div class="daily-article__scan"><div class="daily-article__qr"><img src="./assets/daily-article-qr.png?v=20260924" alt="掃描閱讀最新文章的 QR Code"></div><p>手機掃描 QR Code<br>閱讀這篇文章</p></div>
         </div>
       </div>
     </section>
@@ -2256,9 +2256,17 @@
         clearTimeout(timer);
         timer = setTimeout(() => advance(token), item.duration);
       };
-      // 6 秒內沒有真的播起來 = 這台裝置放不了影片(被原生播放器接管或自動播放被擋)
+      // 已收到媒體卻 6 秒不播放才視為被接管；仍在下載時保留較長的冷載入窗口。
       setTimeout(() => {
         if (token !== slideToken || started) return;
+        if (video.readyState === 0 && video.networkState === HTMLMediaElement.NETWORK_LOADING) {
+          setTimeout(() => {
+            if (token !== slideToken || started) return;
+            markVideoUnsupported(video);
+            advance(token);
+          }, 14000);
+          return;
+        }
         markVideoUnsupported(video);
         advance(token);
       }, 6000);

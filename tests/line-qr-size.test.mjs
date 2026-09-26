@@ -18,11 +18,9 @@ test("第 1 頁 LINE QR 放大為 340px", () => {
   );
 });
 
-test("第 5 頁 LINE QR 放大為 360px", () => {
-  assert.match(
-    cssBlock(".restored-line-panel--old-5"),
-    /--qr-size:\s*360px\s*;/,
-  );
+test("第 5 頁新版 LINE QR 為 340px", () => {
+  assert.match(cssBlock(".line-editorial__card img"), /width:\s*340px\s*;/);
+  assert.match(html, /id: "lineEditorialTemplate", label: "覺知教育 LINE 聯繫"/);
 });
 
 test("兩個活動 QR Code 尺寸保持不變", () => {

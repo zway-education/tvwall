@@ -263,6 +263,109 @@
       font-size: 27px;
     }
 
+    .line-editorial {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 450px;
+      gap: 92px;
+      align-items: center;
+      padding: 108px 120px;
+      overflow: hidden;
+      background: #073f37;
+      color: #fffdf8;
+    }
+
+    .line-editorial__background {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .line-editorial__copy,
+    .line-editorial__card { position: relative; z-index: 1; }
+
+    .line-editorial__eyebrow {
+      display: inline-block;
+      margin: 0 0 34px;
+      padding: 12px 22px;
+      border: 1px solid rgba(255,255,255,.42);
+      border-radius: 999px;
+      color: #dbefe8;
+      font: 700 28px/1.2 "Microsoft JhengHei", sans-serif;
+      letter-spacing: .12em;
+    }
+
+    .line-editorial__title {
+      margin: 0 0 26px;
+      font: 700 118px/1.12 "Noto Serif TC", "Microsoft JhengHei", serif;
+      letter-spacing: .04em;
+      text-shadow: 0 3px 18px rgba(0,30,24,.16);
+    }
+
+    .line-editorial__statement {
+      margin: 0;
+      color: #fffdf8;
+      font: 700 58px/1.38 "Microsoft JhengHei", sans-serif;
+      letter-spacing: -.035em;
+      white-space: nowrap;
+    }
+
+    .line-editorial__support {
+      margin: 52px 0 0;
+      padding-left: 26px;
+      border-left: 5px solid #e4c681;
+      color: #d8ebe5;
+      font: 500 32px/1.65 "Microsoft JhengHei", sans-serif;
+    }
+
+    .line-editorial__support strong {
+      display: block;
+      color: #fff8e8;
+      font-weight: 700;
+    }
+
+    .line-editorial__card {
+      width: 450px;
+      padding: 34px 40px 42px;
+      border-radius: 28px;
+      background: #fffdfa;
+      color: #124d40;
+      text-align: center;
+      box-shadow: 0 30px 62px rgba(0,28,25,.26);
+    }
+
+    .line-editorial__card-label {
+      display: block;
+      margin-bottom: 22px;
+      color: #477466;
+      font: 700 25px/1.3 "Microsoft JhengHei", sans-serif;
+      letter-spacing: .08em;
+    }
+
+    .line-editorial__card img {
+      display: block;
+      width: 340px;
+      height: 340px;
+      margin: 0 auto 21px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .line-editorial__card strong {
+      display: block;
+      margin-bottom: 6px;
+      font: 800 37px/1.3 "Microsoft JhengHei", sans-serif;
+    }
+
+    .line-editorial__card small {
+      display: block;
+      color: #647d74;
+      font: 500 25px/1.35 "Microsoft JhengHei", sans-serif;
+    }
+
     .expert-slide {
       display: flex;
       flex-direction: column;
@@ -1319,6 +1422,7 @@
       position: absolute;
       inset: 0;
       overflow: hidden;
+      background: #fffef9;
       color: #123f70;
       font-family: "Huninn", "Microsoft JhengHei", sans-serif;
       line-break: strict;
@@ -1331,13 +1435,16 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      filter: saturate(1.08);
+      transform: translateX(-140px) scale(.74);
+      transform-origin: top right;
     }
 
     .sel-slide::after {
       position: absolute;
       inset: 0;
       z-index: 1;
-      background: linear-gradient(90deg, #fffef9 0 53%, rgba(255, 254, 249, .985) 61%, rgba(255, 254, 249, .72) 70%, transparent 82%);
+      background: linear-gradient(90deg, #fffef9 0 45%, rgba(255, 254, 249, .9) 52%, transparent 63%);
       content: "";
       pointer-events: none;
     }
@@ -1767,7 +1874,7 @@
 
   <template id="selCoreTemplate">
     <section class="slide sel-slide sel-slide--core" data-typography-upgraded aria-label="覺知 SEL 核心">
-      <img class="sel-slide__background" src="./new-1.png?v=20260727-core-copy" alt="孩子辨認情緒、表達需要與合作的插圖">
+      <img class="sel-slide__background" src="./assets/sel-core-v3.png" alt="孩子辨認情緒、表達需要與合作的插圖">
       <div class="sel-slide__copy">
         <p class="sel-eyebrow">覺知 SEL 核心</p>
         <h1 class="sel-title">孩子有情緒時<strong>不只要他冷靜，更要教他怎麼辦</strong></h1>
@@ -1785,7 +1892,7 @@
 
   <template id="selAssessmentTemplate">
     <section class="slide sel-slide" data-typography-upgraded aria-label="覺知全人測評">
-      <img class="sel-slide__background" src="./new-2.png" alt="家長與老師一起理解孩子特質與需要的插圖">
+      <img class="sel-slide__background" src="./assets/sel-assessment-v3.png" alt="家長與老師一起理解孩子特質與需要的插圖">
       <div class="sel-slide__copy">
         <p class="sel-eyebrow">覺知全人測評</p>
         <h2 class="sel-title">先看懂孩子<strong>再給對支持</strong></h2>
@@ -1808,7 +1915,7 @@
 
   <template id="selCourseTemplate">
     <section class="slide sel-slide" data-typography-upgraded aria-label="覺知 SEL 課程">
-      <img class="sel-slide__background" src="./new-3.png" alt="孩子在課堂中表達、思考與合作的插圖">
+      <img class="sel-slide__background" src="./assets/sel-course-v3.png" alt="孩子在課堂中表達、思考與合作的插圖">
       <div class="sel-slide__copy">
         <p class="sel-eyebrow">覺知 SEL 課程</p>
         <h2 class="sel-title">孩子不只要聽懂<strong>更需要在情境中知道怎麼做</strong></h2>
@@ -1831,7 +1938,7 @@
 
   <template id="selParentTemplate">
     <section class="slide sel-slide" data-typography-upgraded aria-label="家長課程">
-      <img class="sel-slide__background" src="./new-4.png" alt="家長在生活情境中理解並回應孩子的插圖">
+      <img class="sel-slide__background" src="./assets/sel-parent-v3.png" alt="家長在生活情境中理解並回應孩子的插圖">
       <div class="sel-slide__copy">
         <p class="sel-eyebrow">家長課程</p>
         <h2 class="sel-title">孩子在課堂理解與嘗試<strong>家長在生活裡延續支持</strong></h2>
@@ -1854,13 +1961,13 @@
 
   <template id="selOpenmindTemplate">
     <section class="slide sel-slide" data-typography-upgraded aria-label="覺知 SEL 開智班">
-      <img class="sel-slide__background" src="./new-5.png" alt="國小孩子合作討論並解決問題的插圖">
+      <img class="sel-slide__background" src="./assets/sel-openmind-v3.png" alt="國小孩子合作討論並解決問題的插圖">
       <div class="sel-slide__copy">
         <p class="sel-eyebrow">國小 1～4 年級</p>
         <h2 class="sel-class-title"><strong>開智班</strong><span>即將開班</span></h2>
         <div class="sel-date-card">
           <div class="sel-date-card__date">10/15 <small>（四）起</small></div>
-          <div class="sel-date-card__time">每週四　18:30–19:20</div>
+          <div class="sel-date-card__time">每週四　19:00–19:50</div>
         </div>
         <div class="sel-class-meta"><span>國小 1～4 年級</span><span><strong>10 人開班</strong>・15 人滿班・名額有限</span></div>
         <section class="sel-learning">
@@ -1874,13 +1981,13 @@
 
   <template id="selEarlyTemplate">
     <section class="slide sel-slide" data-typography-upgraded aria-label="覺知 SEL 啟蒙班">
-      <img class="sel-slide__background" src="./new-6.png" alt="幼兒使用表情卡並進行友善互動的插圖">
+      <img class="sel-slide__background" src="./assets/sel-early-v3.png" alt="幼兒使用表情卡並進行友善互動的插圖">
       <div class="sel-slide__copy">
         <p class="sel-eyebrow">4～6 歲幼兒</p>
         <h2 class="sel-class-title"><strong>啟蒙班</strong><span>即將開班</span></h2>
         <div class="sel-date-card">
           <div class="sel-date-card__date">10/15 <small>（四）起</small></div>
-          <div class="sel-date-card__time">每週四　18:30–19:20</div>
+          <div class="sel-date-card__time">每週四　18:00–18:50</div>
         </div>
         <div class="sel-class-meta"><span>適合年齡 4～6 歲</span><span><strong>5 人開班</strong>・6 人滿班・名額有限</span></div>
         <section class="sel-learning">
@@ -2038,6 +2145,24 @@
     </section>
   </template>
 
+  <template id="lineEditorialTemplate">
+    <section class="slide line-editorial" aria-label="覺知教育 LINE 聯繫">
+      <img class="line-editorial__background" src="./assets/line-editorial-bg-v1.png" alt="">
+      <div class="line-editorial__copy">
+        <p class="line-editorial__eyebrow">K12 覺知素養教育學苑</p>
+        <h1 class="line-editorial__title">覺知教育</h1>
+        <p class="line-editorial__statement">建構引導生命方向的教育系統</p>
+        <p class="line-editorial__support"><strong>用覺知打開 SEL 的大門</strong>社會情緒學習，從理解自己與他人開始。</p>
+      </div>
+      <div class="line-editorial__card">
+        <span class="line-editorial__card-label">LINE 官方帳號</span>
+        <img src="./line-qr.png" alt="K12 LINE 官方帳號 QR Code">
+        <strong>掃碼加 LINE 好友</strong>
+        <small>與我們聊一聊</small>
+      </div>
+    </section>
+  </template>
+
   <template id="dailyArticleTemplate">
     <!-- DAILY_ARTICLE_CONTENT_START -->
     <section class="slide daily-article" aria-label="覺知教養每日精華文章">
@@ -2071,7 +2196,7 @@
       { kind: "image", src: "./old-2.png", label: "舊電視牆 2/5", duration: 9000 },
       { kind: "template", id: "expertTemplate", label: "舊電視牆 3/5", duration: 9000 },
       { kind: "image", src: "./old-4.png", label: "舊電視牆 4/5", duration: 9000 },
-      { kind: "image", src: "./old-5.png", label: "舊電視牆 5/5", duration: 9000 }
+      { kind: "template", id: "lineEditorialTemplate", label: "覺知教育 LINE 聯繫", duration: 9000 }
     ];
 
     const items = [

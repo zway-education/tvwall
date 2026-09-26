@@ -10,11 +10,13 @@ function template(id) {
   return match[1];
 }
 
-test("啟蒙班與開智班都顯示最新開課日期與時段", () => {
-  for (const id of ["selOpenmindTemplate", "selEarlyTemplate"]) {
-    const content = template(id);
+test("開智班與啟蒙班顯示各自最新時段", () => {
+  const openmind = template("selOpenmindTemplate");
+  const early = template("selEarlyTemplate");
+  for (const content of [openmind, early]) {
     assert.match(content, /10\/15\s*<small>（四）起<\/small>/);
-    assert.match(content, /每週四　18:30–19:20/);
-    assert.doesNotMatch(content, /8\/28|8\/29|每週五|每週六|18:00–18:50|14:00–14:50/);
+    assert.doesNotMatch(content, /8\/28|8\/29|每週五|每週六|18:30–19:20|14:00–14:50/);
   }
+  assert.match(openmind, /每週四　19:00–19:50/);
+  assert.match(early, /每週四　18:00–18:50/);
 });

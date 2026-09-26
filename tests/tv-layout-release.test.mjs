@@ -19,3 +19,12 @@ test('production remains a direct auto-playing entry and retains the no-photo vi
   assert.match(html, /awareness-sel-course-intro-quality\.mp4\?v=20260912-photo-free/);
   assert.match(html, /show\(current\);/);
 });
+
+test('released SEL artwork and LINE background resolve from production assets', () => {
+  for (const name of ['sel-core-v3', 'sel-assessment-v3', 'sel-course-v3', 'sel-parent-v3', 'sel-openmind-v3', 'sel-early-v3', 'line-editorial-bg-v1']) {
+    assert.match(html, new RegExp(`\\./assets/${name}\\.png`));
+    assert.ok(existsSync(fileURLToPath(new URL(`assets/${name}.png`, root))));
+  }
+  assert.doesNotMatch(html, /opendesign\/mockups\/tvwall-original-optimization/);
+  assert.match(html, /id: "lineEditorialTemplate", label: "覺知教育 LINE 聯繫"/);
+});

@@ -7,3 +7,6 @@ mockup_announcement.html
 .gitignore.bak
 
 .vercel
+
+# Google Drive File Stream folder icon metadata on Windows
+desktop.ini

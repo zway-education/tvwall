@@ -79,7 +79,7 @@ test('the trial-class page is removed while the park video still leads into the 
   const url = new URL(base);
   url.searchParams.set('start', '16');
   await page.goto(url.href, { waitUntil: 'domcontentloaded' });
-  assert.equal(await page.locator('.slide').count(), 18);
+  assert.equal(await page.locator('.slide').count(), 20);
   assert.equal(await page.locator('.slide.focus-event').count(), 0);
   assert.equal(await page.locator('.slide[data-index="16"] video').count(), 1);
   assert.equal(await page.locator('.slide[data-index="17"].daily-article').count(), 1);
@@ -152,7 +152,7 @@ for (const [index, next] of [[11, 12], [12, 13], [16, 17]]) {
   test(`video ${index} ends in the webpage and advances once to slide ${next}`, async t => {
     const page = await openVideo(t, index);
     if (index === 16) {
-      assert.equal(await page.locator('.slide').count(), 18);
+      assert.equal(await page.locator('.slide').count(), 20);
       const media = await page.locator('.slide.is-active video').evaluate(v => ({ src: v.currentSrc, duration: v.duration, inline: v.playsInline, muted: v.muted, controls: v.controls }));
       assert.ok(media.src.includes('/assets/park-inquiry-original-20260915.mp4'));
       assert.ok(Math.abs(media.duration - 79.05) < 0.1);

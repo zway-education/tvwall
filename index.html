@@ -1833,6 +1833,37 @@
   </style>
   <link rel="stylesheet" href="./assets/tv-layout.css?v=20260912-layout">
   <link rel="stylesheet" href="./assets/daily-article.css?v=20260917-daily-home">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&amp;family=Noto+Serif+TC:wght@600;700;800&amp;display=swap">
+<style>
+@scope (.sports-revision) {
+:scope{--accent:#984127;--panel:#f8f0e3;--ink:#30241f}
+:scope{background:var(--panel);color:var(--ink)}
+.sports-grid{height:100%;min-height:691.20px;display:grid;grid-template-columns:1.06fr 1fr;overflow:hidden}
+.copy{padding:80.64px 78.72px 59.52px 88.32px;display:flex;flex-direction:column;min-width:0}
+.brand{display:flex;align-items:center;gap:12.48px;color:var(--ink);font-size:21.50px;font-weight:700;letter-spacing:.05em}
+.brand img{width:46.08px;height:46.08px;object-fit:contain}
+.story{margin:auto 0}
+.category{margin:0 0 19.20px;color:var(--accent);font-size:24.96px;font-weight:700;letter-spacing:.14em}
+:scope h1{font:800 88.32px/1.22 "Noto Serif TC","PMingLiU",serif;margin:0;letter-spacing:-.045em;text-wrap:balance}
+:scope h1{font-size:75.84px}
+h1 span{display:block;white-space:nowrap}
+.summary{font-size:31.30px;line-height:1.65;margin:27.26px 0 0;max-width:31ch;text-wrap:pretty}
+.summary p{margin:0}
+.summary p+p{margin-top:.95em}
+.summary{max-width:100%}
+.footer{display:flex;gap:24.96px;align-items:center;border-top:1px solid color-mix(in srgb,var(--accent),transparent 60%);padding-top:21.12px;min-height:172.80px}
+.footer img{width:168.96px;height:168.96px;display:block;image-rendering:pixelated}
+.action{font-size:32.06px;font-weight:700;color:var(--accent);margin:0 0 6.91px}
+.details{margin:0;font-size:21.70px;line-height:1.55}
+figure{position:relative;min-width:0;min-height:0;margin:0;background:#4a4139}
+figure>img{display:block;width:100%;height:100%;object-fit:cover}
+figcaption{position:absolute;bottom:21.50px;right:21.50px;max-width:90%;padding:6.53px 11.90px;background:#24201de8;color:#fff;font-size:19.20px}
+
+:scope.daily-article{display:block;padding:0}
+:scope .daily-article__qr{display:block;width:auto;height:auto;padding:0;border-radius:0}
+
+}
+</style>
 </head>
 <body>
   <main class="tv-viewport" id="tvViewport">
@@ -2165,20 +2196,11 @@
 
   <template id="dailyArticleTemplate">
     <!-- DAILY_ARTICLE_CONTENT_START -->
-    <section class="slide daily-article" aria-label="覺知教養每日精華文章">
-      <div class="daily-article__body">
-        <div class="daily-article__copy">
-          <div class="daily-article__meta"><span class="daily-article__today">今日</span><span class="daily-article__topic">面對挫折</span><span class="daily-article__audience">覺知．學齡家庭｜週二</span></div>
-          <h1 class="">孩子在運動會上失誤，<wbr>家長怎麼陪他再試一次？</h1>
-          <p class="daily-article__excerpt">孩子在比賽中失誤時，家長可以先讓他喘口氣，再肯定他怎麼調整、把比賽接下去。幼兒時期受到的肯定，也和幾年後孩子怎麼看待挑戰有關。</p>
-          <div class="daily-article__foot"><span class="daily-article__cta">掃碼閱讀全文 →</span><span class="daily-article__date">2026.11.10</span></div>
-        </div>
-        <div class="daily-article__visual">
-          <div class="daily-article__photo"><img src="./assets/daily-article-cover.png?v=20261110" alt="文章封面"></div>
-          <div class="daily-article__scan"><div class="daily-article__qr"><img src="./assets/daily-article-qr.png?v=20261110" alt="掃描閱讀最新文章的 QR Code"></div><p>手機掃描 QR Code<br>閱讀這篇文章</p></div>
-        </div>
-      </div>
-    </section>
+    <section class="slide daily-article sports-revision" aria-label="覺知教養每日精華文章"><div class="sports-grid"><div class="copy">
+<header class="brand"><img alt="" src="./assets/editorial-k12-logo.png"/>K12 覺知素養教育學苑</header>
+<article class="story"><p class="category">校園運動會 · 面對挫折</p><h1><span>當孩子失誤時，</span><span>您會怎麼做？</span></h1><div class="summary"><p>一項追蹤研究發現，從小較常因努力和嘗試受到肯定的孩子，幾年後也較傾向把挑戰看成學習的機會。</p><p>孩子失誤後，您的回應可能影響他下次面對挑戰的信心。</p></div></article>
+<footer class="footer"><a class="daily-article__qr" href="https://k12daily.vercel.app/2026-11/parenting_essence_2026-11-10.html"><img alt="掃碼閱讀全文" src="./assets/daily-article-qr.png?v=20261110"/></a><div><p class="action">掃碼閱讀全文</p><p class="details">覺知．學齡家庭｜週二<br/>2026.11.10</p></div></footer>
+</div><figure><img alt="文章封面" src="./assets/daily-article-cover.png?v=20261110"/><figcaption>示意照片 · Anisa Ryanda Putri／Unsplash</figcaption></figure></div></section>
     <!-- DAILY_ARTICLE_CONTENT_END -->
   </template>
   <template id="editorial-news">

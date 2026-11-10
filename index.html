@@ -2181,6 +2181,38 @@
     </section>
     <!-- DAILY_ARTICLE_CONTENT_END -->
   </template>
+  <template id="editorial-news">
+    <section class="slide daily-article editorial-selection" aria-label="時事選讀">
+      <div class="daily-article__body">
+        <div class="daily-article__copy">
+          <div class="daily-article__meta"><span class="daily-article__topic">時事選讀</span><span class="daily-article__audience">親子天下・吳和懋</span></div>
+          <h1>期中考後，怎麼接住孩子的失落？</h1><p class="daily-article__excerpt">孩子考不好，先聽他怎麼看，再用自己的話回應他剛才說的內容。</p>
+          <div class="daily-article__foot"><span class="daily-article__cta">掃碼閱讀原文 →</span><span class="daily-article__date">2026.11.09</span></div>
+        </div>
+        <div class="daily-article__visual">
+          <div class="daily-article__photo"><img src="./assets/editorial-news.jpg" alt="桌上的筆記本與文具"></div>
+          <p style="margin:8px 0 0;text-align:right;font-size:18px">示意照片 · Kelly Sikkema／Unsplash</p>
+          <div class="daily-article__scan"><div class="daily-article__qr"><img src="./assets/editorial-news-qr.png" alt="閱讀原文的 QR Code"></div><p>手機掃碼<br>閱讀原文</p></div>
+        </div>
+      </div>
+    </section>
+  </template>
+  <template id="editorial-book">
+    <section class="slide daily-article editorial-selection" aria-label="教養新書">
+      <div class="daily-article__body">
+        <div class="daily-article__copy">
+          <div class="daily-article__meta"><span class="daily-article__topic">教養新書</span><span class="daily-article__audience">商周出版・呂家慧</span></div>
+          <h1>《接住孩子，也接住自己》</h1><p class="daily-article__excerpt">想幫孩子，又想留空間讓他自己試？呂家慧用 33 個親子練習，談陪伴與放手。</p>
+          <div class="daily-article__foot"><span class="daily-article__cta">掃碼看出版社書訊 →</span><span class="daily-article__date">2026.10.27</span></div>
+        </div>
+        <div class="daily-article__visual">
+          <div class="daily-article__photo"><img src="./assets/editorial-book.jpg" alt="書頁與咖啡的閱讀情境示意照"></div>
+          <p style="margin:8px 0 0;text-align:right;font-size:18px">示意照片 · Noha Badawi／Unsplash</p>
+          <div class="daily-article__scan"><div class="daily-article__qr"><img src="./assets/editorial-book-qr.png" alt="看出版社書訊的 QR Code"></div><p>手機掃碼<br>看出版社書訊</p></div>
+        </div>
+      </div>
+    </section>
+  </template>
 
   <audio
     id="tvSoundtrack"
@@ -2229,7 +2261,9 @@
         // 79.05s original; allow a short loading buffer before the safety timeout.
         duration: 85000
       },
-      { kind: "template", id: "dailyArticleTemplate", label: "覺知教養每日文章", duration: 20000 }
+      { kind: "template", id: "dailyArticleTemplate", label: "覺知教養每日文章", duration: 20000 },
+      { kind: "template", id: "editorial-news", label: "時事選讀", duration: 12000 },
+      { kind: "template", id: "editorial-book", label: "教養新書", duration: 12000 }
     ];
 
     const viewport = document.getElementById("tvViewport");

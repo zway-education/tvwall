@@ -175,7 +175,7 @@ for (const [index, next] of [[11, 12], [12, 13], [16, 17]]) {
   });
 }
 
-test('the latest article has one readable page and the carousel wraps to slide zero', async t => {
+test('the latest article is followed by news and a parenting book before the carousel wraps', async t => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   t.after(() => page.close());
   const url = new URL(base);
@@ -187,6 +187,11 @@ test('the latest article has one readable page and the carousel wraps to slide z
     const qr = document.querySelector('.slide.is-active.daily-article .daily-article__qr img');
     return qr?.complete && qr.naturalWidth > 0;
   }, null, { timeout: 12000 });
-  await page.waitForFunction(() => document.querySelector('.slide.is-active')?.dataset.index === '0', null, { timeout: 26000 });
+  for (const label of ['時事選讀', '教養新書']) {
+    const slide = page.locator('.slide.is-active.editorial-selection').filter({ has: page.getByText(label, { exact: true }) });
+    await slide.waitFor({ state: 'visible', timeout: 26000 });
+    await slide.locator('.daily-article__qr img').evaluate(img => img.decode());
+  }
+  await page.waitForFunction(() => document.querySelector('.slide.is-active')?.dataset.index === '0', null, { timeout: 16000 });
   assert.equal(await page.locator('.slide.is-active').getAttribute('data-index'), '0');
 });

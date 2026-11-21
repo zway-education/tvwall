@@ -39,3 +39,6 @@
 .daily-article__scan p { font-size: 50px; line-height: 1.4; }
 .daily-article__visual > p { margin-top: 26px !important; font-size: 22px !important; }
 .daily-article.editorial-selection .daily-article__scan { margin-top: 26px; }
+
+/* 2026-11-21：左邊掃碼卡已寫「手機掃碼…」，右邊不再重複放掃碼按鈕，只留日期 */
+.daily-article__cta { display: none; }

@@ -1866,7 +1866,7 @@ figcaption{position:absolute;bottom:21.50px;right:21.50px;max-width:90%;padding:
 </style>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@700;900&amp;display=swap">
   <link rel="stylesheet" href="./assets/poster-pages.css?v=20261121">
-  <link rel="stylesheet" href="./assets/article-poster.css?v=20261121">
+  <link rel="stylesheet" href="./assets/article-poster.css?v=20261121b">
 </head>
 <body>
   <main class="tv-viewport" id="tvViewport">
@@ -2184,8 +2184,10 @@ figcaption{position:absolute;bottom:21.50px;right:21.50px;max-width:90%;padding:
           video.setAttribute("aria-label", item.label);
           video.addEventListener("contextmenu", event => event.preventDefault());
           // Set inline policy before loading media, including on older TV engines.
-          video.src = item.src;
-          slide.appendChild(video);
+          // 2026-11-21: TV browsers pop a "video detected" prompt for any <video> with a source.
+          // Keep the source off the element until its slide is shown; on known TV browsers add no <video> at all.
+          video.dataset.src = item.src;
+          if (!videoUnsupported) slide.appendChild(video);
         } else {
           slide = document.getElementById(item.id).content.firstElementChild.cloneNode(true);
         }
@@ -2316,6 +2318,7 @@ figcaption{position:absolute;bottom:21.50px;right:21.50px;max-width:90%;padding:
         const video = slide.querySelector("video");
         if (!video) return;
         if (slideIndex === current) {
+          if (!video.getAttribute("src") && video.dataset.src) video.src = video.dataset.src;
           video.preload = "auto";
           try { video.currentTime = 0; } catch (err) { /* 尚未可 seek,忽略 */ }
           video.muted = true;

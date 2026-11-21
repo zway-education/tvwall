@@ -14,9 +14,9 @@ test("開智班與啟蒙班顯示各自最新時段", () => {
   const openmind = template("selOpenmindTemplate");
   const early = template("selEarlyTemplate");
   for (const content of [openmind, early]) {
-    assert.match(content, /10\/15\s*<small>（四）起<\/small>/);
+    assert.match(content, /已開班，歡迎試聽/);
     assert.doesNotMatch(content, /8\/28|8\/29|每週五|每週六|18:30–19:20|14:00–14:50/);
   }
-  assert.match(openmind, /每週四　19:00–19:50/);
-  assert.match(early, /每週四　18:00–18:50/);
+  assert.match(openmind, /每週四 19:00–19:50/);
+  assert.match(early, /每週四 18:00–18:50/);
 });

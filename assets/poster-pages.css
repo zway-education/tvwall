@@ -1,0 +1,47 @@
+@font-face{font-family:'PV Sans';font-weight:700;font-style:normal;font-display:swap;src:url('./pv/pv-sans-700.woff2?v=20261121') format('woff2')}
+@font-face{font-family:'PV Sans';font-weight:900;font-style:normal;font-display:swap;src:url('./pv/pv-sans-900.woff2?v=20261121') format('woff2')}
+@font-face{font-family:'PV Serif';font-weight:700;font-style:normal;font-display:swap;src:url('./pv/pv-serif-700.woff2?v=20261121') format('woff2')}
+@font-face{font-family:'PV Serif';font-weight:900;font-style:normal;font-display:swap;src:url('./pv/pv-serif-900.woff2?v=20261121') format('woff2')}
+/* 海報風新版面（2026-11-21 上線）。每頁是 1920×1080 的固定版面，類別一律 pv- 開頭，避免和原本樣式互相影響 */
+.pv-slide{overflow:hidden}
+.pv-slide img{max-width:none}
+.pv-p .pv-s{position:relative;width:1920px;height:1080px;overflow:hidden;background:linear-gradient(#D6E6F8 0%,#EAF2FB 50%,#FBF4EC 100%);font-family:'Chiron GoRound TC',sans-serif;color:#1F5FD0}
+.pv-p .pv-wave{position:absolute;left:0;top:0;width:1920px;height:1080px}
+.pv-p .pv-eyebrow{position:absolute;left:112px;top:52px;background:#1C6FF2;color:#fff;border-radius:40px;padding:0 30px;font-weight:900;font-size:36px;line-height:64px;letter-spacing:.06em}
+.pv-p .pv-title{position:absolute;left:96px;top:136px}
+.pv-p .pv-body{position:absolute;left:112px;width:1100px}
+.pv-p .pv-steps{display:flex;align-items:center;gap:18px}
+.pv-p .pv-steps span{border-radius:48px;padding:0 34px;font-weight:900;font-size:46px;line-height:88px;white-space:nowrap;color:#fff;letter-spacing:.04em;box-shadow:0 8px 0 rgba(28,111,242,.18)}
+.pv-p .pv-steps i{font-style:normal;font-weight:900;font-size:44px;color:#FF5E14}
+.pv-p .pv-tag{margin:22px 0 0;font-weight:700;font-size:32px;line-height:48px;color:#1F5FD0}
+.pv-p .pv-grp{margin-top:16px;display:flex;align-items:center;gap:14px}
+.pv-p .pv-grp b{flex:none;width:272px;white-space:nowrap;font-weight:900;font-size:32px;line-height:40px;color:#1C6FF2}
+.pv-p .pv-grp b small{display:block;font-weight:700;font-size:22px;line-height:30px;color:#1F5FD0;opacity:.8}
+.pv-p .pv-grp span{border-radius:36px;padding:0 24px;font-weight:900;font-size:32px;line-height:64px;color:#fff;white-space:nowrap}
+.pv-p .pv-assist{margin:26px 0 0;font-weight:900;font-size:44px;line-height:60px;color:#FF5E14}
+.pv-p .pv-illus{position:absolute}
+.pv-p .pv-foot{position:absolute;left:0;bottom:0;width:1920px;height:176px;box-sizing:border-box;background:#fff;border-radius:56px 56px 0 0;padding:0 112px;display:flex;align-items:center;gap:36px;box-shadow:0 -8px 24px rgba(42,102,200,.12)}
+.pv-p .pv-foot .pv-big{font-weight:900;font-size:72px;line-height:84px;color:#1C6FF2;letter-spacing:.08em;white-space:nowrap}
+.pv-p .pv-foot .pv-txt{flex:1}
+.pv-p .pv-foot .pv-line{display:inline-block;background:#FF5E14;color:#fff;border-radius:30px;padding:0 22px;font-weight:900;font-size:28px;line-height:46px;letter-spacing:.04em}
+.pv-p .pv-foot .pv-sub{margin-top:4px;font-weight:700;font-size:32px;line-height:44px;color:#1F5FD0}
+.pv-p .pv-foot img{flex:none;width:144px;height:144px;display:block;image-rendering:pixelated}
+.pv-p /* 班級頁：孩子站在色塊舞台上，資訊寫在舞台裡 */
+.pv-stage{position:absolute;left:0;top:700px;width:1920px;height:220px;border-radius:56px 56px 0 0}
+.pv-p .pv-cname{position:absolute;left:104px;top:56px}
+.pv-p .pv-cwho{position:absolute;left:112px;font-weight:900;font-size:44px;line-height:72px;color:#fff;background:#1C6FF2;border-radius:40px;padding:0 32px;letter-spacing:.04em}
+.pv-p .pv-cnews{position:absolute;left:112px;font-weight:900;font-size:76px;line-height:96px;color:#FF5E14;letter-spacing:.04em;white-space:nowrap}
+.pv-p .pv-ctime{position:absolute;left:112px;font-weight:900;font-size:48px;line-height:64px;color:#1F5FD0;white-space:nowrap}
+.pv-p .pv-cinfo{position:absolute;left:1180px;top:752px;width:640px;display:flex;align-items:center;gap:40px;color:#fff;text-align:right}
+.pv-p .pv-cinfo .pv-lead{flex:1;font-weight:900;font-size:40px;line-height:56px}
+.pv-p .pv-cinfo .pv-quota{font-weight:900;font-size:34px;line-height:48px}
+.pv-p .pv-csteps{position:absolute;left:112px;top:746px;display:flex;align-items:center;gap:18px}
+.pv-p .pv-csteps span{background:#fff;border-radius:44px;padding:0 36px;font-weight:900;font-size:44px;line-height:84px;letter-spacing:.04em}
+.pv-p .pv-csteps i{font-style:normal;font-weight:900;font-size:44px;color:#FFE27A}
+.pv-a .pv-s{position:relative;width:1920px;height:1080px;overflow:hidden;background:linear-gradient(135deg,#FFFFFF 0%,#F6F9FC 60%,#FDF3EA 100%);font-family:'PV Sans','Noto Sans TC',sans-serif;color:#22344D}
+.pv-a .pv-s *{box-sizing:border-box}
+.pv-a .pv-serif{font-family:'PV Serif','Noto Serif TC',serif;font-weight:900}
+.pv-a .pv-eye{display:flex;align-items:center;gap:20px;font-family:'PV Serif','Noto Serif TC',serif;font-weight:700;font-size:40px;line-height:56px;letter-spacing:.08em;color:#22344D}
+.pv-a .pv-eye::before{content:"";width:64px;height:4px;background:#E8741E}
+.pv-a .pv-card{background:#fff;border:2px solid #E3E8EF;border-radius:28px;box-shadow:0 18px 40px rgba(34,52,77,.08)}
+.pv-a .pv-lab{display:inline-block;background:#FDEBDD;color:#E8741E;border-radius:10px;padding:0 22px;font-weight:900;font-size:32px;line-height:56px;letter-spacing:.06em}

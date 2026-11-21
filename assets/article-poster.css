@@ -1,0 +1,41 @@
+/* 文章三頁：只換顏色和字，結構不動（左圖＋掃碼、右文字） */
+.daily-article {
+  --band: #01BCB2; --band-deep: #00877E; --ink: #00665F; --chip: #FFE27A; --chip-ink: #00665F; --credit: #E6FBF8;
+  background: #FFF9EC;
+  color: #4A4038;
+  font-family: "Chiron GoRound TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+}
+.daily-article.editorial-selection { --band: #FFCB3D; --band-deep: #D99A00; --ink: #7A4A00; --chip: #FFFFFF; --chip-ink: #A86A00; --credit: #5A3A00; background: #FFFFFF; }
+.daily-article.editorial-selection[aria-label="教養新書"] { --band: #CFE3FA; --band-deep: #8DB6EC; --ink: #1F5FD0; --chip: #1C6FF2; --chip-ink: #FFFFFF; --credit: #1F5FD0; background: #FFFDF7; }
+.daily-article::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 934px;
+  background: var(--band); border-radius: 0 72px 72px 0;
+}
+.daily-article__visual, .daily-article__copy { position: relative; z-index: 1; }
+.daily-article__photo { border: 10px solid #fff; border-radius: 36px; box-shadow: 0 14px 0 var(--band-deep); box-sizing: border-box; }
+.daily-article__visual > p { color: var(--credit) !important; font-weight: 700; margin-top: 22px !important; }
+.daily-article__scan { margin-top: 44px; padding: 16px 36px 16px 16px; border: 0; border-radius: 32px; background: #fff; box-shadow: 0 12px 0 var(--band-deep); }
+.daily-article__qr { width: 230px; height: 230px; padding: 6px; }
+.daily-article__scan p { color: var(--ink); font-size: 36px; font-weight: 900; line-height: 1.45; letter-spacing: .04em; }
+.daily-article__meta { font-size: 30px; font-weight: 900; gap: 18px; }
+.daily-article__today { padding: 8px 26px; border-radius: 40px; background: #FF5E14; box-shadow: none; transform: none; }
+.daily-article__topic { padding: 8px 26px; background: var(--chip); color: var(--chip-ink); }
+.daily-article.editorial-selection .daily-article__topic { background: var(--band); color: var(--ink); }
+.daily-article.editorial-selection[aria-label="教養新書"] .daily-article__topic { background: #1C6FF2; color: #fff; }
+.daily-article__audience { color: #8A7A66; font-weight: 700; }
+.daily-article h1 { margin-top: 34px; color: var(--ink); font-family: "Chiron GoRound TC", "Zen Maru Gothic", sans-serif; font-size: 72px; line-height: 1.3; letter-spacing: .02em; }
+.daily-article h1.is-long { font-size: 60px; }
+.daily-article__excerpt { margin-top: 30px; color: #4A4038; font-size: 34px; font-weight: 700; line-height: 1.6; }
+.daily-article__foot { margin-top: 44px; }
+.daily-article__cta { padding: 14px 36px; border-radius: 44px; background: #FF5E14; box-shadow: 0 8px 0 #C9440A; font-size: 36px; font-weight: 900; }
+.daily-article__date { color: #8A7A66; font-size: 28px; }
+.daily-article.editorial-selection h1 { font-size: 84px; }
+.daily-article.editorial-selection .daily-article__excerpt { font-size: 40px; }
+.daily-article.editorial-selection .daily-article__meta { font-size: 34px; }
+.daily-article__excerpt { text-wrap: balance; }
+/* 左邊色塊裡：圖卡和掃碼卡一樣寬，上下撐滿 */
+.daily-article__scan { width: 100%; box-sizing: border-box; margin-top: 48px; padding: 20px 44px 20px 20px; gap: 44px; border-radius: 36px; }
+.daily-article__qr { width: 280px; height: 280px; }
+.daily-article__scan p { font-size: 50px; line-height: 1.4; }
+.daily-article__visual > p { margin-top: 26px !important; font-size: 22px !important; }
+.daily-article.editorial-selection .daily-article__scan { margin-top: 26px; }

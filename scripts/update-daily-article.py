@@ -104,7 +104,8 @@ def main():
             cover_image.convert("RGB").save(png, format="PNG")
             cover = png.getvalue()
 
-    title = article["title"]
+    # KWJ 2026-11-25: the TV wall says 「回應」, never 「家長可以這樣接話」.
+    title = article["title"].replace("這樣接話", "這樣回應")
     headline = title
     excerpt = article["excerpt"]
     date = re.sub(r"\s+", " ", article["date"])
